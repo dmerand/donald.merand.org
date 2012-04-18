@@ -1,12 +1,14 @@
 /* define some basic variables */
-$background: #FFF7F3;
+//$background: #FFF7F3;
+$background: #FBFBFB;
 $text: #464443;
 $link: #9F8880;
 $selected: #7F007F;
 
-$base_font_size: 16pt;
+$base-font-size: 14pt;
+$base-font-weight: 300;
 
-$page_width: 800px;
+$page-width: 800px;
 
 /* HTML DEFAULT OVERRIDES FOLLOW */
 
@@ -20,13 +22,15 @@ body, html {
 body {
 	background: $background;
 	color: $text;
-	font-family: Georgia, Serif;
-	font-size: $base_font_size;
+
+	font-family: 'Merriweather', 'Georgia', Serif;
+	font-size: $base-font-size;
+  font-weight: $base-font-weight;
 }
 
 /* navigation buttons */
 nav {
-	font-size: $base_font_size + 2pt;
+	font-size: $base-font-size + 2pt;
 	text-align: center;
 }
 
@@ -40,7 +44,7 @@ article img {
 footer {
 	margin: 100px 0 10px 0;
 	text-align: center;
-	font-size: $base_font_size - 6pt;
+	font-size: $base-font-size - 6pt;
 }
 
 
@@ -51,23 +55,24 @@ a {
 }
 
 h1 {
-	font-size: $base_font_size + 8pt;
+	font-size: $base-font-size + 8pt;
+  font-weight: 900;
 }
 
 h2 {
-	font-size: $base_font_size + 4pt;
+	font-size: $base-font-size + 4pt;
 }
 
 h3 {
-	font-size: $base_font_size;
+	font-size: $base-font-size;
 }
 
 textarea, pre {
-	font-size: $base_font_size - 4pt;
+	font-size: $base-font-size - 4pt;
 }
 
 ul, ol {
-	font-size: $base_font_size - 2pt;
+	font-size: $base-font-size - 2pt;
 }
 
 p {
@@ -80,7 +85,7 @@ p {
 .donald {
 	width: 100%; /* of the body */
 	text-align: center;
-	font-size: $base_font_size + 8pt;
+	font-size: $base-font-size + 8pt;
 	background: $text;
 	color: $background;
 	a { color: $background; }
@@ -88,7 +93,7 @@ p {
 
 /* all content is contained in the page */
 .page {
-	width: $page_width;
+	width: $page-width;
 	height: auto;
 	margin: 0 auto;
 }
@@ -116,7 +121,7 @@ p {
 	margin: 40px 0 20px 0;
 	text-align: center;
 	font-weight: normal;
-	font-size: $base_font_size + 10pt;
+	font-size: $base-font-size + 10pt;
 }
 
 /* info such as date, author, tags, etc. */

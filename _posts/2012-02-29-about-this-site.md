@@ -5,6 +5,9 @@ context: Code
 tags: code credits php
 ---
 
+_Note: Since writing this article, I've decided to migrate my page to being hosted on [GitHub](http://github.com/donaldmerand) using [jekyll](https://github.com/mojombo/jekyll). Sooo, it's all basically out-of-date. But the PHP code was a fun exercise!_
+
+
 When designing this site, I envisioned it as a blog/pulpit,résume, and code/ideas repository. My mission is to make the site as usable as possible with as few elements as possible. Within that framework, I still want to have the elements one expects a modern web site, such as cross-platform compatibility, site search, RSS feeds, web-based content management, syntax highlighting of code snippets, and so forth. I'm also using the opportunity to try new approaches, and thought maybe it would be nice to share how the site works. 
 
 

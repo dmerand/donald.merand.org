@@ -5,44 +5,24 @@
   <meta charset="utf-8">
   <meta name="author" content="Donald L. Merand">
   <title>{{ page.title}}</title>
-  <link rel="alternate" type="application/rss+xml" href="/rss/">
+  <link rel="alternate" type="application/atom+xml" title="Donald L. Merand" href="atom.xml">
   <link rel="shortcut icon" href="/favicon.ico">
   <link rel="stylesheet" href="/assets/css/style.css" media="all" />
+  <link rel="stylesheet" href="/assets/css/syntax.css" media="all" />
   <link rel="stylesheet" href="/assets/css/print.css" media="print" />
 </head>
 
 <body>
   <div class="donald"><a href="/index.html">Donald L. Merand</a></div>
   <div class="page">
-    <nav class="noprint">
-      <div class="context">
-        <a href="/context/cv">CV</a>
-      </div>
-      <div class="context">
-        <a href="/context/code">Code</a>
-      </div>
-      <div class="context">
-        <a href="/context/projects">Projects</a>
-      </div>
-      <div class="context">
-        <a href="/context/writing">Writing</a>
-      </div>
-    </nav>
-    <div class="clf"></div>
 
     {{ content }}
 
     <footer>
-      <form action="/search" method="post">
-        <span class="noprint">
-          <input type="search" name="query" placeholder="search">
-          &nbsp;&nbsp;&nbsp;
-        </span>
-        <a href="&#x6D;&#x61;&#105;&#108;&#116;&#111;:&#100;&#108;&#109;&#64;&#x64;o&#110;&#x61;l&#100;&#x6D;&#x65;&#x72;&#x61;&#x6E;&#x64;&#x2E;&#x63;&#111;&#x6D;">&#100;&#108;&#109;&#64;&#x64;o&#110;&#x61;l&#100;&#x6D;&#x65;&#x72;&#x61;&#x6E;&#x64;&#x2E;&#x63;&#111;&#x6D;</a>
-        <span class="noprint">
-           | <a href="/rss/">[rss feed]</a>
-        </span>
-      </form>
+      <a href="&#x6D;&#x61;&#105;&#108;&#116;&#111;:&#100;&#108;&#109;&#64;&#x64;o&#110;&#x61;l&#100;&#x6D;&#x65;&#x72;&#x61;&#x6E;&#x64;&#x2E;&#x63;&#111;&#x6D;">&#100;&#108;&#109;&#64;&#x64;o&#110;&#x61;l&#100;&#x6D;&#x65;&#x72;&#x61;&#x6E;&#x64;&#x2E;&#x63;&#111;&#x6D;</a>
+      <span class="noprint">
+         | <a href="/atom.xml">[rss feed]</a>
+      </span>
       <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License</a>.</p>
     </footer>
   </div><!-- page -->

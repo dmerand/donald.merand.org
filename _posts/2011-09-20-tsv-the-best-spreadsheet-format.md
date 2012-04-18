@@ -28,7 +28,7 @@ I wrote this BASH script, which I've named `tsvfmt`, to address the problem of a
 
 Here's the script:
 
-{% highligh bash %}
+{% highlight sh %}
 #!/bin/sh
 #tsvfmt - TSV Formatter
 #Author: Donald L. Merand
@@ -101,7 +101,7 @@ rm .tsv_tmp.txt .tsv_widths.txt
 
 This one is a little more self-explanatory. Pass it a TSV file, either from STDIN or piped over, and it'll convert it to an HTML table. Best used in conjunction with [bcat](http://rtomayko.github.com/bcat/), which is _awesome_.
 
-{% highlight bash %}
+{% highlight sh %}
 #!/bin/sh
 #convert a TSV file to an HTML file
 #author: Donald L. Merand

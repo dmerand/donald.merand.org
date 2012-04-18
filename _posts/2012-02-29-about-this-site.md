@@ -1,7 +1,7 @@
 ---
 layout: post
 title: About This Site  
-context: Code  
+category: code  
 tags: code credits php
 ---
 

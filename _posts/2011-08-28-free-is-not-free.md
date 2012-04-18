@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Free is Not Free  
-context: Writing  
+category: writing  
 tags: yro 
 ---
 

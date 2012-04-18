@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Some Drawings  
-context: Projects  
+category: projects  
 tags: drawing art  
 ---
 

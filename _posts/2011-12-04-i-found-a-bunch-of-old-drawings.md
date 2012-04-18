@@ -1,7 +1,7 @@
 ---
 layout: post
 title: I Found a Bunch of Old Drawings  
-context: Projects  
+category: projects  
 tags: art drawing  
 ---
 

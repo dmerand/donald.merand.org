@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Album - Exploration Slideshow  
-category: Projects  
+category: projects  
 tags: music mp3  
 ---
 

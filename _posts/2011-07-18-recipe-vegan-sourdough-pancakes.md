@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Recipe - Vegan Sourdough Pancakes
-category: Writing
+category: writing
 tags: recipe pancakes
 ---
 

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: DokuWiki to LaTeX Converter  
-category: Code
+category: code
 tags: dokuwiki latex cli  
 ---
 

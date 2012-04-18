@@ -1,7 +1,7 @@
 ---
 layout: post
 title: OS X Terminal Tips and Tricks  
-category: Code
+category: code
 tags: OSX CLI BASH  
 ---
 

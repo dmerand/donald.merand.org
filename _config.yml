@@ -1,5 +1,5 @@
 pygments: true
 server: true
-#auto: true
+auto: true
 safe: true
 url: http://donaldmerand.com

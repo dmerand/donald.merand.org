@@ -11,7 +11,7 @@ Sometimes, however, I would want to print my notes. Since I've always been a fan
 
 I've stopped using this code on my own computer in favor of a [pandoc](http://johnmacfarlane.net/pandoc/) solution, which I'll detail in a later post.
 
-The script was originally one long BASH script which included calls to `cat`, `sed`, and `awk`. However, for the purposes of illustration I'm going to just show each important piece. If you want to download the complete script, you can get it [here](http://donaldmerand.com/files/1312559520/doku2tex.sh)
+The script was originally one long BASH script which included calls to `cat`, `sed`, and `awk`. However, for the purposes of illustration I'm going to just show each important piece. If you want to download the complete script, you can get it [here](https://gist.github.com/2414353)
 
 
 

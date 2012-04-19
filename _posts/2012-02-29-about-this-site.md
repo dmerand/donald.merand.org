@@ -5,7 +5,7 @@ category: code
 tags: code credits php
 ---
 
-_Note - Since writing this article, I've decided to migrate my page to being hosted on [GitHub](http://github.com/donaldmerand) using [jekyll](https://github.com/mojombo/jekyll). Sooo, it's all basically out-of-date. Still, the PHP code was a fun exercise, and a lot of the points are still valid._
+_Note - Since writing this article, I've decided to migrate my page to being hosted on [GitHub](http://github.com/dmerand) using [jekyll](https://github.com/mojombo/jekyll). Sooo, it's all basically out-of-date. Still, the PHP code was a fun exercise, and a lot of the points are still valid._
 
 
 

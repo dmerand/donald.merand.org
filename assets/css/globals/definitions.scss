@@ -9,8 +9,11 @@ $base-font-family: 'Merriweather', 'Georgia', Serif;
 $base-size-low: 15px;
 $base-size-high: 30px;
 $base-size: $base-size-low $base-size-high;
-$line-height-multiplier: 1.6;
+$line-height-multiplier: 1.4;
 $base-font-weight: 300;
+
+// extra font definitions
+$font-weight-heavy: 900;
 
 $base-padding: 8px;
 
@@ -25,5 +28,3 @@ $base-padding: 8px;
 @debug ms(3);
 */
 
-// extra font definitions
-$font-heavy: 900;

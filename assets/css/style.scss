@@ -44,10 +44,11 @@ a {
 
 $header-margin: 45px;
 
+h1, h2, h3, h4, h5, h6 { font-weight: $font-weight-heavy; }
+
 h1 {
   margin-top: $header-margin;
   @include set-font(2);
-  font-weight: $font-heavy;
 }
 
 h2 {
@@ -112,8 +113,8 @@ textarea, pre {
 	margin: 40px 0 20px 0;
 
   @include set-font(3);
+  font-weight: normal;
 	text-align: center;
-	font-weight: normal;
 }
 
 /* info such as date, author, tags, etc. */

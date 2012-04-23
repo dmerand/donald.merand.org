@@ -1,12 +1,6 @@
-/* define some basic variables */
-//$background: #FFF7F3;
-$background: #FBFBFB;
-$text: #464443;
-$link: #9F8880;
-$selected: #7F007F;
+@import "globals/mixins";
+@import "globals/definitions";
 
-$base-font-size: 14pt;
-$base-font-weight: 300;
 
 $page-width: 800px;
 
@@ -23,15 +17,9 @@ body {
 	background: $background;
 	color: $text;
 
-	font-family: 'Merriweather', 'Georgia', Serif;
-	font-size: $base-font-size;
+	font-family: $base-font-family;
   font-weight: $base-font-weight;
-}
-
-/* navigation buttons */
-nav {
-	font-size: $base-font-size + 2pt;
-	text-align: center;
+  @include set-font(1);
 }
 
 article img {
@@ -44,7 +32,7 @@ article img {
 footer {
 	margin: 100px 0 10px 0;
 	text-align: center;
-	font-size: $base-font-size - 6pt;
+  @include set-font(-1);
 }
 
 
@@ -54,40 +42,42 @@ a {
 	&:hover { color: lighten($link, 25%); }
 }
 
+$header-margin: 45px;
+
 h1 {
-	font-size: $base-font-size + 8pt;
-  font-weight: 900;
+  margin-top: $header-margin;
+  @include set-font(2);
+  font-weight: $font-heavy;
 }
 
 h2 {
-	font-size: $base-font-size + 4pt;
+  margin-top: $header-margin * 2/3;
+  @include set-font(1);
 }
 
 h3 {
-	font-size: $base-font-size;
+  margin-top: $header-margin * 1/3;
+  @include set-font(0);
 }
 
 textarea, pre {
-	font-size: $base-font-size - 4pt;
+  padding: $base-padding;
+  @include set-font(-1);
 }
 
-ul, ol {
-	font-size: $base-font-size - 2pt;
-}
-
-p {
-	line-height: 140%;
-}
 
 /* CUSTOM PAGE ELEMENTS FOLLOW */
 
 /* top of the header */
 .donald {
 	width: 100%; /* of the body */
-	text-align: center;
-	font-size: $base-font-size + 8pt;
+
 	background: $text;
 	color: $background;
+
+  @include set-font(3);
+	text-align: center;
+
 	a { color: $background; }
 }
 
@@ -108,9 +98,10 @@ p {
 .below-article {
 	margin-top: 30px;
 	padding: 0px 10px 0px 10px;
+	background: darken($background, 2%);
 	border: thin dotted lighten($text, 50%);
 	border-radius: 8px;
-	background: darken($background, 2%);
+
 	p, h1 {
 		margin: 10px 0px 10px 0px;
 	}
@@ -119,9 +110,10 @@ p {
 /* the title of the selected item */
 .article-title {
 	margin: 40px 0 20px 0;
+
+  @include set-font(3);
 	text-align: center;
 	font-weight: normal;
-	font-size: $base-font-size + 10pt;
 }
 
 /* info such as date, author, tags, etc. */

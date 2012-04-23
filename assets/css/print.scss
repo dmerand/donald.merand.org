@@ -1,39 +1,24 @@
+@import "globals/mixins";
+@import "globals/definitions";
+
+$base-size-low: 14px;
+$base-size-high: 24px;
+$base-size: $base-size-low $base-size-high;
+
 body {
 	background: #FFFFFF;
+  @include set-font(1);
 }
 
-$base-font-size: 10pt;
+h1 { @include set-font(3); }
 
-.noprint { display: none; }
 .donald { 
-	font-size: $base-font-size + 4;
 	color: #464443;
 }
 .article-title {
-	font-size: $base-font-size + 10pt;
 	margin-bottom: 40px;
+  @include set-font(3);
 }
-.page { 
-	font-size: $base-font-size; 
-	width: 75%;
-}
-h1 {
-	font-size: $base-font-size + 8pt;
-}
+.page {	width: 75%; }
 
-h2 {
-	font-size: $base-font-size + 4pt;
-}
-
-h3 {
-	font-size: $base-font-size;
-}
-textarea, pre {
-	font-size: $base-font-size - 2pt;
-}
-ul, ol {
-	font-size: $base-font-size;
-}
-footer {
-	font-size: $base-font-size - 2;
-}
+.noprint { display: none; }

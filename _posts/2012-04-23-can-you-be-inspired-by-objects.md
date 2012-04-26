@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Can You Be Inspired by Objects?
+category: writing
 tags: inspiration consumption
 ---
 

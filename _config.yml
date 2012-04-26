@@ -3,3 +3,4 @@ server: true
 auto: true
 safe: true
 url: http://donaldmerand.com
+exclude: ["CNAME", "README.md"]

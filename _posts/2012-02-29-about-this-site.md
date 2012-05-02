@@ -5,9 +5,12 @@ category: code
 tags: code credits php
 ---
 
+**UPDATE** 2012.05.02 11:40:21 - If you want to download the source that I'm talking about below, visit my [blogulator](https://github.com/dmerand/blogulator) project on GitHub.  
+
 _Note - Since writing this article, I've decided to migrate my page to being hosted on [GitHub](http://github.com/dmerand) using [jekyll](https://github.com/mojombo/jekyll). Sooo, it's all basically out-of-date. Still, the PHP code was a fun exercise, and a lot of the points are still valid._
 
 
+# About This Site
 
 When designing this site, I envisioned it as a blog/pulpit,résume, and code/ideas repository. My mission is to make the site as usable as possible with as few elements as possible. Within that framework, I still want to have the elements one expects a modern web site, such as cross-platform compatibility, site search, RSS feeds, web-based content management, syntax highlighting of code snippets, and so forth. I'm also using the opportunity to try new approaches, and thought maybe it would be nice to share how the site works. 
 

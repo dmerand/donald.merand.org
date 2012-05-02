@@ -16,7 +16,9 @@ Parsing a CSV file is a pain in the ass. There are at least four different imple
 There aren't a lot of great utilities out there for working with TSV files, so I'm going to post a couple that I use all the time.
 
 
-# TSVFMT - A Spreadsheet for Your Command Line
+TSVFMT
+======
+_A Spreadsheet for Your Command Line_
 
 I wrote this BASH script, which I've named `tsvfmt`, to address the problem of alignment when viewing TSV files in the command line or a text editor. It takes a TSV and uses awk to space it out and place a "|" character between columns. So this:
 
@@ -28,111 +30,16 @@ I wrote this BASH script, which I've named `tsvfmt`, to address the problem of a
 
 Here's the script:
 
-{% highlight sh %}
-#!/bin/sh
-#tsvfmt - TSV Formatter
-#Author: Donald L. Merand
-#07.07.2011
-#----------
-#Takes a TSV file, and outputs a text-only representation of the table,
-#+ justified to the max width of each column. Basically, you use it when 
-#+ you want to "preview" a TSV file, or print it prettily.
-#----------
-#Accepts standard input, or piped/redirected files
-#----------
+<script src="https://gist.github.com/2577157.js"> </script>
 
-#set this to whatever you want to show up between columns
-field_separator=" | "
 
-#take file input, or standard input, and redirect to a temporary file
-#also, convert mac line-endings to UNIX ones
-perl -p -e 's/(:?\r\n?|\n)/\r\n/g' > .tsv_tmp.txt
-
-#now we're going to extract max record widths from the file
-#send the contents to awk
-cat .tsv_tmp.txt |
-awk '
-BEGIN {	
-	FS="\t"
-	max_nf = 0 
-}
-{
-	for (i=1; i<=NF; i++) {
-		#set the max-length to this field width if it is the biggest
-		if (max_length[i] < length($i)) { max_length[i] = length($i) }
-	}
-	if (max_nf < NF) { max_nf = NF }
-}
-END {
-	for (i=1; i<=max_nf; i++) {
-		printf("%s\t", max_length[i])
-	}
-	printf("\n")
-}
-' > .tsv_widths.txt #store widths in a TSV temp file
-
-#now start over by sending our temp file to awk. THIS time we have a widths
-#+file to read which gives us the maximum width for each column
-cat .tsv_tmp.txt |
-awk -v field_sep="$field_separator" '
-BEGIN {
-	FS="\t"
-	#read the max width of each column
-	getline w < ".tsv_widths.txt"
-	#split widths into an array
-	split(w, widths, "\t")
-	#get the max number of fields
-	max_nf = 0
-	for (i in widths) { max_nf++ }
-}
-{
-	for (i=1; i < max_nf; i++) {
-		printf("%-*s%s", widths[i], $i, field_sep)
-	}
-	printf("\n")
-}
-'
-#now we're done. remove temp files
-rm .tsv_tmp.txt .tsv_widths.txt
-
-{% endhighlight %}
-
-#	TSV2HTML - Convert a TSV File to an HTML Snippet
+TSV2HTML
+========
+_Convert a TSV File to an HTML Snippet_
 
 This one is a little more self-explanatory. Pass it a TSV file, either from STDIN or piped over, and it'll convert it to an HTML table. Best used in conjunction with [bcat](http://rtomayko.github.com/bcat/), which is _awesome_.
 
-{% highlight sh %}
-#!/bin/sh
-#convert a TSV file to an HTML file
-#author: Donald L. Merand
+<script src="https://gist.github.com/2577179.js"> </script>
 
-#note: this is most useful in conjunction with 
-#bcat, which sends results to the browser
-# you can get bcat on OS X using homebrew
-# http://mxcl.github.com/homebrew/
-# then type "brew install bcat"
 
-#also note: this script only creates an HTML snippet.
-# you'll probably want to wrap
-# it in some pretty CSS, not to mention <html> and <body> tags
-
-#convert Mac line endings, if any
-perl -p -e 's/\r/\n/g' |
-
-#now do the conversion
-awk '
-BEGIN {
-	FS="\t"
-	printf "&lt;table>\n"
-}
-{
-	printf "\n\n&lt;tr>"
-	for (i=1;i&lt;=NF;i++) {
-		printf "&lt;td>%s&lt;/td>", $i
-	}
-	printf "&lt;/tr>"
-}
-END {
-	printf "\n&lt;/table&gt;"
-}'
-{% endhighlight %}
+*UPDATE* (2012.05.02 10:58:18) - both of the above files are now available as part of the [dlm-dot-bin](https://github.com/dmerand/dlm-dot-bin) project that I've shared on GitHub.

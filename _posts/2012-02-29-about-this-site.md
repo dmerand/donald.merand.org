@@ -79,9 +79,9 @@ I realize that all web applications at this point are social to some degree, but
 
 This site uses:
 
-  - [Hashify Editor](https://bitbucket.org/davidchambers/hashify-editor) for editing and previewing page content.
-     - You should check out [Hashify](http://hashify.me) for a great online Markdown previewer/editor.
-  - [File Uploader](http://github.com/valums/file-uploader) for uploading files.
-  - [Prettify](https://code.google.com/p/google-code-prettify/) for syntax highlighting of code snippets.
+- [Hashify Editor](https://bitbucket.org/davidchambers/hashify-editor) for editing and previewing page content.
+    - You should check out [Hashify](http://hashify.me) for a great online Markdown previewer/editor.
+- [File Uploader](http://github.com/valums/file-uploader) for uploading files.
+- [Prettify](https://code.google.com/p/google-code-prettify/) for syntax highlighting of code snippets.
 
 The rest was all me. Thanks for getting this far!

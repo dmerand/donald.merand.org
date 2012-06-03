@@ -8,7 +8,7 @@ We recently converted to [HipChat] at one of my jobs. Because we're geographical
 
 For example, when you upload a file it's stored at Amazon (S3), and is available forever, no matter what your client. That is rad. There are clients for any conceivable device, especially considering that there's XMPP/Jabber integration, so you could even use your favorite chat client to connect in that way. As a bonus, the search is good, which you'd expect except that all other clients have non-existent or crappy search. That's just a few examples, but in short there are no barriers to getting in contact with people and sharing stuff, which makes it ideal for distributed teams.
 
-Also, there's a API for it, which I love. I love it so much that I wrote *two* different interfaces to it. I wrote [FMHipChat] for posting from FileMaker, and I wrote a [HipChat CLI] (command line) client as well, mostly because I didn't notice that [there already was one](https://github.com/hipchat/hipchat-cli).
+Also, there's a API for it, which I love. I love it so much that I wrote *two* different interfaces to it. I wrote [FMHipChat] for posting from FileMaker, and I wrote a [HipChat CLI][HipChatCLI] (command line) client as well, mostly because I didn't notice that [there already was one](https://github.com/hipchat/hipchat-cli).
 
 
 
@@ -25,7 +25,7 @@ I imagine using it mainly as a notifier for the end of long script runs, but let
 HipChat CLI
 ===========
 
-If you're like me (got this far? you're probably like me.), then you probably wanna post to HipChat from some shell scripts every now and then. Say a CRON job that runs an `fmsadmin` task, or something like that. So I cooked up a [real nice client][HipChat CLI] for that as well.
+If you're like me (got this far? you're probably like me.), then you probably wanna post to HipChat from some shell scripts every now and then. Say a CRON job that runs an `fmsadmin` task, or something like that. So I cooked up a [real nice client][HipChatCLI] for that as well.
 
 Similar caveats to FMHipChat apply - you need an API token, and you have to modify the script to use it.
 
@@ -37,5 +37,5 @@ Thanks for reading, and happy HipChatting.
 
 [HipChat]: https://hipchat.com "Chat it up real nice"
 [FMHipChat]: https://github.com/dmerand/FMHipChat "FMHipChat - Post to HipChat from FileMaker!"
-[HipChat CLI]: https://github.com/dmerand/dlm-dot-bin/blob/master/hipchat "HipChat from the CLI"
+[HipChatCLI]: https://github.com/dmerand/dlm-dot-bin/blob/master/hipchat "HipChat from the CLI"
 [dlm_github]: https://github.com/dmerand/ "Donald Merand on GitHub - epic."

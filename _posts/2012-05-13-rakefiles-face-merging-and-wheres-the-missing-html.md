@@ -52,3 +52,12 @@ The Takeaway
 ------------
 
 Stay away from doing Google searches for image morphing, use Rakefiles for automating development tasks, and read other people's style guides - you might learn something fascinating! Thanks for reading.
+
+
+---
+
+<a href="http://lab.explo.org/facesofexplo" target="_blank">
+  <img src="http://lab.explo.org/facesofexplo/assets/images/1/1.jpg" width="480px">
+</a>
+
+---

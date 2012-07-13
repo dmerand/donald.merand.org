@@ -17,7 +17,24 @@ Dream
 -----
 Listen/download [here](http://embed.donaldmerand.com/1342053957/Dream.mp3)
 
-This song is quite literal. I actually had a dream just like the one described in the song. I seem to recall that I woke up and immediately wrote the song, and recorded it the same day. I was listening to a lot of Mark Kozelek (Sun Kil Moon/Red House Painters) when I wrote and recorded it - can you tell?
+<strike>This song is quite literal. I actually had a dream just like the one described in the song. I seem to recall that I woke up and immediately wrote the song, and recorded it the same day. I was listening to a lot of Mark Kozelek (Sun Kil Moon/Red House Painters) when I wrote and recorded it - can you tell?</strike>
+
+**Update: ** My wife tells me it went like this (from chat):
+
+    we talked about our flying dreams and how we both had them and how awesome
+    they were, the first time we hung out
+
+    and we also talked about other recurrent dreams we had
+
+    and one of mine is defending someone i care about against some kind of
+    horrific attack
+
+    hence the second verse
+
+    you went home and wrote the song.
+
+Her memory is much better than mine, and I <strike>feel like</strike> am a real jerk for not remembering that this happened. Anyhow, this song was inspired by my lovely partner-for-life, and her somewhat disturbing dreams!
+
 
 
 My Red Shirt

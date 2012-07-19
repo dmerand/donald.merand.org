@@ -20,3 +20,10 @@ I'm posting all the tracks from this album, and will be posting all of my other 
 9. [song for amy](http://embed.donaldmerand.com/explo_slideshow/09%20Song%20for%20Amy.mp3)
 10. [changes of season](http://embed.donaldmerand.com/explo_slideshow/10%20Changes%20of%20Season.mp3)
 11. [asleep](http://embed.donaldmerand.com/explo_slideshow/11%20Asleep.mp3)
+
+
+License
+-------
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US"><img alt="Creative Commons License" src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"  class="left pad-right"></a>
+Exploration Slideshow by <a xmlns:cc="http://creativecommons.org/ns#" href="http://donaldmerand.com" property="cc:attributionName" rel="cc:attributionURL">Donald Merand</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.

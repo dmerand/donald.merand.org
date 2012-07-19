@@ -105,3 +105,12 @@ Anysayer
 Listen/download [here](http://embed.donaldmerand.com/1342054099/anysayer.mp3)
 
 An anysayer is the opposite of a naysayer. Get it?
+
+
+
+License
+=======
+---
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US"><img alt="Creative Commons License" src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png" class="left pad-right"></a>
+The "Conversations" and "Demo" EPs by <a xmlns:cc="http://creativecommons.org/ns#" href="http://donaldmerand.com" property="cc:attributionName" rel="cc:attributionURL">Donald Merand</a> are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.

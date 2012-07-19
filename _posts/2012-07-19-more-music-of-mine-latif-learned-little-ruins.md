@@ -16,7 +16,7 @@ I hope you enjoy it, and feel free to share it. I've decided to release the albu
 - [Alone, Together](http://embed.donaldmerand.com/1342710342/03-Alone-Together.mp3)
 - [?](http://embed.donaldmerand.com/1342710396/04-QuestionMark.mp3)
 - [A Minor Victory](http://embed.donaldmerand.com/1342710466/05-A-Minor-Victory.mp3)
-- [Carrier](http://embed.donaldmerand.com/1342710543/06-Carrier.mp3)
+- [Carrier](http://embed.donaldmerand.com/1342710543/06-Carrier.mp3) – This one was [featured on NPR](http://www.npr.org/templates/story/story.php?storyId=5298286) at one point.
 - [Give](http://embed.donaldmerand.com/1342710671/07-Give.mp3)
 - [As If You'd Wanted To](http://embed.donaldmerand.com/1342710725/08-As-if-You'd-Wanted-to.mp3)
 - [This Song](http://embed.donaldmerand.com/1342710991/09-This-Song.mp3)

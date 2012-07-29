@@ -6,10 +6,9 @@ category: projects
 
 *Little Ruins* is an album that I wrote and recorded in 2006, in Upstate New York, Montpelier, France, and Boston, MA. I wrote it under the moniker "Latif Learned", which strangely enough is an actual way to interpret my real name.
 
-In spite of my lenghy previous post about the "Demo" and "Conversations" EP, I'm not going to write much about these songs. I alluded to this in the last post, but I think it's generally best if you come to your own conclusions without my biases operating on you.
+In spite of my lengthy previous post about the "Demo" and "Conversations" EP, I'm not going to write much about these songs. I alluded to this in the last post, but I think it's generally best if you come to your own conclusions without my biases operating on you.
 
 I hope you enjoy it, and feel free to share it. I've decided to release the album under a [Creative Commons](http://creativecommons.org) license. Details at the bottom of the page.
-
 
 - [Something Close to Happy](http://embed.donaldmerand.com/1342710016/01-Something-Close-to-Happy.mp3)
 - [Moans](http://embed.donaldmerand.com/1342709986/02-Moans.mp3)
@@ -23,6 +22,7 @@ I hope you enjoy it, and feel free to share it. I've decided to release the albu
 - [Memory](http://embed.donaldmerand.com/1342712345/10-Memory.mp3)
 - [Little Ruins](http://embed.donaldmerand.com/1342711871/11-Little-Ruins.mp3)
 
+*(right-click the links to save them to your computer)*.
 
 
 License

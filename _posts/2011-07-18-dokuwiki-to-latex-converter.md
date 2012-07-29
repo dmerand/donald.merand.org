@@ -7,7 +7,7 @@ tags: dokuwiki latex cli
 
 **NOTE: ** See my [updated post](http://donaldmerand.com/code/2012/07/20/how-i-actually-convert-dokuwiki-to-latex.html) on how I actually convert [dokuwiki] formats these days.
 
-Up until recently I was taking all of my personal notes in [dokuwiki](http://dokuwiki.org) format, because that's what we use at my job for our internal wiki. It's convenient to be able to copy notes straight into the wiki without having to convert. 
+Up until recently I was taking all of my personal notes in [dokuwiki] format, because that's what we use at my job for our internal wiki. It's convenient to be able to copy notes straight into the wiki without having to convert. 
 
 Sometimes, however, I would want to print my notes. Since I've always been a fan of the beautiful output of [LaTeX](http://www.latex-project.org/), and I wanted to work on my [sed](https://secure.wikimedia.org/wikipedia/en/wiki/Sed) and [awk](https://secure.wikimedia.org/wikipedia/en/wiki/AWK) chops, I wrote a utility to convert from DokuWiki to LaTeX based on regular expressions.
 
@@ -140,3 +140,6 @@ The results of the awk script get piped to a sed script which parses single-line
 So there you have it. It's very informative to take on a project of this size: you learn pretty quickly how big of a mess regular expressions can be. But that's the beauty of sed and awk - you can combine simple expressions until you have one big (ugly) program that does something significant. It's amazing the power of what you can do with a few basic utilities that are included by default on just about every non-windows machine on the planet (and are available for windows machines as well).
 
 I also learned that most of what you can do with sed can be done right from inside the amazing text editor, [vim](http://www.vim.org/). An unintended consequence of learning sed is that you become a vim search/replace _master_. That alone is a great reason to learn how to use sed.
+
+
+[dokuwiki]: http://dokuwiki.org

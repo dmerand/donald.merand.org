@@ -8,6 +8,7 @@ I've got a pile of songs that I wrote as Latif Learned sitting on my hard drive,
 
 I'll write a brief description of the song if I can remember what was going on when I wrote it. These songs were originally grouped into two albums: "Demo" and "Conversations". "Demo" was just my catch-all for songs-that-are-pretty-good-but-don't-have-an-album, and "Conversations" was sort of an EP, mostly instrumental/electric stuff.
 
+*(right-click the links to save them to your computer)*.
 
 
 The "Demo" EP

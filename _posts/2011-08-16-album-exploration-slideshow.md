@@ -21,6 +21,8 @@ I'm posting all the tracks from this album, and will be posting all of my other 
 10. [changes of season](http://embed.donaldmerand.com/explo_slideshow/10%20Changes%20of%20Season.mp3)
 11. [asleep](http://embed.donaldmerand.com/explo_slideshow/11%20Asleep.mp3)
 
+*(right-click the links to save them to your computer)*.
+
 
 License
 -------

@@ -24,7 +24,9 @@ Here's How It Works
 3.  Open up your favorite [Terminal Application](http://www.iterm2.com/ "http://www.iterm2.com/").
 4.  Generally, you type `tsvfmt < spreadsheet.tsv`. That command will
     output the Dokuwiki-formatted version of your table.
-  - For the purposes of this file, you might want to first type `cd /Users/phil/Desktop/` and then type `sh tsvfmt spreadsheet.tsv|pbcopy`. That will run the conversion and copy the results to the system clipboard.
+  
+    - For the purposes of this file, you might want to first type `cd /Users/phil/Desktop/` and then type `sh tsvfmt spreadsheet.tsv|pbcopy`. That will run the conversion and copy the results to the system clipboard.
+
 5.  The **ONE CAVEAT** of this conversion is that if your spreadsheet
     has a header row, you'll want to convert the `|` characters to `^`
     characters in the first row. See [DokuWiki Syntax](http://www.dokuwiki.org/syntax#tables "http://www.dokuwiki.org/syntax#tables")

@@ -12,7 +12,7 @@ I used to write my personal notes in [DokuWiki] format using [Notational Velocit
 
 Let me take a moment to talk about how awesome [Pandoc] is. I don't know what you're doing right now, but if you use [Markdown], you need to have [Pandoc] installed. It will convert *all of the formats*, to and from each other. Markdown to LaTeX? No problem. Textile to HTML? HTML to epub? Whatever. It is amazing. Except it doesn't support DokuWiki.
 
-However, knowing what I now know about [Pandoc], I realized that all I really need is to be able to convert [DokuWiki] to HTML, and I could then feed that structured HTML into [Pandoc] to convert [DokuWiki] syntax into any other format, including, yes, LaTex. Fortunately for me, DokuWiki does all of the hard work, since converting DokuWiki syntax into HTML is, you know, precisely what the whole thing is designed to do. So what I needed is merely a way to access DokuWiki's syntax conversion from the command line. Here's how I do it:
+However, knowing what I now know about [Pandoc], I realized that all I really need is to be able to convert [DokuWiki] to HTML, and I could then feed that structured HTML into [Pandoc] to convert [DokuWiki] syntax into any other format, including, yes, LaTeX. Fortunately for me, DokuWiki does all of the hard work, since converting DokuWiki syntax into HTML is, you know, precisely what the whole thing is designed to do. So what I needed is merely a way to access DokuWiki's syntax conversion from the command line. Here's how I do it:
 
 1. Install [Pandoc] following whichever instructions suit your fancy on John McFarlane's site.
 2. Install an empty copy of [DokuWiki] that you will use merely as a syntax converter.

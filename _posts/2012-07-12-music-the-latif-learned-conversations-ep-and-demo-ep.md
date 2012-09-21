@@ -14,6 +14,8 @@ I'll write a brief description of the song if I can remember what was going on w
 The "Demo" EP
 =============
 
+Download the entire EP as one compressed ZIP file [here](http://embed.donaldmerand.com/ll/ll-demo.zip)
+
 Dream
 -----
 Listen/download [here](http://embed.donaldmerand.com/1342053957/Dream.mp3)
@@ -72,6 +74,8 @@ I have no idea when or why I wrote this song. It's not my favorite, but it exist
 
 The "Conversations" EP
 ======================
+
+Download the entire EP as one compressed ZIP file [here](http://embed.donaldmerand.com/ll/ll-conversations.zip)
 
 See/Want/Like/Need
 ------------------

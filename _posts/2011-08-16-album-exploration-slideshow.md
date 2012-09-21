@@ -9,6 +9,8 @@ Exploration Slideshow was my first solo album. I wrote and recorded it in the su
 
 I'm posting all the tracks from this album, and will be posting all of my other music up here as well. At some point I may post the lyrics as well. Do with this music what you will - remix, put it in your slideshow, whatever. I hope you enjoy it.
 
+Download the entire album as one compressed ZIP file [here](http://embed.donaldmerand.com/ll/ll-exploration-slideshow.zip)
+
 1. [love](http://embed.donaldmerand.com/explo_slideshow/01%20Love.mp3)
 2. [secret like affair](http://embed.donaldmerand.com/explo_slideshow/02%20Secret%20Like%20Affair.mp3)
 3. [green](http://embed.donaldmerand.com/explo_slideshow/03%20Green.mp3)

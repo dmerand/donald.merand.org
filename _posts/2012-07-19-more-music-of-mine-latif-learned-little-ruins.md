@@ -10,6 +10,8 @@ In spite of my lengthy previous post about the "Demo" and "Conversations" EP, I'
 
 I hope you enjoy it, and feel free to share it. I've decided to release the album under a [Creative Commons](http://creativecommons.org) license. Details at the bottom of the page.
 
+Download the entire album as one compressed ZIP file [here](http://embed.donaldmerand.com/ll/ll-little-ruins.zip)
+
 - [Something Close to Happy](http://embed.donaldmerand.com/1342710016/01-Something-Close-to-Happy.mp3)
 - [Moans](http://embed.donaldmerand.com/1342709986/02-Moans.mp3)
 - [Alone, Together](http://embed.donaldmerand.com/1342710342/03-Alone-Together.mp3)

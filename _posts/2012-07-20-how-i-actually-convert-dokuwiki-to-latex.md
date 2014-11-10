@@ -8,7 +8,7 @@ I [wrote an article](http://donaldmerand.com/code/2011/07/18/dokuwiki-to-latex-c
 
 The disadvantage of my [old utility](https://gist.github.com/2414353) is mainly that it is incomplete - it doesn't catch all of the syntax that DokuWiki supports. This is partly because I wrote it as an exercise in writing Awk/Sed code (regular expressions - so hot right now), and partly because at the time that I wrote it I didn't need any fancy features like tables, etc. The other disadvantage of that code is that in *only* converts to [LaTeX].
 
-I used to write my personal notes in [DokuWiki] format using [Notational Velocity]. But then I learned about [Markdown] and [became enamored of that syntax](http://localhost:4000/code/2011/09/20/tsv-the-best-spreadsheet-format.html), so now I write my notes in [Markdown] instead. The reason I bring this up is that my needs shifted once I started using Markdown, and I wanted a more general-purpose way to convert my [Markdown] notes into LaTeX, but also HTML, Textile, whatever the situation calls for. Enter [Pandoc].
+I used to write my personal notes in [DokuWiki] format using [Notational Velocity]. But then I learned about [Markdown] and [became enamored of that syntax](http://donaldmerand.com/code/2011/09/20/tsv-the-best-spreadsheet-format.html), so now I write my notes in [Markdown] instead. The reason I bring this up is that my needs shifted once I started using Markdown, and I wanted a more general-purpose way to convert my [Markdown] notes into LaTeX, but also HTML, Textile, whatever the situation calls for. Enter [Pandoc].
 
 Let me take a moment to talk about how awesome [Pandoc] is. I don't know what you're doing right now, but if you use [Markdown], you need to have [Pandoc] installed. It will convert *all of the formats*, to and from each other. Markdown to LaTeX? No problem. Textile to HTML? HTML to epub? Whatever. It is amazing. Except it doesn't support DokuWiki.
 
@@ -28,6 +28,6 @@ So easy, right? Well, it's easier than converting by hand.
 
 [DokuWiki]: http://dokuwiki.org
 [LaTeX]: http://www.latex-project.org
-[Markdown]: daringfireball.net/projects/markdown
+[Markdown]: http://daringfireball.net/projects/markdown
 [Notational Velocity]: http://notational.net
 [Pandoc]: http://johnmacfarlane.net/pandoc

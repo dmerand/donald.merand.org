@@ -19,11 +19,11 @@ I've put together a few sample incantations to do amazing things. Weep with joy 
 # Textutil Tips and Tricks
 
 - Convert a web page to a `FORMAT` document.
-  `curl www.google.com | textutil -stdin -convert FORMAT`
+    `curl www.google.com | textutil -stdin -convert FORMAT`
 - Find all word-type documents and convert them to `FORMAT`
-  `textutil -convert FORMAT *.doc*`
+    `textutil -convert FORMAT *.doc*`
 - Find all word-type documents and concatenate them into one `FORMAT` document
-  `textutil -cat FORMAT *.doc*`
+    `textutil -cat FORMAT *.doc*`
 - Use in combination with [pandoc](http://johnmacfarlane.net/pandoc/) to get even more file conversion possibilites (eg markdown to docx).
-  `pandoc -f markdown -t html file.markdown | textutil -stdin -convert docx -o file.docx`
-  pandoc's input formats: docbook, docx, epub, haddock, html, json, latex, markdown, markdown_github, markdown_mmd, markdown_phpextra, markdown_strict, mediawiki, native, opml, org, rst, t2t, textile
+    `pandoc -f markdown -t html file.markdown | textutil -stdin -convert docx -o file.docx`
+    * pandoc's input formats: docbook, docx, epub, haddock, html, json, latex, markdown, markdown_github, markdown_mmd, markdown_phpextra, markdown_strict, mediawiki, native, opml, org, rst, t2t, textile

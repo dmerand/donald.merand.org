@@ -1,7 +1,0 @@
-@import "../plugins/modular-scale";
-
-//golden ratio typography
-@mixin set-font($ratio-multiple:0) {
-	font-size: ms($ratio-multiple);
-	line-height: ms($ratio-multiple) * $line-height-multiplier;	
-}

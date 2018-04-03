@@ -6,8 +6,10 @@ title: Donald L. Merand
 <section>
   <h1>Articles</h1>
     {% for post in site.posts %}
-      <div>
-        <span>{{ post.date | date_to_string }}</span> &rarr; <a href="{{ post.url }}">{{ post.title }}</a>
+      <div class="mv2">
+        <a href="{{ post.url }}">
+          {{ post.title }}
+        </a>
       </div>
     {% endfor %}
 </section>

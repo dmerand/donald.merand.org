@@ -1,138 +1,18 @@
-/* define some basic variables */
-/* HTML DEFAULT OVERRIDES FOLLOW */
-/* got to have this for relative widths annd heights */
-body, html {
-  height: 100%;
-  margin: 0;
-  width: 100%; }
-
-body {
-  background: #fbfbfb;
-  color: #464443;
-  font-family: "Merriweather", "Georgia", Serif;
-  font-size: 19px;
-  line-height: 26.6px;
-  font-weight: 300; }
-
-article img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto; }
-
-/* goes below the content */
-footer {
-  margin: 100px 0 10px 0;
-  text-align: center;
-  font-size: 11px;
-  line-height: 15.4px; }
-
 a {
-  color: #9f8880;
+  color: #5E2CA5;
   text-decoration: none; }
-  a:hover {
-    color: #d6ccc9; }
 
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 900; }
-
-h1 {
-  font-size: 24px;
-  line-height: 33.6px;
-  margin-top: 45px; }
-
-h2 {
-  font-size: 19px;
-  line-height: 26.6px;
-  margin-top: 30px; }
-
-h3 {
-  font-size: 15px;
-  line-height: 21px;
-  margin-top: 15px; }
+a:hover {
+  color: #A463F2; }
 
 code {
-  font-size: 15px;
-  line-height: 21px;
-  padding: 2px;
-  border: thin solid #bbbbbb;
-  background: #eeeeee; }
+  color: #777777;
+  font-size: 1rem; }
 
-pre {
-  font-size: 11px;
-  line-height: 15.4px; }
-
-/* CUSTOM PAGE ELEMENTS FOLLOW */
-/* top of the header */
 .donald {
-  background: #464443;
-  color: #fbfbfb;
-  text-align: center;
-  width: 100%;
-  /* of the body */
-  font-size: 30px;
-  line-height: 42px; }
-  .donald a {
-    color: #fbfbfb; }
+  color: #464443; }
 
-/* all content is contained in the page */
-.page {
-  height: auto;
-  margin: 0 auto;
-  width: 800px; }
+.noprint {
+  display: none; }
 
-/* there are four of these in a row in the top NAV */
-.context {
-  float: left;
-  margin: 7px 2% 0 2%;
-  width: 21%;
-  /* of the page */ }
-
-.below-article {
-  background: #f6f6f6;
-  border-radius: 8px;
-  border: thin dotted #c5c4c3;
-  margin-top: 30px;
-  padding: 0px 10px 0px 10px; }
-  .below-article p, .below-article h1 {
-    margin: 10px 0px 10px 0px; }
-
-/* the title of the selected item */
-.article-title {
-  margin: 40px 0 20px 0;
-  text-align: center;
-  font-size: 30px;
-  line-height: 42px;
-  font-weight: normal; }
-
-/* info such as date, author, tags, etc. */
-.article-metadata {
-  color: #93908f;
-  font-style: oblique; }
-
-/* generic - anything that's been selected */
-.selected {
-  color: #7f007f;
-  font-weight: bold; }
-
-.half-left {
-  float: left;
-  width: 48%; }
-
-.center {
-  text-align: center; }
-
-.left {
-  float: left; }
-
-.oblique {
-  font-style: oblique; }
-
-.pad-right {
-  padding-right: 20px; }
-
-.right {
-  float: right; }
-
-/* just here to fix any floatin' */
-.clf {
-  clear: both; }
+/*# sourceMappingURL=style.css.map */

@@ -1,144 +1,18 @@
-@import "globals/mixins";
-@import "globals/definitions";
-
-$page-width: 800px;
-
-/* HTML DEFAULT OVERRIDES FOLLOW */
-
-/* got to have this for relative widths annd heights */
-body, html {
-	height: 100%;
-	margin: 0;
-	width: 100%;
-}
-
-body {
-	background: $background;
-	color: $text;
-	font-family: $base-font-family;
-  @include set-font(1);
-  font-weight: $base-font-weight;
-}
-
-article img {
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
-}
-
-/* goes below the content */
-footer {
-	margin: 100px 0 10px 0;
-	text-align: center;
-  @include set-font(-1);
-}
-
-
 a {
-	&:hover { color: lighten($link, 25%); }
-	color: $link;
-	text-decoration: none;
+  color: #5E2CA5;
+  text-decoration: none;
 }
-
-$header-margin: 45px;
-
-h1, h2, h3, h4, h5, h6 { font-weight: $font-weight-heavy; }
-
-h1 {
-  @include set-font(2);
-  margin-top: $header-margin;
-}
-
-h2 {
-  @include set-font(1);
-  margin-top: $header-margin * 2/3;
-}
-
-h3 {
-  @include set-font(0);
-  margin-top: $header-margin * 1/3;
+a:hover {
+  color: #A463F2;
 }
 
 code {
-  @include set-font(0);
-  padding: $base-padding / 4;
-  border: thin solid darken($background, 25%);
-  background: darken($background, 5%);
+  color: #777777;
+  font-size: 1rem;
 }
 
-pre {
-  @include set-font(-1);
+.donald { 
+	color: #464443;
 }
 
-/* CUSTOM PAGE ELEMENTS FOLLOW */
-
-/* top of the header */
-.donald {
-	background: $text;
-	color: $background;
-	text-align: center;
-	width: 100%; /* of the body */
-  @include set-font(3);
-
-	a { color: $background; }
-}
-
-/* all content is contained in the page */
-.page {
-	height: auto;
-	margin: 0 auto;
-	width: $page-width;
-}
-
-/* there are four of these in a row in the top NAV */
-.context {
-	float: left;
-	margin: 7px 2% 0 2%;
-	width: 21%;  /* of the page */
-}
-
-.below-article {
-	background: darken($background, 2%);
-	border-radius: 8px;
-	border: thin dotted lighten($text, 50%);
-	margin-top: 30px;
-	padding: 0px 10px 0px 10px;
-
-	p, h1 {
-		margin: 10px 0px 10px 0px;
-	}
-}
-
-/* the title of the selected item */
-.article-title {
-	margin: 40px 0 20px 0;
-	text-align: center;
-  @include set-font(3);
-  font-weight: normal;
-}
-
-/* info such as date, author, tags, etc. */
-.article-metadata {
-	color: lighten($text, 30%);
-	font-style: oblique;
-}
-
-/* generic - anything that's been selected */
-.selected {	
-	color: $selected;
-	font-weight: bold;
-}
-
-.half-left {
-	float:left;
-	width: 48%;
-}
-
-.center { text-align: center; }
-.left { float: left; }
-.oblique { font-style: oblique; }
-.pad-right { padding-right: 20px; }
-.right { float: right; }
-
-/* just here to fix any floatin' */
-.clf { clear: both; }
+.noprint { display: none; }

@@ -1,4 +1,5 @@
-highlighter: true
+highlighter: rouge
+theme: null
 safe: true
 url: http://donaldmerand.com
 exclude: ["CNAME", "README.md"]

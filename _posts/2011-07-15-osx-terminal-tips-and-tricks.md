@@ -9,24 +9,28 @@ These are some shortcuts and programs that make my life easier in the terminal o
 
 
 # TERMINAL
+
 `CTRL-V` then any character  
 - will allow you to type special characters eg. tab in the terminal
 
 `CTRL-X-E`  
-- open Vim (actually whatever's stored in $EDITOR) with whatever's on the command line
+- open Vim (actually whatever's stored in \$EDITOR) with whatever's on the command line
 
 
 # BASH
+
 - `$?` = last error
 - `$#` = # of commands passed to a script
 - `$@` = all commands passed to a script
 
-`filename=$(basename $fullfile)`  
+    `filename=$(basename $fullfile)`  
+
 - alternately, `filename=${fullfile##*/}`
 
-`filename_no_final_extension=${filename%.*}`
+`filename_no_final_extension=${filename\%.*}`
  
-`extension=${filename##*.}`  
+`extension=${filename##*.}`
+
 - alternately, `extension=${filename/*.}`
 
 
@@ -79,7 +83,7 @@ These are some shortcuts and programs that make my life easier in the terminal o
 - remove all .zip files on the computer, larger than 100M, interactively
 
 `ruby -ne 'puts $_'`  
-- takes standard input, runs with $_ being current line until end-of-file (CTRL-D) character
+- takes standard input, runs with \$_ being current line until end-of-file (CTRL-D) character
 
 `syslog | grep -i "error"`  
 - dump the entire system log file, check for errors

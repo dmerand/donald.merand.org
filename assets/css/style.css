@@ -12,7 +12,8 @@ code {
 .donald {
   color: #464443; }
 
-.noprint {
-  display: none; }
+@media print {
+  .noprint {
+    display: none; } }
 
 /*# sourceMappingURL=style.css.map */

@@ -16,30 +16,31 @@ Parsing a CSV file is a pain in the ass. There are at least four different imple
 There aren't a lot of great utilities out there for working with TSV files, so I'm going to post a couple that I use all the time.
 
 
-TSVFMT
-======
+# TSVFMT
+
 _A Spreadsheet for Your Command Line_
 
-I wrote this BASH script, which I've named `tsvfmt`, to address the problem of alignment when viewing TSV files in the command line or a text editor. It takes a TSV and uses awk to space it out and place a "|" character between columns. So this:
+I wrote this BASH script, which I've named `tsvfmt`, to address the problem of alignment when viewing TSV files in the command line or a text editor. It takes a TSV and uses awk to space it out and place a "\|" character between columns. So this:
 
     this	is	a	test
+{: .mv3 }
 
 ... would become this:
 
     this | is | a | test | 
+{: .mv3 }
 
 Here's the script:
 
 <script src="https://gist.github.com/2577157.js"> </script>
 
 
-TSV2HTML
-========
+# TSV2HTML
+
 _Convert a TSV File to an HTML Snippet_
 
 This one is a little more self-explanatory. Pass it a TSV file, either from STDIN or piped over, and it'll convert it to an HTML table. Best used in conjunction with [bcat](http://rtomayko.github.com/bcat/), which is _awesome_.
 
 <script src="https://gist.github.com/2577179.js"> </script>
-
 
 *UPDATE* (2012.05.02 10:58:18) - both of the above files are now available as part of the [dlm-dot-bin](https://github.com/dmerand/dlm-dot-bin) project that I've shared on GitHub.

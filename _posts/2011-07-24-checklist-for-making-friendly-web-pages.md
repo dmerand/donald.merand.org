@@ -15,7 +15,7 @@ Having said all of that, there are some things you can do as a web programmer th
 
 To spare myself (and maybe you) from having to remember all of those things when making my next site, I made a list. So here you go...
 
-#Checklist for Making Friendly Web Pages
+# Checklist for Making Friendly Web Pages
 
 1. HTML4 should be validated by the [W3C HTML Validator](http://validator.w3.org/)
 	- Don't bother with a <!DOCTYPE> of anything XHTML unless you're actually going to modify your headers to send a MIME type of `application/xhtml+xml`. As it turns out, if you send a regular `text/html` MIME-type, your page [isn't being parsed as XML at all](http://diveintohtml5.org/past.html#xhtml)

@@ -11,14 +11,14 @@ layout: default
       </div>
     {% endunless %}
 	</header>
-  <div class="measure-wide lh-solid">{{ content }}</div>
+  <div class="measure-wide lh-title">{{ content }}</div>
 </article>
 
 <div id="related" class="noprint mt4">
   <h2>Related Posts</h2>
-  <ul class="list pa0">
+  <ul class="list pa0 ma0">
     {% for post in site.related_posts limit:5 %}
-      <li><a href="{{ post.url }}">{{ post.title }}</a></li>
+      <li class="mv0"><a href="{{ post.url }}">{{ post.title }}</a></li>
     {% endfor %}
   </ul>
 </div>

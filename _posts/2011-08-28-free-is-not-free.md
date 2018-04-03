@@ -43,7 +43,8 @@ Northeastern males between 24 and 35? We'll give 'em to you on a platter".
 
 Let it sink in for a moment: 
 
-	You're not a customer, you're a product.
+> I am not a customer, I am a product.
+{: .ma3 .i }
 
 Which gets me back to my original point: why are you just giving your
 information away? You should guard it ferociously. You're not getting something 

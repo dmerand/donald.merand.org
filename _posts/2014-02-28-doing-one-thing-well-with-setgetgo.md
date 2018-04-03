@@ -7,7 +7,8 @@ tags: setgetgo code web cli
 
 The [UNIX philosophy](https://en.wikipedia.org/wiki/Unix_philosophy#McIlroy:_A_Quarter_Century_of_Unix) has been a real guiding force in my work with computers:
 
-    Write programs that do one thing and do it well. Write programs to work together.
+>Write programs that do one thing and do it well. Write programs to work together.
+{: .mv3 .ml3 .i .gray }
     
 I may have [alluded](http://donaldmerand.com/code/2011/09/20/tsv-the-best-spreadsheet-format.html) to this [before](http://donaldmerand.com/code/2012/07/20/how-i-actually-convert-dokuwiki-to-latex.html) without ever explicitly stating it, but the designers of UNIX really had it right. The best programs are the ones that stick to a limited problem domain, but *really nail it* within that domain. The worst programs (Microsoft Word comes to mind) try to branch out and solve every problem for everybody, and end up getting in the way of everybody's workflow with all of their options. In UNIX, you chain simple programs together and they give you immense power.
 

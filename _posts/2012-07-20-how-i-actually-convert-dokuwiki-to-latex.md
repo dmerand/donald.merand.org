@@ -1,6 +1,6 @@
 ---
 layout: post
-title: How I Actually Convert Dokuwiki to LaTeX (and Other Formats Too!)
+title: How I Actually Convert Dokuwiki to LaTeX
 category: code
 ---
 

@@ -1,0 +1,67 @@
+==================================================================
+https://keybase.io/donaldmerand
+--------------------------------------------------------------------
+
+I hereby claim:
+
+* I am an admin of https://donaldmerand.com
+* I am donaldmerand (https://keybase.io/donaldmerand) on keybase.
+* I have a public key with fingerprint 78D3 1A32 50CC 3479 1DA5  365E 3C62 4C48 9615 08BB
+
+To do so, I am signing this object:
+
+{
+"body": {
+"key": {
+"eldest_kid": "0101346f01337f35ac34aad492c438080ff8e77f7ed724fd92c24b1bdf97ce7d31020a",
+"fingerprint": "78d31a3250cc34791da5365e3c624c48961508bb",
+"host": "keybase.io",
+"key_id": "3c624c48961508bb",
+"kid": "0101346f01337f35ac34aad492c438080ff8e77f7ed724fd92c24b1bdf97ce7d31020a",
+"uid": "517a474a8393a6f03ad4776dccc71319",
+"username": "donaldmerand"
+},
+"service": {
+"hostname": "donaldmerand.com",
+"protocol": "https:"
+},
+"type": "web_service_binding",
+"version": 1
+},
+"ctime": 1566050682,
+"expire_in": 157680000,
+"prev": "03064c538cb749146cda4613d6abb2070bc8a54e1510c13a851cf018100ec109",
+"seqno": 3,
+"tag": "signature"
+}
+
+which yields the signature:
+
+-----BEGIN PGP MESSAGE-----
+Comment: GPGTools - http://gpgtools.org
+
+owGtkmtsDUEUx29Vo+pZoRKp10qlmqZmdmZ39l5ChIog0Yi3cs3OzLYbvbvr7rZa
+9UwIJaIaGglSkkqISBvBB0IQj4QrnkG84hFNJd7ikVDMNnzz0XyYyZzzP7/5n5Op
+75UeyUwba06f0jgg81Ta1VdmZNG87utqFdPlNUqsVlkqOg9RwYUfxJfaXIkpAAKI
+sG7JHRELaZQhTCnHUZVhZAADWJYhCLGI4ETFFpdxFZvQ5FaUMEE4gkAFVClULNsp
+E0kvaTuBxBJDZihSNcAkkEQhpxrSNYGYrmKGjagONWCYpiwsd/2wQpozqS+KbFfG
+5CXeae8f+v/su7ITp0FCMcHUQFFEJRVJFCE6Z4wRiGA0FPoi6dCEkGruOrSCJ0SS
+OlxZVajITJXNRDjcsJt/qIqYm5AML+kGLnMrZLY8CDw/FlYHNV4oXy7M+B9Q3LQd
+LucpK6pE0rddR4lBqWSBHZKhputAA7qhFiqi2rOTIm6HCo3oBpArfEdUKbElCkBA
+x0xDBjMJjkKsM06xDhHXqWmqgACTGVTDAmoQMIiooUEmR2pAAASDIGzbF8scV4kh
+6ZOWSZu+XebQoDIplFVZdWmoayQtMzI4Z3jX6tuD1JIUrhl8QF/89w9mdAk/YCSr
+e9+/kaaCbj8LirZsZs478GSo3/Hg4Ov9T3do+e/772ptvnS8Z8uac+u31h8u7ufU
+Z+8Us+bUlXaU5lafzMi51WfhpeLvN3/1vmyNyfZibS+e7xnQuKvArmr69XLctusb
+7+2YmDpd0uWi8Y08HPi21jCPnh+Z1zzSS92fVHzj2Z0zePSVHhe/pn9aWd46Nfi+
+e0Tis+t9OVR7qPHFtcStjAsXWrJTo6wOnOP9HLopVXniUemruQ2Vx5vHp+dZ6pvR
+Dfnz8u3HQyL8/IS1ezvaG7JA+7DGYwtyP2xxP67Y2dbU1rp9+eqZ0x+uLJmWfePI
+DL9lzba8uty7y762z+41Y8S3+Y9/bPhhzTr7dt/k+y/3/gY=
+=Dt6+
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/donaldmerand
+
+==================================================================

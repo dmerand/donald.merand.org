@@ -7,7 +7,7 @@ tags: recipe pancakes
 
 When you make sourdough starter, you have to "feed" it periodically, which involves throwing a fair portion of the starter out. Don't throw it away - use it to make pancakes! Or muffins. I'll post some muffins later.
 
-I used [this method](http://www.breadtopia.com/whole-grain-sourdough/) to create my starter, and it worked quite well!
+I used [this method](https://www.breadtopia.com/whole-grain-sourdough/) to create my starter, and it worked quite well!
 
 # Ingredients
 

@@ -78,6 +78,6 @@ I wouldn't have come to this place without getting that one junky, beaten-up
 road bicycle that had been sitting in a garage for years. It's just a thing, but
 for me it became much more, and now I'm a better person for having had it.
 
-[sb]: http://www.sheldonbrown.org "Sheldon Brown - Everything about bikes"
-[harris]: http://harriscyclery.com "Harris Cyclery" 
-[rivendell]: http://rivbike.com "Rivendell Bicycles"
+[sb]: https://www.sheldonbrown.org "Sheldon Brown - Everything about bikes"
+[harris]: https://harriscyclery.com "Harris Cyclery" 
+[rivendell]: https://rivbike.com "Rivendell Bicycles"

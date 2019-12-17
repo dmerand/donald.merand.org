@@ -7,7 +7,7 @@ tags: code credits php
 
 **UPDATE** 2012.05.02 11:40:21 - If you want to download the source that I'm talking about below, visit my [blogulator](https://github.com/dmerand/blogulator) project on GitHub.  
 
-_Note - Since writing this article, I've decided to migrate my page to being hosted on [GitHub](http://github.com/dmerand) using [jekyll](https://github.com/mojombo/jekyll). Sooo, it's all basically out-of-date. Still, the PHP code was a fun exercise, and a lot of the points are still valid._
+_Note - Since writing this article, I've decided to migrate my page to being hosted on [GitHub](https://github.com/dmerand) using [jekyll](https://github.com/mojombo/jekyll). Sooo, it's all basically out-of-date. Still, the PHP code was a fun exercise, and a lot of the points are still valid._
 
 
 # About This Site
@@ -19,7 +19,7 @@ When designing this site, I envisioned it as a blog/pulpit,résume, and code/ide
 
 I've gone back and forth for a long time about whether it's even worth having a web site. The reason I quit Friendster and MySpace and never even joined Facebook is because of the self-referential black hole having an online presence can be. You can get really tied up in an identity that's not you, it's just self-marketing.
 
-But on the other hand, self-marketing can be a good thing if, for instance, you _are_ your own brand because you work for yourself. Also, I want to be able to share the cool things I learn like [how to convert DokuWiki to LaTeX](http://donaldmerand.com/Code/2011/07/18/dokuwiki-to-latex-converter.html) and [the album I wrote and recorded in six weeks](http://donaldmerand.com/Projects/2011/08/16/album-exploration-slideshow.html). Maybe somebody can find my code useful, or get some enjoyment out of an album or drawing or photo I made.
+But on the other hand, self-marketing can be a good thing if, for instance, you _are_ your own brand because you work for yourself. Also, I want to be able to share the cool things I learn like [how to convert DokuWiki to LaTeX](https://donaldmerand.com/Code/2011/07/18/dokuwiki-to-latex-converter.html) and [the album I wrote and recorded in six weeks](https://donaldmerand.com/Projects/2011/08/16/album-exploration-slideshow.html). Maybe somebody can find my code useful, or get some enjoyment out of an album or drawing or photo I made.
 
 
 #	The Idea
@@ -31,20 +31,20 @@ While the concept of having my entire web page be a big fat BASH script is appea
 
 #	The Execution
 
-The articles themselves are stored as plain-text files on the webserver. The text files are written using the [markdown](http://daringfireball.net/projects/markdown/) syntax, with a slight modification that allows me to tag files arbitrarily. Have I mentioned how awesome Markdown is? I converted all of my notes a year or so back, and now I can use [pandoc](http://johnmacfarlane.net/pandoc/) to convert my notes to any format under the sun! PDF, you got it. LaTeX, no problem. Textile (for BaseCamp)? Okay! But I digress...
+The articles themselves are stored as plain-text files on the webserver. The text files are written using the [markdown](https://daringfireball.net/projects/markdown/) syntax, with a slight modification that allows me to tag files arbitrarily. Have I mentioned how awesome Markdown is? I converted all of my notes a year or so back, and now I can use [pandoc](https://johnmacfarlane.net/pandoc/) to convert my notes to any format under the sun! PDF, you got it. LaTeX, no problem. Textile (for BaseCamp)? Okay! But I digress...
 
 I keep a single text-based cache of all of text files under content management. Using a cache, iterating through things like titles and tags doesn't rely on a filesystem traversal of the whole document tree. Article files are stored and referenced using the timestamp of their creation. Uploaded content for articles (such as MP3s, images, etc) all get stored in a directory named after the file timestamp. Effectively the creation timestamp is the article ID. This system would work for content management for anybody except people who might have content being simultaneously submitted by multiple users at the exact same time: a pretty rare case in my usage.
 
-I wrote [an article](http://donaldmerand.com/code/2011/07/24/checklist-for-making-friendly-web-pages.html) about the kinds of things I have come to think friendly web sites should do. Here's how I do those things:
+I wrote [an article](https://donaldmerand.com/code/2011/07/24/checklist-for-making-friendly-web-pages.html) about the kinds of things I have come to think friendly web sites should do. Here's how I do those things:
 
 
 #	Clean URLs
 
-Since I'm using Apache as the webserver for this site, I've been able to use .htaccess re-writes to modify the URLs from a basic HTML post-based URL system. You might notice that when viewing an article you might see a URL such as `http://donaldmerand.com/view/1313497556`, instead of `http://donaldmerand.com/view.php?id=1313497556`. 
+Since I'm using Apache as the webserver for this site, I've been able to use .htaccess re-writes to modify the URLs from a basic HTML post-based URL system. You might notice that when viewing an article you might see a URL such as `https://donaldmerand.com/view/1313497556`, instead of `https://donaldmerand.com/view.php?id=1313497556`. 
 
 People tell you a lot of reasons why you should have clean URLs. The Rails community will go on and on about RESTfulness, which is a lofty if confusing goal. You'll hear about search engines who spit on your doorstep after seeing your ugly question marks in the URLs (a question mark in a URL is like a rusty car on blocks in the front yard ). But my reason for doing clean URLs is aesthetics. I don't like ugly URLs because they look ugly. So that had to go.
 
-I can tell you that writing them by hand can be painful unless you're up on your regular expressions. But then, you should be up on your regular expressions because using them properly makes you feel like a wizard. I learned from the book [Sed and Awk](http://shop.oreilly.com/product/9781565922259.do), which I heartily recommend for any UNIX user.
+I can tell you that writing them by hand can be painful unless you're up on your regular expressions. But then, you should be up on your regular expressions because using them properly makes you feel like a wizard. I learned from the book [Sed and Awk](https://shop.oreilly.com/product/9781565922259.do), which I heartily recommend for any UNIX user.
 
 
 #	Search
@@ -81,9 +81,9 @@ This site uses:
 
 - [Hashify Editor](https://bitbucket.org/davidchambers/hashify-editor) for editing and previewing page content.
 
-    - You should check out [Hashify](http://hashify.me) for a great online Markdown previewer/editor.
+    - You should check out [Hashify](https://hashify.me) for a great online Markdown previewer/editor.
 
-- [File Uploader](http://github.com/valums/file-uploader) for uploading files.
+- [File Uploader](https://github.com/valums/file-uploader) for uploading files.
 - [Prettify](https://code.google.com/p/google-code-prettify/) for syntax highlighting of code snippets.
 
 The rest was all me. Thanks for getting this far!

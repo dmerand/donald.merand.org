@@ -5,7 +5,7 @@ category: code
 tags: TSV BASH awk  
 ---
 
-There's no question that [Markdown](http://daringfireball.net/projects/markdown/) is the darling of the coding/internet/people who write communities. It's the default syntax at [GitHub](https://github.com/), [Stack Overflow](http://stackoverflow.com/), [Reddit](http://reddit.com) and others. A [lot](http://markedapp.com/) of [popular](http://brettterpstra.com/project/nvalt/) [text](http://itunes.apple.com/us/app/elements-dropbox-and-markdown/id382752422?mt=8) [editors](http://sourceforge.net/p/retext/home/ReText/) are built around it.
+There's no question that [Markdown](https://daringfireball.net/projects/markdown/) is the darling of the coding/internet/people who write communities. It's the default syntax at [GitHub](https://github.com/), [Stack Overflow](http://stackoverflow.com/), [Reddit](http://reddit.com) and others. A [lot](http://markedapp.com/) of [popular](http://brettterpstra.com/project/nvalt/) [text](http://itunes.apple.com/us/app/elements-dropbox-and-markdown/id382752422?mt=8) [editors](http://sourceforge.net/p/retext/home/ReText/) are built around it.
 
 Markdown's appeal is its simplicity. It is easy to learn, and easy to read even in native form. It's easy to extend: the pages on this site, for example, are written in a Markdown variant -- something I'll write more about later.
 
@@ -39,7 +39,7 @@ Here's the script:
 
 _Convert a TSV File to an HTML Snippet_
 
-This one is a little more self-explanatory. Pass it a TSV file, either from STDIN or piped over, and it'll convert it to an HTML table. Best used in conjunction with [bcat](http://rtomayko.github.com/bcat/), which is _awesome_.
+This one is a little more self-explanatory. Pass it a TSV file, either from STDIN or piped over, and it'll convert it to an HTML table. Best used in conjunction with [bcat](https://rtomayko.github.com/bcat/), which is _awesome_.
 
 <script src="https://gist.github.com/2577179.js"> </script>
 

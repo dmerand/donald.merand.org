@@ -12,7 +12,7 @@ I'm making the songs available for download here – you can't do that over on t
 Latif Learned - The Big Finish
 ------------------------------
 
-Download the entire album as a compressed ZIP archive [here](http://embed.donaldmerand.com/ll/ll-the-big-finish.zip)
+Download the entire album as a compressed ZIP archive [here](http://embed.merand.org/ll/ll-the-big-finish.zip)
 
 - Why Ought I To
 - No Cause for Alarm

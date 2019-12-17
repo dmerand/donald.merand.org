@@ -66,7 +66,7 @@ These are some shortcuts and programs that make my life easier in the terminal o
 
 # RESOURCES
 
-- Good sort examples: <http://www.cyberciti.biz/faq/linux-unix-sort-date-data-using-sortcommand/>
-- Good find examples: <http://www.thegeekstuff.com/2009/03/15-practical-linux-find-command-examples/>
-- BASH Scripting guide: <http://tldp.org/LDP/abs/html/>
-- OSX Server Command Line: <http://www.scribd.com/doc/15339783/Command-Line>
+- Good sort examples: <https://www.cyberciti.biz/faq/linux-unix-sort-date-data-using-sortcommand/>
+- Good find examples: <https://www.thegeekstuff.com/2009/03/15-practical-linux-find-command-examples/>
+- BASH Scripting guide: <https://tldp.org/LDP/abs/html/>
+- OSX Server Command Line: <https://www.scribd.com/doc/15339783/Command-Line>

@@ -9,8 +9,19 @@ code {
   color: #777777;
   font-size: 1rem; }
 
-.donald {
-  color: #464443; }
+h1 {
+  margin-top: 2rem;
+  margin-bottom: .5rem; }
+
+h2 {
+  margin-top: 1rem;
+  margin-bottom: .25rem; }
+
+li {
+  margin-top: .5rem; }
+
+ul, ol {
+  padding-left: 1.5rem; }
 
 @media print {
   .noprint {

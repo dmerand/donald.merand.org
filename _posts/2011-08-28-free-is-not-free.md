@@ -35,7 +35,7 @@ invite them to a party. Or, you know, to let potentially good-looking strangers
 know how deeply you love Bon Iver.
 
 If you have any doubt about the point of Google, Facebook, Vogue, whatever, take a
-look at the latest [Advertising Age](http://adage.com). It's best to get a print
+look at the latest [Advertising Age](https://adage.com). It's best to get a print
 copy, because then you can see the ads. Yes, there are advertisements in a
 magazine about advertisements. Who's doing the advertising? Mostly magazines.
 Cond&eacute; Nast, for example. And they say things like "You want to market to

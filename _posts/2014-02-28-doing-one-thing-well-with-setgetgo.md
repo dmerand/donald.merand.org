@@ -5,6 +5,10 @@ category: code
 tags: setgetgo code web cli
 ---
 
+**UPDATE (2020.01.26)**: SetGetGo has been defunct for a while now. I really liked their random word generator though, so I [made a Ruby Gem](https://github.com/exploration/markov_words/) to generate English-sounding words, and then [an Elm app](https://lab.explo.org/password) to generate passwords with them.
+
+---
+
 The [UNIX philosophy](https://en.wikipedia.org/wiki/Unix_philosophy#McIlroy:_A_Quarter_Century_of_Unix) has been a real guiding force in my work with computers:
 
 >Write programs that do one thing and do it well. Write programs to work together.

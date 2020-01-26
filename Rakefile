@@ -9,7 +9,7 @@ task :default => "watch:all"
 namespace :sync do
   desc "send to donald.merand.org"
   task :push => [:tachyons, :'compile:all'] do
-    system 'rsync -avzI _site/ dlm:public_html/donald.merand.org/'
+    system 'rsync -avzI _site/ donaldmerand:public_html/donald.merand.org/'
   end
 
   desc "get Tachyons"

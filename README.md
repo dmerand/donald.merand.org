@@ -1,7 +1,7 @@
 Site Source - Donald L. Merand
 ==============================
 
-I decided to convert to [jekyll](http://github.com/mojombo/jekyll) and host on [github](http://github.com/dmerand).
+I decided to convert to [jekyll](https://github.com/mojombo/jekyll) and self-host at [Pair Networks](https://pair.com).
 
 
 License

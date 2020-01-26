@@ -20,13 +20,32 @@
 
     <footer class="mt4 f6">
       <div>
-        <script type="text/javascript">
-          <!--
-          h='&#x67;&#x6d;&#x61;&#x69;&#108;&#46;&#x63;&#x6f;&#x6d;';a='&#64;';n='&#100;&#x6d;&#x65;&#114;&#x61;&#110;&#100;';e=n+a+h;
-          document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
-          // -->
-        </script><noscript>&#100;&#x6d;&#x65;&#114;&#x61;&#110;&#100;&#32;&#x61;&#116;&#32;&#x67;&#x6d;&#x61;&#x69;&#108;&#32;&#100;&#x6f;&#116;&#32;&#x63;&#x6f;&#x6d;</noscript>
-       | <a href="/atom.xml">[rss feed]</a>
+        <script type="text/javascript" language="javascript">
+        <!--
+        // Email obfuscator script 2.1 by Tim Williams, University of Arizona
+        // Random encryption key feature coded by Andrew Moulden
+        // This code is freeware provided these four comment lines remain intact
+        // A wizard to generate this code is at http://www.jottings.com/obfuscator/
+        { 
+          coded = "iqMXzi@RveXMi.qeS"
+          key = "wV1gyfxlBCKrj4F7LacZSoJEzsIbe568umXPGdqnUhtpHvk9D2ROYAiTMW03QN"
+          shift=coded.length
+          link=""
+          for (i=0; i<coded.length; i++) {
+            if (key.indexOf(coded.charAt(i))==-1) {
+              ltr = coded.charAt(i)
+              link += (ltr)
+            }
+            else {     
+              ltr = (key.indexOf(coded.charAt(i))-shift+key.length) % key.length
+              link += (key.charAt(ltr))
+            }
+          }
+          document.write("<a href='mailto:"+link+"'>"+link+"</a>")
+        }
+        //-->
+        </script>
+        | <a href="/atom.xml">[rss feed]</a>
       </div>
       <div>Copyright Donald L. Merand (unless otherwise specified).</div>
     </footer>

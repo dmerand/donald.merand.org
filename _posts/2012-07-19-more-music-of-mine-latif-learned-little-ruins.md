@@ -31,4 +31,4 @@ License
 -------
 
 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US"><img alt="Creative Commons License" src="https://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png" class="left pad-right"></a>
-Little Ruins by <a xmlns:cc="https://creativecommons.org/ns#" href="https://donaldmerand.com" property="cc:attributionName" rel="cc:attributionURL">Donald Merand</a> is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.
+Little Ruins by <a xmlns:cc="https://creativecommons.org/ns#" href="https://donald.merand.org/a> is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.

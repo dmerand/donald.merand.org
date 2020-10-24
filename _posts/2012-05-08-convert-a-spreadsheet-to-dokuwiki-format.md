@@ -4,7 +4,7 @@ title: How to Convert a Spreadsheet Into a DokuWiki Table
 category: code
 ---
 
-Remember [that article I wrote](https://donaldmerand.com/code/2011/09/20/tsv-the-best-spreadsheet-format.html) about how TSV is the best format for spreadsheets? Well, here's some more proof:
+Remember [that article I wrote](https://donald.merand.org/code/2011/09/20/tsv-the-best-spreadsheet-format.html) about how TSV is the best format for spreadsheets? Well, here's some more proof:
 
 Earlier today I needed to convert a spreadsheet in XLS format into a table in DokuWiki. I've been avoiding using tables in DokuWiki until now because I find that typing table markup by hand is error-prone and frustrating. But I had to for this job, so I went to review the [DokuWiki syntax for tables](https://www.dokuwiki.org/syntax#tables), and what I saw seemed... familiar to me. It looked exactly like the output from my [tsvfmt](https://github.com/dmerand/dlm-dot-bin/blob/master/tsvfmt) command line utility!
 

@@ -78,7 +78,7 @@ Download the entire EP as one compressed ZIP file [here](https://embed.merand.or
 
 Listen/download [here](https://embed.merand.org/1342054678/see-want-like-need.mp3)
 
-This is a re-make of a song that originally appeared on [Exploration Slideshow](https://donaldmerand.com/projects/2011/08/16/album-exploration-slideshow.html), except with more electric guitars and the vocals forward instead of backward.
+This is a re-make of a song that originally appeared on [Exploration Slideshow](https://donald.merand.org/projects/2011/08/16/album-exploration-slideshow.html), except with more electric guitars and the vocals forward instead of backward.
 
 
 ## For Sara
@@ -114,4 +114,4 @@ An anysayer is the opposite of a naysayer. Get it?
 ---
 
 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US"><img alt="Creative Commons License" src="https://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png" class="left pad-right"></a>
-The "Conversations" and "Demo" EPs by <a xmlns:cc="https://creativecommons.org/ns#" href="https://donaldmerand.com" property="cc:attributionName" rel="cc:attributionURL">Donald Merand</a> are licensed under a <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.
+The "Conversations" and "Demo" EPs by <a xmlns:cc="https://creativecommons.org/ns#" href="https://donald.merand.org/a> are licensed under a <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.

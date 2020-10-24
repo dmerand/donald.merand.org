@@ -36,9 +36,9 @@ Summary
 I am very pleased with [Jekyll]. It is conceptually very simple, which lets me focus on what I should be doing: writing content. Removing features, even ones that I thought were necessary like search, has actually made this site better. In a world where there are almost no constraints on what you _can_ do, working within constrained environments can force you to do better work.
 
 [jekyll]: https://github.com/mojombo/jekyll "Jekyll: Static Site Generator written in Ruby"
-[dlm_site]: http://donaldmerand.com/code/2012/02/29/about-this-site.html
+[dlm_site]: http://donald.merand.org/code/2012/02/29/about-this-site.html
 [markdown]: http://daringfireball.net/projects/markdown/ "Markdown: Text markup for people"
-[dlm_believe]: http://donaldmerand.com/code/2011/09/20/tsv-the-best-spreadsheet-format.html
+[dlm_believe]: http://donald.merand.org/code/2011/09/20/tsv-the-best-spreadsheet-format.html
 [md_am]: http://512pixels.net/markdown-new-word51/
 [md_not]: http://scienceblogs.com/gregladen/2010/02/what_is_markdown_and_why_use_i.php
 [md_alone]: http://www.hiltmon.com/blog/2012/02/20/the-markdown-mindset/

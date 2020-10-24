@@ -11,7 +11,7 @@ layout: null
  <id>{{ site.url }}</id>
  <author>
    <name>Donald L. Merand</name>
-   <email>dlm@donaldmerand.com</email>
+   <email>donald@merand.org</email>
  </author>
 
  {% for post in site.posts %}

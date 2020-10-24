@@ -5,7 +5,7 @@ category: code
 tags: dokuwiki latex cli  
 ---
 
-**NOTE: ** See my [updated post](https://donaldmerand.com/code/2012/07/20/how-i-actually-convert-dokuwiki-to-latex.html) on how I actually convert [dokuwiki] formats these days.
+**NOTE: ** See my [updated post](https://donald.merand.org/code/2012/07/20/how-i-actually-convert-dokuwiki-to-latex.html) on how I actually convert [dokuwiki] formats these days.
 
 Up until recently I was taking all of my personal notes in [dokuwiki] format, because that's what we use at my job for our internal wiki. It's convenient to be able to copy notes straight into the wiki without having to convert. 
 

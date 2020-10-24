@@ -19,7 +19,7 @@ When designing this site, I envisioned it as a blog/pulpit,résume, and code/ide
 
 I've gone back and forth for a long time about whether it's even worth having a web site. The reason I quit Friendster and MySpace and never even joined Facebook is because of the self-referential black hole having an online presence can be. You can get really tied up in an identity that's not you, it's just self-marketing.
 
-But on the other hand, self-marketing can be a good thing if, for instance, you _are_ your own brand because you work for yourself. Also, I want to be able to share the cool things I learn like [how to convert DokuWiki to LaTeX](https://donaldmerand.com/Code/2011/07/18/dokuwiki-to-latex-converter.html) and [the album I wrote and recorded in six weeks](https://donaldmerand.com/Projects/2011/08/16/album-exploration-slideshow.html). Maybe somebody can find my code useful, or get some enjoyment out of an album or drawing or photo I made.
+But on the other hand, self-marketing can be a good thing if, for instance, you _are_ your own brand because you work for yourself. Also, I want to be able to share the cool things I learn like [how to convert DokuWiki to LaTeX](https://donald.merand.org/Code/2011/07/18/dokuwiki-to-latex-converter.html) and [the album I wrote and recorded in six weeks](https://donald.merand.org/Projects/2011/08/16/album-exploration-slideshow.html). Maybe somebody can find my code useful, or get some enjoyment out of an album or drawing or photo I made.
 
 
 #	The Idea
@@ -35,12 +35,12 @@ The articles themselves are stored as plain-text files on the webserver. The tex
 
 I keep a single text-based cache of all of text files under content management. Using a cache, iterating through things like titles and tags doesn't rely on a filesystem traversal of the whole document tree. Article files are stored and referenced using the timestamp of their creation. Uploaded content for articles (such as MP3s, images, etc) all get stored in a directory named after the file timestamp. Effectively the creation timestamp is the article ID. This system would work for content management for anybody except people who might have content being simultaneously submitted by multiple users at the exact same time: a pretty rare case in my usage.
 
-I wrote [an article](https://donaldmerand.com/code/2011/07/24/checklist-for-making-friendly-web-pages.html) about the kinds of things I have come to think friendly web sites should do. Here's how I do those things:
+I wrote [an article](https://donald.merand.org/code/2011/07/24/checklist-for-making-friendly-web-pages.html) about the kinds of things I have come to think friendly web sites should do. Here's how I do those things:
 
 
 #	Clean URLs
 
-Since I'm using Apache as the webserver for this site, I've been able to use .htaccess re-writes to modify the URLs from a basic HTML post-based URL system. You might notice that when viewing an article you might see a URL such as `https://donaldmerand.com/view/1313497556`, instead of `https://donaldmerand.com/view.php?id=1313497556`. 
+Since I'm using Apache as the webserver for this site, I've been able to use .htaccess re-writes to modify the URLs from a basic HTML post-based URL system. You might notice that when viewing an article you might see a URL such as `https://donald.merand.org/view/1313497556`, instead of `https://donald.merand.org/view.php?id=1313497556`. 
 
 People tell you a lot of reasons why you should have clean URLs. The Rails community will go on and on about RESTfulness, which is a lofty if confusing goal. You'll hear about search engines who spit on your doorstep after seeing your ugly question marks in the URLs (a question mark in a URL is like a rusty car on blocks in the front yard ). But my reason for doing clean URLs is aesthetics. I don't like ugly URLs because they look ugly. So that had to go.
 

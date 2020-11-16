@@ -6,7 +6,7 @@ category: portfolio
 tags: elixir airtable phoenix cms
 ---
 
-**tl;dr: If you use Elixir and like Airtable, check out a new library I wrote called [https://github.com/exploration/ex_airtable](ExAirtable).**
+**tl;dr: If you use Elixir and like Airtable, check out a new library I wrote called [ExAirtable](https://github.com/exploration/ex_airtable).**
 
 At [EXPLO](https://www.explo.org), we often reach for [Airtable](https://airtable.com) when we're trying out new ideas. We love it because it really reduces friction for putting together simple relational systems that are the backbone of knowledge work. We are also very happy with [Elixir](https://elixir-lang.org) and [Phoenix](https://www.phoenixframework.org) when it comes time to build apps for the web, which seems to happen more and more these days!
 
@@ -16,7 +16,7 @@ I've often wondered whether we could use Airtable as a content management back-e
 2. File-hosting and image auto-resizing! You just make a "file" field type and you can upload files right into your 'tables. Images get automatically scaled to a variety of sizes.
 3. API! Every project has the same API structure and the API is sane to use.
 
-We've used Ruby with Sinatra or Rails and the excellent [AirRecord ](https://github.com/Sirupsen/airrecord) library to do Airtable-based sites before. But for Elixir, the current set Airtable API libraries didn't seem to be in active development, and didn't have features like rate-limiting or caching. But it would be so cool if we had an Elixir library that would allow us to handle Airtable rate-limiting and caching as a single Elixir-native dependency! 
+We've used Ruby with Sinatra or Rails and the excellent [AirRecord ](https://github.com/Sirupsen/airrecord) library to do Airtable-based sites before. But for Elixir, the current Airtable API libraries didn't seem to be in active development, and didn't have features like rate-limiting or caching. But it would be so cool if we had an Elixir library that would allow us to handle Airtable rate-limiting and caching as a single Elixir-native dependency! 
 
 Meanwhile, Ricardo Garcia Vega wrote [this amazing article](https://dev.to/bigardone/headless-cms-fun-with-phoenix-liveview-and-airtable-pt-1-4anj) demonstrating the use of Elixir and Phoenix as a caching layer for Airtable for a content management system. This "native" Elixir solution was just the push I needed to fix Elixir's Airtable library problem.
 

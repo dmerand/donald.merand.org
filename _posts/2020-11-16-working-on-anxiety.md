@@ -29,7 +29,7 @@ allow the tension but don't stop breathing well. you might feel shaking. this is
 
 feel gravity pulling your muscles down. be aware of your entire body.
 
-allow vocalization to happen during breathing of you can. humming stimulates the vagas nerve.
+allow vocalization to happen during breathing if you can. humming stimulates the vagas nerve.
 
 take the time you need. five minutes helps, but an hour helps more.
 

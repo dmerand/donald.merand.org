@@ -23,9 +23,9 @@ be a comfortable temperature, for me that's extra warm. it's hard to be calm if 
 
 smiling can help to relax. it even works if you're alone.
 
-tension will enter your awareness. allow your body to do what it needs to - don't fight tension with active relaxation. 
+tension will enter your awareness. allow your body to do what it needs to - don't fight tension with active relaxation. instead keep breathing and see where the tension is guiding you - it's usually the opposite of where you are.
 
-allow the tension but don't stop breathing well. you might feel shaking. this is tension being released. 
+allow the tension but don't stop breathing well. you might feel shaking. this is muscles vibrating from over-fatigue. 
 
 feel gravity pulling your muscles down. be aware of your entire body.
 

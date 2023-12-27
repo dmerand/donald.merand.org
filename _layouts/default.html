@@ -8,35 +8,34 @@
   <title>{{ page.title}}</title>
   <link rel="alternate" type="application/atom+xml" title="Donald L. Merand" href="atom.xml">
   <link rel="shortcut icon" href="/favicon.ico">
-  <link rel="stylesheet" href="/assets/css/tachyons.min.css">
-  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/site.css">
 </head>
 
-<body class="pa3 pa4-ns pa5-l athelas f4 bg-near-white black">
-  <div class="donald"><a href="/index.html">Donald L. Merand</a></div>
-  <div class="page">
+<body class="p-4 md:p-14 text-xl bg-gray-100 text-black font-body">
+  <div class="text-2xl"><a href="/index.html">Donald L. Merand</a></div>
+  <div>
 
     {{ content }}
 
-    <footer class="mt5">
-      <div class="noprint flex-l mt3 mt0-l lh-solid lh-copy-l">
-        <div class="w4">_more_</div>
-        <div class="flex-ns mt1 mt0-l">
+    <footer class="mt-20">
+      <div class="noprint md:flex m3 mt-3">
+        <div class="w-36">_more_</div>
+        <div class="md:flex mt-1 lg:mt-0">
           <div>
-            <a href="https://floating-beyond-56119.herokuapp.com/" target="moments">Catalog of Moments</a>
-          </div>
-          <div class="ml3-ns">
             <a href="https://github.com/dmerand" target="github">Code</a>
           </div>
-          <div class="ml3-ns">
-            <a href="https://micro.blog/dlm" target="dlm">MicroBlog</a>
+          <div class="md:ml-5">
+            <a href="https://dl.merand.org" target="dlm">MicroBlog</a>
           </div>
-          <div class="ml3-ns">
+          <div class="md:ml-5">
+            <a href="https://pca.st/fux2igjj" target="dlm">Podcast</a>
+          </div>
+          <div class="md:ml-5">
             <a href="https://thingiverse.com/dmerand" target="things">Things</a>
           </div>
         </div>
       </div>
-      <div class="noprint mt3 f6">
+      <div class="noprint mt-6 text-sm">
         <script type="text/javascript" language="javascript">
         <!--
         // Email obfuscator script 2.1 by Tim Williams, University of Arizona
@@ -66,7 +65,7 @@
            | <a href="/atom.xml">[rss feed]</a>
         </span>
       </div>
-      <div class="mt1 f6">Copyright Donald L. Merand (unless otherwise specified).</div>
+      <div class="mt-1 text-sm">Copyright Donald L. Merand (unless otherwise specified).</div>
     </footer>
   </div><!-- page -->
 </body>

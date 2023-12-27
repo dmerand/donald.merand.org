@@ -1,31 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 a {
-  color: #137752; }
+  color: #137752; 
+}
 
 a:hover {
-  color: #19A974; }
+  color: #19A974; 
+}
 
-code {
-  color: #777777;
-  font-size: 1rem; }
+article {
+  @apply md:[width:60ch];
+  .gist {
+    @apply my-4;
+    @apply lg:[width:60rem];
+  }
+}
+
+pre {
+  @apply my-4;
+  @apply p-2;
+  @apply bg-white;
+  @apply text-sm;
+  @apply font-mono;
+}
 
 h1 {
-  font-size: 1.5rem;
-  margin-top: 3rem;
-  margin-bottom: .5rem; }
+  @apply text-2xl;
+  @apply mt-10;
+  @apply mb-1;
+}
 
 h2 {
-  font-size: 1.25rem;
-  margin-top: 2.25rem;
-  margin-bottom: .25rem; }
+  @apply text-3xl;
+  @apply mt-6;
+  @apply mb-1;
+}
 
 li {
-  margin-top: .5rem; }
+  @apply mt-1;
+  @apply list-disc;
+}
 
 ul, ol {
-  padding-left: 1.5rem; }
+  @apply m-4;
+}
+
+p {
+  @apply my-2;
+}
 
 @media print {
   .noprint {
-    display: none; } }
-
-/*# sourceMappingURL=style.css.map */
+    @apply hidden;
+  } 
+}

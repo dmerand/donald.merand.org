@@ -4,3 +4,4 @@ _site/
 node_modules/
 .DS_Store
 *.swp
+lib/unified-nps/backups/*.*

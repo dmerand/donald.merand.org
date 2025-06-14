@@ -1,0 +1,43 @@
+{
+  "name": "unified-nps",
+  "version": "1.0.0",
+  "description": "Guitar Scale Visualizer - Testable unified notes-per-string fretboard visualization",
+  "main": "src/widget.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src/ tests/ --ext .js",
+    "lint:fix": "eslint src/ tests/ --ext .js --fix",
+    "dev": "node tools/dev-server.js",
+    "build": "node tools/build.js",
+    "build:minify": "node tools/build.js --minify",
+    "deploy": "node tools/deploy.js",
+    "deploy:minify": "node tools/deploy.js --minify"
+  },
+  "keywords": [
+    "guitar",
+    "music",
+    "visualization",
+    "fretboard",
+    "scales"
+  ],
+  "author": "Donald Merand",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "jest": "^30.0.0",
+    "jsdom": "^26.1.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "src/core/**/*.js",
+      "!src/core/**/*.test.js"
+    ],
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ]
+  }
+}

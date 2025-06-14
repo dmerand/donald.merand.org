@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guitar Scale Visualizer - Development Preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        #instrument-visualizer {
+            max-width: 100%;
+        }
+
+        #fretboard-container {
+            border: 2px solid #333;
+            border-radius: 8px;
+            background: #fff;
+            padding: 20px;
+        }
+
+        .form-input-styled {
+            font-family: ui-sans-serif, system-ui, sans-serif !important;
+            font-size: 1rem !important;
+        }
+
+        .transparent-button {
+            background: transparent !important;
+            display: none !important;
+        }
+
+        .green-text-button {
+            color: #137752 !important;
+        }
+
+        .note {
+            cursor: pointer;
+        }
+
+        .note:hover {
+            opacity: 0.8;
+        }
+
+        .clickable-note {
+            transition: opacity 0.2s ease;
+        }
+
+        .clickable-note:hover {
+            opacity: 0.7;
+        }
+
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8">Unified Guitar Scale Visualizer</h1>
+        <p class="text-center text-gray-600 mb-8">Development Preview</p>
+        
+        <div id="instrument-visualizer" class="bg-white rounded-lg shadow-lg p-6 mt-8">
+            <div id="controls" class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6 pt-4">
+                <div>
+                    <label for="tuning-preset" class="block text-sm font-medium mb-2">Tuning:</label>
+                    <select id="tuning-preset" class="border border-gray-300 rounded px-3 py-2 w-full form-input-styled" style="font-size: 1rem; font-family: ui-sans-serif, system-ui, sans-serif;">
+                        <option value="perfect-fourths" selected>12-String Perfect 4ths</option>
+                        <option value="standard-guitar">6-String Guitar</option>
+                        <option value="bass-5-string">5-String Bass</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="selected-scale-degree" class="block text-sm font-medium mb-2">Selected Scale Degree:</label>
+                    <input type="number" id="selected-scale-degree" class="border border-gray-300 rounded px-3 py-2 w-full" 
+                           min="1" max="12" value="1" style="font-size: 1rem; font-family: ui-sans-serif, system-ui, sans-serif;">
+                </div>
+
+                <div>
+                    <label for="notes-per-string" class="block text-sm font-medium mb-2">Notes per String: <span id="nps-value">3</span></label>
+                    <input type="range" id="notes-per-string" class="w-full" min="1" max="12" value="3">
+                </div>
+
+                <div class="md:col-span-2">
+                    <label for="scale-intervals" class="block text-sm font-medium mb-2">Scale Intervals:</label>
+                    <input type="text" id="scale-intervals" class="border border-gray-300 rounded px-3 py-2 w-full" 
+                           value="2,2,1,2,2,2,1" placeholder="Comma-separated intervals (e.g., 2,2,1,2,2,2,1)" style="font-size: 1rem; font-family: ui-sans-serif, system-ui, sans-serif;">
+                </div>
+
+                <div>
+                    <label for="scale-title" class="block text-sm font-medium mb-2">Scale Title:</label>
+                    <input type="text" id="scale-title" class="border border-gray-300 rounded px-3 py-2 w-full" 
+                           value="Major Scale" placeholder="Custom scale name" style="font-size: 1rem; font-family: ui-sans-serif, system-ui, sans-serif;">
+                </div>
+
+                <div>
+                    <label for="scale-type" class="block text-sm font-medium mb-2">Select a scale:</label>
+                    <select id="scale-type" class="border border-gray-300 rounded px-3 py-2 w-full form-input-styled" style="font-size: 1rem; font-family: ui-sans-serif, system-ui, sans-serif;">
+                        <option value="major" selected>Major</option>
+                        <option value="natural-minor">Natural Minor</option>
+                        <option value="harmonic-minor">Harmonic Minor</option>
+                        <option value="melodic-minor">Melodic Minor</option>
+                        <option value="pentatonic">Pentatonic</option>
+                        <option value="whole-tone">Whole Tone</option>
+                        <option value="chromatic">Chromatic</option>
+                        <option value="blues">Blues</option>
+                        <option value="custom">Custom Scale</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="root-note" class="block text-sm font-medium mb-2">Root Note:</label>
+                    <select id="root-note" class="border border-gray-300 rounded px-3 py-2 w-full form-input-styled" style="font-size: 1rem; font-family: ui-sans-serif, system-ui, sans-serif;">
+                        <option value="C" selected>C</option>
+                        <option value="C#">C#</option>
+                        <option value="D">D</option>
+                        <option value="D#">D#</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="F#">F#</option>
+                        <option value="G">G</option>
+                        <option value="G#">G#</option>
+                        <option value="A">A</option>
+                        <option value="A#">A#</option>
+                        <option value="B">B</option>
+                    </select>
+                </div>
+
+                <div class="flex items-end gap-2">
+                    <button id="update-preset-button" class="text-2xl cursor-pointer px-3 py-2 hover:opacity-70 transition-opacity transparent-button"
+                            title="Update current preset"
+                            aria-label="Update current preset">
+                        💾
+                    </button>
+                    <button id="delete-preset-button" class="text-2xl cursor-pointer px-3 py-2 hover:opacity-70 transition-opacity transparent-button"
+                            title="Delete current preset"
+                            aria-label="Delete current preset">
+                        🗑️
+                    </button>
+                </div>
+            </div>
+
+            <div class="text-left mt-4">
+                <button id="save-preset-button" class="text-sm mr-4 cursor-pointer hover:opacity-70 transition-opacity green-text-button">
+                    Save as new preset
+                </button>
+                <button id="export-button" class="text-sm mr-4 cursor-pointer hover:opacity-70 transition-opacity green-text-button">
+                    Export Pattern
+                </button>
+                <label for="import-file" class="text-sm cursor-pointer hover:opacity-70 transition-opacity green-text-button">
+                    Import Pattern
+                </label>
+                <input type="file" id="import-file" accept=".json" style="display: none;">
+            </div>
+        </div>
+
+
+
+<div id="fretboard-container" class="relative overflow-x-auto mt-8 mb-4">
+    <button id="save-svg-button" class="absolute top-2 right-2 text-2xl hover:opacity-70 transition-opacity z-10" 
+            title="Save as SVG"
+            aria-label="Save as SVG">💾</button>
+    <svg id="fretboard" width="800" height="700" 
+         viewBox="0 0 800 700" 
+         xmlns="http://www.w3.org/2000/svg"
+         aria-label="Guitar fretboard visualization"></svg>
+</div>
+
+
+<div class="text-center text-xs text-gray-400 mt-6 pt-4 border-t border-gray-200">
+    <p>Version 1.0.0 • Last updated: June 14, 2025 • <a href="https://github.com/dmerand/donald.merand.org/tree/master/lib/unified-nps" class="text-gray-500 hover:text-gray-700 underline">Source code</a></p>
+</div>
+</div>
+
+    <!-- Core modules -->
+    <script src="core/musical-theory.js"></script>
+    <script src="core/scale-patterns.js"></script>
+    <script src="core/fretboard-algorithm.js"></script>
+    
+    <!-- Widget -->
+    <script src="widget.js"></script>
+</body>
+</html>

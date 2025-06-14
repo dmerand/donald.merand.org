@@ -14,6 +14,7 @@ Important: Project context and architecture details can be found in @.claude/REA
 
 # TODO LIST
 
+- [x] Update the visualization to put a white border around the black notes. - **COMPLETED 2025-06-14**
 - [x] Move the Title + Subtitle out of HTML + into the SVG visualization - **COMPLETED 2025-06-14** 
 - [x] Label for "Scale" input should be "Select a scale" - **COMPLETED 2025-06-14**
 - [x] Have the exported SVG name reflect the title + subtitle in a compact manner - **COMPLETED 2025-06-14**

@@ -129,7 +129,7 @@ aria-label="Guitar fretboard visualization"></svg>
 /*
  * Guitar Scale Visualizer
  * Version: 1.0.0
- * Built: 2025-06-14T20:00:06.730Z
+ * Built: 2025-06-14T20:27:53.121Z
  * Generated automatically - do not edit directly
  */
 // === core/musical-theory.js ===
@@ -934,7 +934,7 @@ ${svgElement.outerHTML}`;
     circle.setAttribute('cy', y);
     circle.setAttribute('r', this.noteCircleRadius.toString());
     circle.setAttribute('fill', isSelected ? '#fff' : '#000');
-    circle.setAttribute('stroke', '#000');
+    circle.setAttribute('stroke', isSelected ? '#000' : '#fff');
     circle.setAttribute('stroke-width', '2');
     circle.setAttribute('class', 'note clickable-note');
     circle.setAttribute('data-note', actualNoteName);

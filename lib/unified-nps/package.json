@@ -1,6 +1,6 @@
 {
   "name": "unified-nps",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Guitar Scale Visualizer - Testable unified notes-per-string fretboard visualization",
   "main": "src/widget.js",
   "scripts": {
@@ -29,6 +29,17 @@
     "eslint": "^8.57.0",
     "jest": "^30.0.0",
     "jsdom": "^26.1.0"
+  },
+  "config": {
+    "paths": {
+      "blogPost": "../../../_posts/2025-01-11-unified-guitar-scale-pattern-visualizer.md",
+      "src": "../src",
+      "dist": "../dist", 
+      "backups": "../backups",
+      "template": "../src/template.html",
+      "core": "../src/core",
+      "tests": "../tests"
+    }
   },
   "jest": {
     "testEnvironment": "node",

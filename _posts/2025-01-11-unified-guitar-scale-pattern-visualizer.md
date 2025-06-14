@@ -108,12 +108,13 @@ Import Pattern
 </div>
 </div>
 
+<div class="text-right mt-4 mb-2">
+<button id="save-svg-button" class="text-sm cursor-pointer hover:opacity-70 transition-opacity green-text-button">
+Save as SVG
+</button>
+</div>
 
-
-<div id="fretboard-container" class="relative overflow-x-auto mt-8 mb-4">
-<button id="save-svg-button" class="absolute top-2 right-2 text-2xl hover:opacity-70 transition-opacity z-10" 
-title="Save as SVG"
-aria-label="Save as SVG">💾</button>
+<div id="fretboard-container" class="relative overflow-x-auto mt-2 mb-4">
 <svg id="fretboard" width="800" height="700" 
 viewBox="0 0 800 700" 
 xmlns="http://www.w3.org/2000/svg"
@@ -122,14 +123,14 @@ aria-label="Guitar fretboard visualization"></svg>
 
 
 <div class="text-center text-xs text-gray-400 mt-6 pt-4 border-t border-gray-200">
-<p>Version 1.0.0 • Last updated: June 14, 2025 • <a href="https://github.com/dmerand/donald.merand.org/tree/master/lib/unified-nps" class="text-gray-500 hover:text-gray-700 underline">Source code</a></p>
+<p>Version 1.0.1 • Last updated: June 14, 2025 • <a href="https://github.com/dmerand/donald.merand.org/tree/master/lib/unified-nps" class="text-gray-500 hover:text-gray-700 underline">Source code</a></p>
 </div>
 
 <script>
 /*
  * Guitar Scale Visualizer
- * Version: 1.0.0
- * Built: 2025-06-14T20:27:53.121Z
+ * Version: 1.0.1
+ * Built: 2025-06-14T23:32:22.658Z
  * Generated automatically - do not edit directly
  */
 // === core/musical-theory.js ===

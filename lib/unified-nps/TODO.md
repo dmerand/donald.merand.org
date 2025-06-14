@@ -6,14 +6,17 @@
 - For all changes, please:
     - Add tests + verify that they run
     - Run linting
-    - Run the deploy script + check its verifications
 - After all changes have been made, review any files that have been changed against the main branch for duplicated methods, orphaned methods, and other artifacts of development. If any exist, please present a plan to the user for resolution.
+- Update the package version semantically.
+- Update the CHANGELOG.md with a summary of the changes
+- Run the deploy script + check its verifications
 - After all of the above has completed, you may mark checks next to the resolved TODO list items below and add a date next to the checkbox.
 
 Important: Project context and architecture details can be found in @.claude/README.md
 
 # TODO LIST
 
+- [x] Change the SVG "save" button to be text above and to the right of the visualization, in the same text format as the "save pattern" and "export pattern" buttons. - **COMPLETED 2025-06-14**
 - [x] Update the visualization to put a white border around the black notes. - **COMPLETED 2025-06-14**
 - [x] Move the Title + Subtitle out of HTML + into the SVG visualization - **COMPLETED 2025-06-14** 
 - [x] Label for "Scale" input should be "Select a scale" - **COMPLETED 2025-06-14**

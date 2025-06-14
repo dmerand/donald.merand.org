@@ -4,7 +4,7 @@
 
 This project contains the testable, modular implementation of the interactive guitar scale visualizer. The code is structured to separate core musical logic from DOM manipulation, enabling comprehensive testing and maintainable development.
 
-See also @testing
+See also @testing-context.md
 
 ## Architecture
 

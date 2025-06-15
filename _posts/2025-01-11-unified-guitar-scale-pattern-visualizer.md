@@ -1484,7 +1484,7 @@ Let me say that again: **for any scale that exists you can learn a single "box" 
 
 ## Next Steps
 
-There are plenty of next steps you can take with this tool. For example, learn how to leverage the fact that the pattern natually moves you up the neck on guitar, combined with the fact that the high and low E strings are the same piece of the pattern, and you can move all the way up the neck "rotating" the pattern. 
+There are plenty of next steps you can take with this tool. For example, with traditional 7-note scales, you can learn to leverage the fact that the pattern natually moves you up the neck on guitar, combined with the fact that the high and low E strings are the same piece of the pattern, and you can move all the way up the neck "rotating" the pattern. 
 
 Another next step you can take is to learn the scales on one string (i.e. 7NPS for a 7-note scale). Then learn how to pick a random spot on the scale and start moving up strings instead of up the neck. The visualizer allows you to pick any NPS you want up to the number of notes in the scale pattern, so you can see what this looks like if that helps.
 

@@ -1,6 +1,6 @@
 {
   "name": "unified-nps",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Guitar Scale Visualizer - Testable unified notes-per-string fretboard visualization",
   "main": "src/widget.js",
   "scripts": {

@@ -3,7 +3,8 @@
     "allow": [
       "Bash(rg:*)",
       "Bash(npm test)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Bash(find:*)"
     ],
     "deny": []
   }

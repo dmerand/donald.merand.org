@@ -16,6 +16,7 @@ Important: Project context and architecture details can be found in @.claude/REA
 
 # TODO LIST
 
+- [x] Adjust the visualization to have consistent padding and margins regardless of the length of the title or the number of notes in the diagram - **COMPLETED 2025-06-15**
 - [x] Change the SVG "save" button to be text above and to the right of the visualization, in the same text format as the "save pattern" and "export pattern" buttons. - **COMPLETED 2025-06-14**
 - [x] Update the visualization to put a white border around the black notes. - **COMPLETED 2025-06-14**
 - [x] Move the Title + Subtitle out of HTML + into the SVG visualization - **COMPLETED 2025-06-14** 

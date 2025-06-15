@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2025-06-15
+
+### Added
+- Adaptive text sizing for SVG titles and subtitles to prevent overflow
+- Text width estimation method for dynamic layout calculations
+- Comprehensive test coverage for visualization layout and sizing logic
+
+### Fixed
+- **Critical**: Fixed visualization consistency issue where patterns rendered at different sizes due to fixed viewBox
+- SVG viewBox now updates dynamically to match calculated dimensions, ensuring consistent visual scale
+- Custom preset emoji buttons (save/delete) now display correctly by removing conflicting CSS
+- Width calculation now considers both fretboard requirements and title text width
+
+### Improved
+- SVG dimensions now adapt to content while maintaining consistent vertical spacing
+- Title text automatically scales down if too wide for the visualization
+- Better responsive layout that works with varying pattern lengths and title sizes
+
 ## [1.0.1] - 2025-06-14
 
 ### Added

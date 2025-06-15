@@ -123,14 +123,14 @@ aria-label="Guitar fretboard visualization"></svg>
 
 
 <div class="text-center text-xs text-gray-400 mt-6 pt-4 border-t border-gray-200">
-<p>Version 1.0.1 • Last updated: June 14, 2025 • <a href="https://github.com/dmerand/donald.merand.org/tree/master/lib/unified-nps" class="text-gray-500 hover:text-gray-700 underline">Source code</a></p>
+<p>Version 1.1.0 • Last updated: June 14, 2025 • <a href="https://github.com/dmerand/donald.merand.org/tree/master/lib/unified-nps" class="text-gray-500 hover:text-gray-700 underline">Source code</a></p>
 </div>
 
 <script>
 /*
  * Guitar Scale Visualizer
- * Version: 1.0.1
- * Built: 2025-06-14T23:32:22.658Z
+ * Version: 1.1.0
+ * Built: 2025-06-15T00:25:02.030Z
  * Generated automatically - do not edit directly
  */
 // === core/musical-theory.js ===
@@ -752,15 +752,47 @@ class StringedInstrumentVisualizer {
     return ((rotatedDegree - 1 + this.selectedScaleDegree - 1) % scaleLength) + 1;
   }
   
-  addTitleToSvg(svgWidth) {
+  estimateTextWidth(text, fontSize) {
+    // Rough estimation: average character width is about 0.6 * fontSize for most fonts
+    return text.length * fontSize * 0.6;
+  }
+  
+  calculateTitleDimensions() {
     const { titleText, subtitleText } = this.generateTitleInfo();
+    const baseTitleSize = 18;
+    const baseSubtitleSize = 12;
+    const padding = 40; // Minimum padding on each side
+    
+    // Calculate required width for both texts at base sizes
+    const titleWidth = this.estimateTextWidth(titleText, baseTitleSize);
+    const subtitleWidth = this.estimateTextWidth(subtitleText, baseSubtitleSize);
+    const maxTextWidth = Math.max(titleWidth, subtitleWidth);
+    
+    return {
+      titleText,
+      subtitleText,
+      requiredWidth: maxTextWidth + (padding * 2),
+      baseTitleSize,
+      baseSubtitleSize
+    };
+  }
+  
+  addTitleToSvg(svgWidth) {
+    const { titleText, subtitleText, requiredWidth, baseTitleSize, baseSubtitleSize } = this.calculateTitleDimensions();
+    
+    // Calculate scaling factor if text is too wide
+    const availableWidth = svgWidth - 40; // Leave 20px padding on each side
+    const scaleFactor = requiredWidth > availableWidth ? availableWidth / requiredWidth : 1;
+    
+    const titleSize = Math.max(12, baseTitleSize * scaleFactor); // Minimum 12px
+    const subtitleSize = Math.max(10, baseSubtitleSize * scaleFactor); // Minimum 10px
     
     // Create title element
     const title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     title.setAttribute('x', svgWidth / 2);
     title.setAttribute('y', 25);
     title.setAttribute('text-anchor', 'middle');
-    title.setAttribute('font-size', '18');
+    title.setAttribute('font-size', titleSize.toString());
     title.setAttribute('font-weight', 'bold');
     title.setAttribute('fill', '#1f2937'); // Gray-800
     title.textContent = titleText;
@@ -771,7 +803,7 @@ class StringedInstrumentVisualizer {
     subtitle.setAttribute('x', svgWidth / 2);
     subtitle.setAttribute('y', 45);
     subtitle.setAttribute('text-anchor', 'middle');
-    subtitle.setAttribute('font-size', '12');
+    subtitle.setAttribute('font-size', subtitleSize.toString());
     subtitle.setAttribute('fill', '#4b5563'); // Gray-600
     subtitle.textContent = subtitleText;
     this.svg.appendChild(subtitle);
@@ -840,12 +872,20 @@ ${svgElement.outerHTML}`;
       : [0, 4];
     
     const fretRange = maxFretToShow - minFretToShow + 1;
-    const width = fretRange * this.fretSpacing + this.margin.left + this.margin.right;
+    const fretboardWidth = fretRange * this.fretSpacing + this.margin.left + this.margin.right;
+    
+    // Calculate minimum width needed for title text
+    const { requiredWidth: titleWidth } = this.calculateTitleDimensions();
+    
+    // Use the larger of fretboard width or title width to ensure everything fits
+    const width = Math.max(fretboardWidth, titleWidth);
+    
     const titleHeight = this.titleHeight; // Space for title and subtitle
     const height = stringCount * this.stringSpacing + this.margin.top + this.margin.bottom + titleHeight;
 
     this.svg.setAttribute('width', width);
     this.svg.setAttribute('height', height);
+    this.svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
     
     // Add title and subtitle to SVG
     this.addTitleToSvg(width);

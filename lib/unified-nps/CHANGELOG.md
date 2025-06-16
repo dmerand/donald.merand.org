@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2025-06-16
+
+### Added
+- **UI Coordination Extraction**: New `UIController` class for managing all UI coordination logic
+  - Centralized event handling with proper cleanup tracking for all form interactions
+  - Comprehensive form state management including scale preferences and global settings
+  - Custom preset operations (save, update, delete) with user-friendly prompts
+  - File import/export functionality with JSON pattern validation
+  - Proper event listener management to prevent memory leaks
+
+### Changed
+- Widget simplified from 773 to ~500 lines by extracting UI coordination to dedicated `UIController`
+- Separation of concerns: widget now focuses purely on rendering and visualization
+- UI coordination logic moved to testable, isolated module with dependency injection
+- All form interactions now managed through centralized controller with consistent error handling
+
+### Improved
+- Better architectural separation between rendering (Widget) and coordination (UIController)
+- Enhanced testability with 31 new tests specifically for UI coordination logic
+- Reduced bundle size from 61.4KB to 38.0KB through improved code organization
+- Memory management improvements with proper event listener cleanup
+- More maintainable codebase with clear boundaries between UI and rendering concerns
+
 ## [1.3.0] - 2025-06-16
 
 ### Added

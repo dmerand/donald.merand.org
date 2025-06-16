@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2025-06-16
+
+### Added
+- 4-string bass tuning option (E2, A2, D3, G3) to complement existing 5-string bass tuning
+
 ## [1.1.0] - 2025-06-15
 
 ### Added

@@ -21,6 +21,7 @@ category: projects
 <option value="perfect-fourths" selected>12-String Perfect 4ths</option>
 <option value="standard-guitar">6-String Guitar</option>
 <option value="bass-5-string">5-String Bass</option>
+<option value="bass-4-string">4-String Bass</option>
 </select>
 </div>
 
@@ -123,14 +124,14 @@ aria-label="Guitar fretboard visualization"></svg>
 
 
 <div class="text-center text-xs text-gray-400 mt-6 pt-4 border-t border-gray-200">
-<p>Version 1.1.0 • Last updated: June 14, 2025 • <a href="https://github.com/dmerand/donald.merand.org/tree/master/lib/unified-nps" class="text-gray-500 hover:text-gray-700 underline">Source code</a></p>
+<p>Version 1.2.0 • Last updated: June 16, 2025 • <a href="https://github.com/dmerand/donald.merand.org/tree/master/lib/unified-nps" class="text-gray-500 hover:text-gray-700 underline">Source code</a></p>
 </div>
 
 <script>
 /*
  * Guitar Scale Visualizer
- * Version: 1.1.0
- * Built: 2025-06-15T00:25:02.030Z
+ * Version: 1.2.0
+ * Built: 2025-06-16T21:07:19.621Z
  * Generated automatically - do not edit directly
  */
 // === core/musical-theory.js ===
@@ -361,7 +362,8 @@ class FretboardAlgorithm {
     return {
       'perfect-fourths': ['B1', 'E2', 'A2', 'D3', 'G3', 'C4', 'F4', 'Bb4', 'Eb5', 'Ab5', 'Db6', 'Gb6'],
       'standard-guitar': ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'],
-      'bass-5-string': ['B1', 'E2', 'A2', 'D3', 'G3']
+      'bass-5-string': ['B1', 'E2', 'A2', 'D3', 'G3'],
+      'bass-4-string': ['E2', 'A2', 'D3', 'G3']
     };
   }
 
@@ -1470,7 +1472,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 Most guitarists are taught scales in a horribly complicated way. It's typical to memorize scales in "boxes" with combinations of 2 or three notes per string. When you divide scales this way you have to memorize 4 or 5 or six "boxes" up the neck for each scale type. That's too many shapes to memorize, which is too easy to give up.
 
-I've been experimenting with easier ways to remember scales over the last year and independently came to a thing that metal guitarists have known for years called the [Grand Unified Pattern](https://fretscience.com/2022/10/09/3nps-one-pattern-to-rule-them-all/). It's absolutely worth reading that article, it'll save you years of scale anguish. The **tl;dr** is: for any musical scale on any stringed instrument, if you limit yourself to a consistent number of notes per string, a symmetry arises ~~at the least common multiple of 1) #notes in the scale and 2) #notes per string.~~ at `k*(notes in scale)/(notes per string)` for the smallest `k` that yields an integer result. Therefore there's a single "box" you can learn for any scale that applies across the entire neck.
+I've been experimenting with easier ways to remember scales over the last year and independently came to a thing that metal guitarists have known for years called the [Grand Unified Pattern](https://fretscience.com/2022/10/09/3nps-one-pattern-to-rule-them-all/). It's absolutely worth reading that article, it'll save you years of scale anguish. The **tl;dr** is: for any musical scale on any stringed instrument, if you limit yourself to a consistent number of notes per string, a symmetry arises ~~at the least common multiple of 1) #notes in the scale and 2) #notes per string.~~ at the `least common multiple(notes in scale, notes per string) / notes per string`. Therefore there's a single "box" you can learn for any scale that applies across the entire neck.
 
 <p class="text-sm i">I was corrected on the formula here by Keith Martin of Fret Science. --D</p>
 

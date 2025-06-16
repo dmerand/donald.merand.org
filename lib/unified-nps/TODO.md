@@ -16,4 +16,4 @@ Important: Project context and architecture details can be found in @.claude/REA
 
 # TODO LIST
 
-- [ ] 
+- [x] Right now the widget is doing too much of the note-per-string algorithm. I'd like to extract that logic into a class, and have the widget be focused mainly on converting human inputs into inputs for the algorithms, and rendering. Please propose an architecture plan to make this change and propose any other refactors that may support it.

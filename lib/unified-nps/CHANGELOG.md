@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2025-06-16
+
+### Added
+- **Major Architecture Refactor**: Extracted business logic from widget into dedicated core modules
+  - `ScaleVisualizer` class for orchestrating scale generation and visualization data
+  - `PresetManager` class for handling all localStorage operations and custom presets
+- Comprehensive test coverage (95%+) for new core modules with 118 individual test cases
+- Dependency injection pattern for improved testability and maintainability
+
+### Changed
+- Widget simplified from 809 to 773 lines by delegating business logic to core modules
+- Separated concerns: widget now focuses on UI/input conversion, core modules handle algorithms
+- Build pipeline updated to include new core modules in distribution
+- Improved error handling and validation throughout the architecture
+
+### Improved
+- Better separation of concerns with clear module boundaries
+- Enhanced maintainability through focused, single-responsibility classes
+- Improved testability with isolated, pure function modules
+- More robust preset management with proper validation and error handling
+
 ## [1.2.0] - 2025-06-16
 
 ### Added

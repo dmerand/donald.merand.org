@@ -124,14 +124,14 @@ aria-label="Guitar fretboard visualization"></svg>
 
 
 <div class="text-center text-xs text-gray-400 mt-6 pt-4 border-t border-gray-200">
-<p>Version 1.2.0 • Last updated: June 16, 2025 • <a href="https://github.com/dmerand/donald.merand.org/tree/master/lib/unified-nps" class="text-gray-500 hover:text-gray-700 underline">Source code</a></p>
+<p>Version 1.3.0 • Last updated: June 16, 2025 • <a href="https://github.com/dmerand/donald.merand.org/tree/master/lib/unified-nps" class="text-gray-500 hover:text-gray-700 underline">Source code</a></p>
 </div>
 
 <script>
 /*
  * Guitar Scale Visualizer
- * Version: 1.2.0
- * Built: 2025-06-16T21:07:19.621Z
+ * Version: 1.3.0
+ * Built: 2025-06-16T21:33:59.717Z
  * Generated automatically - do not edit directly
  */
 // === core/musical-theory.js ===
@@ -540,6 +540,517 @@ class FretboardAlgorithm {
 
 
 
+// === core/scale-visualizer.js ===
+/**
+ * Scale Visualizer - Core orchestration for scale generation and visualization
+ * Coordinates between musical theory, scale patterns, and fretboard algorithm
+ */
+
+class ScaleVisualizer {
+  constructor(musicalTheory, scalePatterns, fretboardAlgorithm) {
+    this.musicalTheory = musicalTheory;
+    this.scalePatterns = scalePatterns;
+    this.fretboardAlgorithm = fretboardAlgorithm;
+    
+    // Octave selection logic moved from widget
+    this.OCTAVE_2_NOTES = ['F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  }
+
+  /**
+   * Generate complete visualization data for a scale configuration
+   * @param {Object} config - Scale configuration
+   * @param {string} config.rootNote - Root note (e.g., 'C', 'F#')
+   * @param {string} config.scaleType - Scale type key or 'custom'
+   * @param {string} config.customIntervals - Comma-separated intervals for custom scales
+   * @param {string} config.tuningName - Tuning preset name
+   * @param {number} config.notesPerString - Notes per string constraint
+   * @param {number} config.selectedScaleDegree - Starting scale degree (1-based)
+   * @returns {Object} Visualization data
+   */
+  generateVisualizationData(config) {
+    const {
+      rootNote,
+      scaleType,
+      customIntervals,
+      tuningName,
+      notesPerString,
+      selectedScaleDegree
+    } = config;
+
+    // Get scale intervals
+    const intervals = this.getScaleIntervals(scaleType, customIntervals);
+    
+    // Get tuning
+    const tuning = this.fretboardAlgorithm.constructor.getTuning(tuningName);
+    if (!tuning) {
+      throw new Error(`Invalid tuning: ${tuningName}`);
+    }
+
+    // Apply octave optimization for root note
+    const optimizedRootNote = this.getOptimalRootNote(rootNote);
+    
+    // Generate scale notes
+    const scaleNotes = this.musicalTheory.generateExtendedScale(
+      optimizedRootNote,
+      intervals.join(','),
+      notesPerString,
+      selectedScaleDegree
+    );
+    
+    // Find note positions on fretboard
+    const notePositions = this.fretboardAlgorithm.findNotes(
+      scaleNotes,
+      tuning,
+      notesPerString,
+      this.musicalTheory
+    );
+    
+    // Calculate fret range for visualization
+    const fretRange = this.fretboardAlgorithm.calculateFretRange(notePositions);
+    
+    // Generate metadata
+    const metadata = this.generateMetadata(config, intervals, tuning, scaleNotes);
+    
+    return {
+      notePositions,
+      scaleNotes,
+      fretRange,
+      tuning,
+      intervals,
+      scaleLength: intervals.length,
+      metadata
+    };
+  }
+
+  /**
+   * Get scale intervals from type or custom input
+   * @param {string} scaleType - Scale type key
+   * @param {string} customIntervals - Custom intervals string
+   * @returns {number[]} Array of interval numbers
+   */
+  getScaleIntervals(scaleType, customIntervals) {
+    // Handle custom scales and custom preset IDs
+    if (scaleType === 'custom' || scaleType.startsWith('custom-')) {
+      return this.musicalTheory.parseIntervals(customIntervals);
+    }
+    
+    const pattern = this.scalePatterns.scaleIntervalPatterns[scaleType];
+    if (!pattern) {
+      throw new Error(`Unknown scale type: ${scaleType}`);
+    }
+    
+    return pattern;
+  }
+
+  /**
+   * Apply octave optimization to root note
+   * @param {string} rootNote - Base root note (e.g., 'C', 'F#')
+   * @returns {string} Octave-optimized root note (e.g., 'C3', 'F#2')
+   */
+  getOptimalRootNote(rootNote) {
+    const octave = this.OCTAVE_2_NOTES.includes(rootNote) ? '2' : '3';
+    return rootNote + octave;
+  }
+
+  /**
+   * Calculate scale degree for a position in the note sequence
+   * @param {number} index - Position index in the note sequence
+   * @param {number} scaleLength - Length of the scale
+   * @param {number} selectedScaleDegree - Starting scale degree
+   * @returns {number} Scale degree (1-based)
+   */
+  calculateScaleDegreeForPosition(index, scaleLength, selectedScaleDegree) {
+    const rotatedDegree = (index % scaleLength) + 1;
+    return ((rotatedDegree - 1 + selectedScaleDegree - 1) % scaleLength) + 1;
+  }
+
+  /**
+   * Generate metadata for the visualization
+   * @param {Object} config - Original configuration
+   * @param {number[]} intervals - Scale intervals
+   * @param {string[]} tuning - Tuning notes
+   * @param {string[]} scaleNotes - Generated scale notes
+   * @returns {Object} Metadata object
+   */
+  generateMetadata(config, intervals, tuning, scaleNotes) {
+    const { rootNote, scaleType, notesPerString, selectedScaleDegree } = config;
+    
+    // Detect scale type from intervals if custom
+    const detectedScaleType = (scaleType === 'custom' || scaleType.startsWith('custom-'))
+      ? this.scalePatterns.findScaleTypeFromIntervals(intervals) || 'custom'
+      : scaleType;
+    
+    // Generate tuning description
+    const tuningDescription = this.generateTuningDescription(tuning);
+    
+    return {
+      rootNote,
+      scaleType: detectedScaleType,
+      intervals,
+      tuning: tuningDescription,
+      notesPerString,
+      selectedScaleDegree,
+      scaleNotes: scaleNotes.slice(0, intervals.length), // First iteration only
+      totalNotesGenerated: scaleNotes.length
+    };
+  }
+
+  /**
+   * Generate human-readable tuning description
+   * @param {string[]} tuning - Array of tuning notes
+   * @returns {string} Tuning description
+   */
+  generateTuningDescription(tuning) {
+    const stringCount = tuning.length;
+    const noteNames = tuning.map(note => this.musicalTheory.getNoteName(note));
+    
+    if (stringCount === 12) return '12-String Perfect 4ths';
+    if (stringCount === 6) return '6-String Guitar';
+    if (stringCount === 5) return '5-String Bass';
+    if (stringCount === 4) return '4-String Bass';
+    
+    return `${stringCount}-String (${noteNames.join('-')})`;
+  }
+
+  /**
+   * Validate configuration object
+   * @param {Object} config - Configuration to validate
+   * @throws {Error} If configuration is invalid
+   */
+  validateConfiguration(config) {
+    const required = ['rootNote', 'scaleType', 'tuningName', 'notesPerString', 'selectedScaleDegree'];
+    
+    for (const field of required) {
+      if (config[field] === undefined || config[field] === null) {
+        throw new Error(`Missing required field: ${field}`);
+      }
+    }
+    
+    if ((config.scaleType === 'custom' || config.scaleType.startsWith('custom-')) && !config.customIntervals) {
+      throw new Error('Custom intervals required when scaleType is "custom"');
+    }
+    
+    if (config.notesPerString < 1 || config.notesPerString > 12) {
+      throw new Error('Notes per string must be between 1 and 12');
+    }
+    
+    if (config.selectedScaleDegree < 1) {
+      throw new Error('Selected scale degree must be >= 1');
+    }
+    
+    // Validate tuning exists
+    if (!this.fretboardAlgorithm.constructor.isValidTuning(config.tuningName)) {
+      throw new Error(`Invalid tuning: ${config.tuningName}`);
+    }
+  }
+}
+
+
+
+// === core/preset-manager.js ===
+/**
+ * Preset Manager - Handle all preset and preference storage operations
+ * Manages localStorage operations for scale preferences and custom presets
+ */
+
+class PresetManager {
+  constructor() {
+    // Storage keys
+    this.SCALE_PREFERENCES_KEY = 'guitar-scale-visualizer-scale-preferences';
+    this.GLOBAL_PREFERENCES_KEY = 'guitar-scale-visualizer-global-preferences';
+    this.CUSTOM_PRESETS_KEY = 'guitar-scale-visualizer-custom-presets';
+  }
+
+  /**
+   * Save preferences for a specific scale type
+   * @param {string} scaleType - Scale type identifier
+   * @param {Object} preferences - Preference object
+   * @param {string} preferences.title - Scale title
+   * @param {number} preferences.notesPerString - Notes per string setting
+   * @param {number} preferences.selectedScaleDegree - Selected scale degree
+   * @param {string} preferences.rootNote - Root note
+   */
+  saveScalePreferences(scaleType, preferences) {
+    try {
+      const allPreferences = this.getScalePreferences();
+      allPreferences[scaleType] = {
+        title: preferences.title,
+        notesPerString: preferences.notesPerString,
+        selectedScaleDegree: preferences.selectedScaleDegree,
+        rootNote: preferences.rootNote
+      };
+      
+      localStorage.setItem(this.SCALE_PREFERENCES_KEY, JSON.stringify(allPreferences));
+    } catch (error) {
+      console.warn('Failed to save scale preferences:', error);
+    }
+  }
+
+  /**
+   * Load preferences for a specific scale type
+   * @param {string} scaleType - Scale type identifier
+   * @returns {Object|null} Preference object or null if not found
+   */
+  loadScalePreferences(scaleType) {
+    const allPreferences = this.getScalePreferences();
+    return allPreferences[scaleType] || null;
+  }
+
+  /**
+   * Get all scale preferences
+   * @returns {Object} All scale preferences object
+   */
+  getScalePreferences() {
+    try {
+      const stored = localStorage.getItem(this.SCALE_PREFERENCES_KEY);
+      return stored ? JSON.parse(stored) : {};
+    } catch (error) {
+      console.warn('Failed to load scale preferences:', error);
+      return {};
+    }
+  }
+
+  /**
+   * Save global preferences (tuning, last scale, etc.)
+   * @param {Object} preferences - Global preference object
+   * @param {string} preferences.tuning - Selected tuning
+   * @param {string} preferences.lastScaleType - Last selected scale type
+   */
+  saveGlobalPreferences(preferences) {
+    try {
+      const current = this.getGlobalPreferences();
+      const updated = { ...current, ...preferences };
+      localStorage.setItem(this.GLOBAL_PREFERENCES_KEY, JSON.stringify(updated));
+    } catch (error) {
+      console.warn('Failed to save global preferences:', error);
+    }
+  }
+
+  /**
+   * Load global preferences
+   * @returns {Object} Global preferences object
+   */
+  getGlobalPreferences() {
+    try {
+      const stored = localStorage.getItem(this.GLOBAL_PREFERENCES_KEY);
+      return stored ? JSON.parse(stored) : {};
+    } catch (error) {
+      console.warn('Failed to load global preferences:', error);
+      return {};
+    }
+  }
+
+  /**
+   * Save a custom preset
+   * @param {string} presetName - Unique preset name
+   * @param {Object} preset - Preset data
+   * @param {string} preset.title - Display title
+   * @param {number[]} preset.intervals - Scale intervals
+   * @param {number} preset.notesPerString - Notes per string
+   * @param {number} preset.selectedScaleDegree - Selected scale degree
+   * @param {string} preset.rootNote - Root note
+   */
+  saveCustomPreset(presetName, preset) {
+    try {
+      const customPresets = this.getCustomPresets();
+      customPresets[presetName] = {
+        title: preset.title,
+        intervals: preset.intervals,
+        notesPerString: preset.notesPerString,
+        selectedScaleDegree: preset.selectedScaleDegree,
+        rootNote: preset.rootNote,
+        isCustom: true,
+        createdAt: new Date().toISOString()
+      };
+      
+      localStorage.setItem(this.CUSTOM_PRESETS_KEY, JSON.stringify(customPresets));
+    } catch (error) {
+      console.warn('Failed to save custom preset:', error);
+      throw new Error('Failed to save preset');
+    }
+  }
+
+  /**
+   * Load a custom preset
+   * @param {string} presetName - Preset name
+   * @returns {Object|null} Preset data or null if not found
+   */
+  loadCustomPreset(presetName) {
+    const customPresets = this.getCustomPresets();
+    return customPresets[presetName] || null;
+  }
+
+  /**
+   * Get all custom presets
+   * @returns {Object} All custom presets object
+   */
+  getCustomPresets() {
+    try {
+      const stored = localStorage.getItem(this.CUSTOM_PRESETS_KEY);
+      return stored ? JSON.parse(stored) : {};
+    } catch (error) {
+      console.warn('Failed to load custom presets:', error);
+      return {};
+    }
+  }
+
+  /**
+   * Delete a custom preset
+   * @param {string} presetName - Preset name to delete
+   * @returns {boolean} True if deleted successfully
+   */
+  deleteCustomPreset(presetName) {
+    try {
+      const customPresets = this.getCustomPresets();
+      if (customPresets[presetName]) {
+        delete customPresets[presetName];
+        localStorage.setItem(this.CUSTOM_PRESETS_KEY, JSON.stringify(customPresets));
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.warn('Failed to delete custom preset:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Check if a preset name is a custom preset
+   * @param {string} presetName - Preset name to check
+   * @returns {boolean} True if it's a custom preset
+   */
+  isCustomPreset(presetName) {
+    const customPresets = this.getCustomPresets();
+    return presetName in customPresets;
+  }
+
+  /**
+   * Get all preset names (built-in + custom)
+   * @param {Object} builtInScalePatterns - Built-in scale patterns object
+   * @returns {string[]} Array of all preset names
+   */
+  getAllPresetNames(builtInScalePatterns) {
+    const builtInNames = Object.keys(builtInScalePatterns);
+    const customNames = Object.keys(this.getCustomPresets());
+    return [...builtInNames, ...customNames];
+  }
+
+  /**
+   * Export all presets and preferences to JSON
+   * @returns {Object} Complete export data
+   */
+  exportAllData() {
+    return {
+      scalePreferences: this.getScalePreferences(),
+      globalPreferences: this.getGlobalPreferences(),
+      customPresets: this.getCustomPresets(),
+      exportedAt: new Date().toISOString(),
+      version: '1.0'
+    };
+  }
+
+  /**
+   * Import presets and preferences from JSON data
+   * @param {Object} data - Import data object
+   * @param {Object} options - Import options
+   * @param {boolean} options.overwrite - Whether to overwrite existing data
+   * @returns {Object} Import result summary
+   */
+  importAllData(data, options = { overwrite: false }) {
+    const result = {
+      scalePreferences: 0,
+      customPresets: 0,
+      globalPreferences: 0,
+      errors: []
+    };
+
+    try {
+      // Validate import data structure
+      if (!data || typeof data !== 'object') {
+        throw new Error('Invalid import data format');
+      }
+
+      // Import scale preferences
+      if (data.scalePreferences) {
+        if (options.overwrite) {
+          localStorage.setItem(this.SCALE_PREFERENCES_KEY, JSON.stringify(data.scalePreferences));
+        } else {
+          const current = this.getScalePreferences();
+          const merged = { ...current, ...data.scalePreferences };
+          localStorage.setItem(this.SCALE_PREFERENCES_KEY, JSON.stringify(merged));
+        }
+        result.scalePreferences = Object.keys(data.scalePreferences).length;
+      }
+
+      // Import custom presets
+      if (data.customPresets) {
+        if (options.overwrite) {
+          localStorage.setItem(this.CUSTOM_PRESETS_KEY, JSON.stringify(data.customPresets));
+        } else {
+          const current = this.getCustomPresets();
+          const merged = { ...current, ...data.customPresets };
+          localStorage.setItem(this.CUSTOM_PRESETS_KEY, JSON.stringify(merged));
+        }
+        result.customPresets = Object.keys(data.customPresets).length;
+      }
+
+      // Import global preferences
+      if (data.globalPreferences) {
+        if (options.overwrite) {
+          localStorage.setItem(this.GLOBAL_PREFERENCES_KEY, JSON.stringify(data.globalPreferences));
+        } else {
+          const current = this.getGlobalPreferences();
+          const merged = { ...current, ...data.globalPreferences };
+          localStorage.setItem(this.GLOBAL_PREFERENCES_KEY, JSON.stringify(merged));
+        }
+        result.globalPreferences = Object.keys(data.globalPreferences).length;
+      }
+
+    } catch (error) {
+      result.errors.push(error.message);
+    }
+
+    return result;
+  }
+
+  /**
+   * Clear all stored data (useful for testing or reset)
+   * @param {Object} options - Clear options
+   * @param {boolean} options.scalePreferences - Clear scale preferences
+   * @param {boolean} options.globalPreferences - Clear global preferences  
+   * @param {boolean} options.customPresets - Clear custom presets
+   */
+  clearAllData(options = { scalePreferences: true, globalPreferences: true, customPresets: true }) {
+    try {
+      if (options.scalePreferences) {
+        localStorage.removeItem(this.SCALE_PREFERENCES_KEY);
+      }
+      if (options.globalPreferences) {
+        localStorage.removeItem(this.GLOBAL_PREFERENCES_KEY);
+      }
+      if (options.customPresets) {
+        localStorage.removeItem(this.CUSTOM_PRESETS_KEY);
+      }
+    } catch (error) {
+      console.warn('Failed to clear data:', error);
+    }
+  }
+
+  /**
+   * Validate preset data structure
+   * @param {Object} preset - Preset to validate
+   * @returns {boolean} True if valid
+   */
+  validatePreset(preset) {
+    if (!preset || typeof preset !== 'object') return false;
+    
+    const required = ['title', 'intervals', 'notesPerString', 'selectedScaleDegree', 'rootNote'];
+    return required.every(field => Object.prototype.hasOwnProperty.call(preset, field));
+  }
+}
+
+
+
 // === widget.js ===
 class StringedInstrumentVisualizer {
   constructor() {
@@ -573,6 +1084,16 @@ class StringedInstrumentVisualizer {
     this.musicalTheory = new (window.MusicalTheory || MusicalTheory)();
     this.scalePatterns = new (window.ScalePatterns || ScalePatterns)();
     this.fretboardAlgorithm = new (window.FretboardAlgorithm || FretboardAlgorithm)();
+    
+    // Initialize new core modules 
+    // eslint-disable-next-line no-undef
+    this.scaleVisualizer = new (window.ScaleVisualizer || ScaleVisualizer)(
+      this.musicalTheory,
+      this.scalePatterns,
+      this.fretboardAlgorithm
+    );
+    // eslint-disable-next-line no-undef
+    this.presetManager = new (window.PresetManager || PresetManager)();
     
     // Visualization settings
     this.fretSpacing = 60;
@@ -749,10 +1270,6 @@ class StringedInstrumentVisualizer {
     };
   }
 
-  calculateScaleDegreeForPosition(index, scaleLength) {
-    const rotatedDegree = (index % scaleLength) + 1;
-    return ((rotatedDegree - 1 + this.selectedScaleDegree - 1) % scaleLength) + 1;
-  }
   
   estimateTextWidth(text, fontSize) {
     // Rough estimation: average character width is about 0.6 * fontSize for most fonts
@@ -841,18 +1358,21 @@ ${svgElement.outerHTML}`;
   
   updateVisualization() {
     try {
-      const tuning = this.tuningPresets[this.tuningPresetSelect.value];
-      const notesPerString = parseInt(this.notesPerStringInput.value);
-      const selectedNote = this.rootNoteSelect.value;
-      const octave2Notes = ['F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-      const rootNote = selectedNote + (octave2Notes.includes(selectedNote) ? '2' : '3');
-      const intervalString = this.scaleIntervalsInput.value;
-      const scaleLength = this.musicalTheory.parseIntervals(intervalString).length;
-      
-      const scaleNotes = this.musicalTheory.generateExtendedScale(rootNote, intervalString, notesPerString, this.selectedScaleDegree);
-      const notePositions = this.fretboardAlgorithm.findNotes(scaleNotes, tuning, notesPerString, this.musicalTheory);
+      // Collect configuration from UI
+      const config = {
+        rootNote: this.rootNoteSelect.value,
+        scaleType: this.scaleTypeSelect.value,
+        customIntervals: this.scaleIntervalsInput.value,
+        tuningName: this.tuningPresetSelect.value,
+        notesPerString: parseInt(this.notesPerStringInput.value),
+        selectedScaleDegree: this.selectedScaleDegree
+      };
 
-      this.renderFretboard(tuning.length, notePositions, scaleLength);
+      // Generate visualization data using ScaleVisualizer
+      const visualizationData = this.scaleVisualizer.generateVisualizationData(config);
+      
+      // Render the fretboard with the generated data
+      this.renderFretboard(visualizationData);
     } catch (error) {
       console.error('Error updating visualization:', error);
       // Clear the visualization on error to prevent broken display
@@ -863,18 +1383,15 @@ ${svgElement.outerHTML}`;
   }
   
   
-  renderFretboard(stringCount, notePositions, scaleLength) {
+  renderFretboard(visualizationData) {
     this.svg.innerHTML = '';
     
-    const tuning = this.tuningPresets[this.tuningPresetSelect.value].slice(0, stringCount);
+    const { notePositions, tuning, scaleLength, fretRange } = visualizationData;
+    const stringCount = tuning.length;
+    const [minFretToShow, maxFretToShow] = fretRange;
     
-    const [minFretToShow, maxFretToShow] = notePositions.length > 0 
-      ? [Math.max(0, Math.min(...notePositions.map(([, f]) => f)) - this.fretboardAlgorithm.FRET_PADDING_BELOW), 
-        Math.max(...notePositions.map(([, f]) => f)) + this.fretboardAlgorithm.FRET_PADDING_ABOVE]
-      : [0, 4];
-    
-    const fretRange = maxFretToShow - minFretToShow + 1;
-    const fretboardWidth = fretRange * this.fretSpacing + this.margin.left + this.margin.right;
+    const fretRangeSize = maxFretToShow - minFretToShow + 1;
+    const fretboardWidth = fretRangeSize * this.fretSpacing + this.margin.left + this.margin.right;
     
     // Calculate minimum width needed for title text
     const { requiredWidth: titleWidth } = this.calculateTitleDimensions();
@@ -901,7 +1418,7 @@ ${svgElement.outerHTML}`;
       const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
       line.setAttribute('x1', this.margin.left);
       line.setAttribute('y1', y);
-      line.setAttribute('x2', this.margin.left + (fretRange - 1) * this.fretSpacing);
+      line.setAttribute('x2', this.margin.left + (fretRangeSize - 1) * this.fretSpacing);
       line.setAttribute('y2', y);
       line.setAttribute('stroke', '#333');
       line.setAttribute('stroke-width', '2');
@@ -954,7 +1471,11 @@ ${svgElement.outerHTML}`;
     }
     
     notePositions.forEach(([stringIndex, fret], index) => {
-      const scaleDegree = this.calculateScaleDegreeForPosition(index, scaleLength);
+      const scaleDegree = this.scaleVisualizer.calculateScaleDegreeForPosition(
+        index, 
+        scaleLength, 
+        this.selectedScaleDegree
+      );
       this.drawNote(stringIndex, fret, scaleDegree, minFretToShow);
     });
   }
@@ -1011,27 +1532,20 @@ ${svgElement.outerHTML}`;
   // Per-Scale Preferences and Global Settings
   saveScalePreferences() {
     const scaleType = this.scaleTypeSelect.value;
-    const preferences = this.getScalePreferences();
-    
-    preferences[scaleType] = {
+    const preferences = {
       title: this.scaleTitleInput.value,
       notesPerString: parseInt(this.notesPerStringInput.value),
       selectedScaleDegree: this.selectedScaleDegree,
       rootNote: this.rootNoteSelect.value
     };
     
-    try {
-      localStorage.setItem('guitar-scale-visualizer-scale-preferences', JSON.stringify(preferences));
-    } catch (e) {
-      console.warn('Failed to save scale preferences:', e);
-    }
+    this.presetManager.saveScalePreferences(scaleType, preferences);
   }
   
   loadScalePreferences(scaleType) {
     // Check if it's a custom preset first
-    const customPresets = this.getCustomPresets();
-    if (customPresets[scaleType]) {
-      const customPreset = customPresets[scaleType];
+    const customPreset = this.presetManager.loadCustomPreset(scaleType);
+    if (customPreset) {
       this.scaleIntervalsInput.value = customPreset.intervals.join(',');
       this.scaleTitleInput.value = customPreset.title;
       this.notesPerStringInput.value = customPreset.notesPerString;
@@ -1044,8 +1558,7 @@ ${svgElement.outerHTML}`;
     }
     
     // Handle built-in scales
-    const preferences = this.getScalePreferences();
-    const scalePrefs = preferences[scaleType] || this.defaultScalePreferences[scaleType];
+    const scalePrefs = this.presetManager.loadScalePreferences(scaleType) || this.defaultScalePreferences[scaleType];
     
     if (scalePrefs) {
       // Load intervals from built-in pattern
@@ -1066,15 +1579,6 @@ ${svgElement.outerHTML}`;
     }
   }
   
-  getScalePreferences() {
-    try {
-      const saved = localStorage.getItem('guitar-scale-visualizer-scale-preferences');
-      return saved ? JSON.parse(saved) : {};
-    } catch (e) {
-      console.warn('Failed to load scale preferences:', e);
-      return {};
-    }
-  }
   
   saveGlobalPreferences() {
     const globalPrefs = {
@@ -1082,24 +1586,13 @@ ${svgElement.outerHTML}`;
       lastScaleType: this.scaleTypeSelect.value
     };
     
-    try {
-      localStorage.setItem('guitar-scale-visualizer-global', JSON.stringify(globalPrefs));
-    } catch (e) {
-      console.warn('Failed to save global preferences:', e);
-    }
+    this.presetManager.saveGlobalPreferences(globalPrefs);
   }
   
   loadGlobalPreferences() {
-    try {
-      const saved = localStorage.getItem('guitar-scale-visualizer-global');
-      if (saved) {
-        const globalPrefs = JSON.parse(saved);
-        if (globalPrefs.tuning) this.tuningPresetSelect.value = globalPrefs.tuning;
-        if (globalPrefs.lastScaleType) this.scaleTypeSelect.value = globalPrefs.lastScaleType;
-      }
-    } catch (e) {
-      console.warn('Failed to load global preferences:', e);
-    }
+    const globalPrefs = this.presetManager.getGlobalPreferences();
+    if (globalPrefs.tuning) this.tuningPresetSelect.value = globalPrefs.tuning;
+    if (globalPrefs.lastScaleType) this.scaleTypeSelect.value = globalPrefs.lastScaleType;
   }
   
   
@@ -1191,22 +1684,11 @@ ${svgElement.outerHTML}`;
     }
   }
   
-  // Custom Preset Management
-  getCustomPresets() {
-    try {
-      const saved = localStorage.getItem('guitar-scale-visualizer-custom-presets');
-      return saved ? JSON.parse(saved) : {};
-    } catch (e) {
-      console.warn('Failed to load custom presets:', e);
-      return {};
-    }
-  }
   
   saveCustomPreset(name, intervals) {
     const presetId = `custom-${Date.now()}`;
-    const customPresets = this.getCustomPresets();
     
-    customPresets[presetId] = {
+    const preset = {
       title: name,
       intervals: intervals || this.musicalTheory.parseIntervals(this.scaleIntervalsInput.value),
       notesPerString: parseInt(this.notesPerStringInput.value),
@@ -1215,13 +1697,12 @@ ${svgElement.outerHTML}`;
     };
     
     try {
-      localStorage.setItem('guitar-scale-visualizer-custom-presets', JSON.stringify(customPresets));
+      this.presetManager.saveCustomPreset(presetId, preset);
       this.updateScaleDropdown();
       this.scaleTypeSelect.value = presetId; // Select the newly created preset
       this.updatePresetButtonVisibility(); // Update button visibility for the new preset
       return presetId;
     } catch (e) {
-      console.warn('Failed to save custom preset:', e);
       alert('Failed to save preset. Please try again.');
       return null;
     }
@@ -1238,12 +1719,12 @@ ${svgElement.outerHTML}`;
   
   updateCurrentPreset() {
     const scaleType = this.scaleTypeSelect.value;
-    const customPresets = this.getCustomPresets();
     
-    if (customPresets[scaleType]) {
-      const currentTitle = this.scaleTitleInput.value || customPresets[scaleType].title;
+    if (this.presetManager.isCustomPreset(scaleType)) {
+      const currentPreset = this.presetManager.loadCustomPreset(scaleType);
+      const currentTitle = this.scaleTitleInput.value || currentPreset.title;
       
-      customPresets[scaleType] = {
+      const updatedPreset = {
         title: currentTitle,
         intervals: this.musicalTheory.parseIntervals(this.scaleIntervalsInput.value),
         notesPerString: parseInt(this.notesPerStringInput.value),
@@ -1252,11 +1733,10 @@ ${svgElement.outerHTML}`;
       };
       
       try {
-        localStorage.setItem('guitar-scale-visualizer-custom-presets', JSON.stringify(customPresets));
+        this.presetManager.saveCustomPreset(scaleType, updatedPreset);
         this.updateScaleDropdown();
         this.scaleTypeSelect.value = scaleType; // Keep current preset selected
       } catch (e) {
-        console.warn('Failed to update custom preset:', e);
         alert('Failed to update preset. Please try again.');
       }
     }
@@ -1264,23 +1744,19 @@ ${svgElement.outerHTML}`;
   
   deleteCurrentPreset() {
     const scaleType = this.scaleTypeSelect.value;
-    const customPresets = this.getCustomPresets();
     
-    if (customPresets[scaleType]) {
-      const presetTitle = customPresets[scaleType].title;
+    if (this.presetManager.isCustomPreset(scaleType)) {
+      const preset = this.presetManager.loadCustomPreset(scaleType);
+      const presetTitle = preset.title;
       
       if (confirm(`Are you sure you want to delete the preset "${presetTitle}"? This action cannot be undone.`)) {
-        delete customPresets[scaleType];
-        
-        try {
-          localStorage.setItem('guitar-scale-visualizer-custom-presets', JSON.stringify(customPresets));
+        if (this.presetManager.deleteCustomPreset(scaleType)) {
           this.updateScaleDropdown();
           this.scaleTypeSelect.value = 'major'; // Switch to default preset
           this.loadScalePreferences('major');
           this.updatePresetButtonVisibility();
           this.updateVisualization();
-        } catch (e) {
-          console.warn('Failed to delete custom preset:', e);
+        } else {
           alert('Failed to delete preset. Please try again.');
         }
       }
@@ -1289,8 +1765,7 @@ ${svgElement.outerHTML}`;
   
   updatePresetButtonVisibility() {
     const scaleType = this.scaleTypeSelect.value;
-    const customPresets = this.getCustomPresets();
-    const isCustomPreset = customPresets[scaleType];
+    const isCustomPreset = this.presetManager.isCustomPreset(scaleType);
     
     this.updatePresetButton.style.display = isCustomPreset ? 'block' : 'none';
     this.deletePresetButton.style.display = isCustomPreset ? 'block' : 'none';
@@ -1311,7 +1786,7 @@ ${svgElement.outerHTML}`;
     });
     
     // Add custom presets
-    const customPresets = this.getCustomPresets();
+    const customPresets = this.presetManager.getCustomPresets();
     const customPresetIds = Object.keys(customPresets);
     
     if (customPresetIds.length > 0) {

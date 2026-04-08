@@ -86,7 +86,7 @@ category: projects
 </div>
 
 <div class="text-center text-xs text-gray-400 mt-6 pt-4 border-t border-gray-200">
-<p>Version 0.3.0 &bull; <a href="https://github.com/dmerand/donald.merand.org" class="text-gray-500 hover:text-gray-700 underline">Source code</a></p>
+<p>Version 1.0.0 &bull; <a href="https://github.com/dmerand/donald.merand.org" class="text-gray-500 hover:text-gray-700 underline">Source code</a></p>
 </div>
 
 </div>
@@ -95,8 +95,8 @@ category: projects
 <script>
 /*
  * Mini Banjo Chord Transposer
- * Version: 0.3.0
- * Built: 2026-04-08T14:02:29.804Z
+ * Version: 1.0.0
+ * Built: 2026-04-08T14:10:49.503Z
  * Generated automatically - do not edit directly
  */
 // === core/musical-theory.js ===
@@ -854,6 +854,17 @@ document.addEventListener('DOMContentLoaded', () => {
 <style>
 #banjo-tool {
   max-width: 100%;
+  overflow: hidden;
+}
+
+/* Ensure flex-wrap works regardless of Tailwind build */
+#banjo-tool .flex-wrap,
+#root-buttons,
+#quality-buttons,
+#position-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 /* Toggle buttons */

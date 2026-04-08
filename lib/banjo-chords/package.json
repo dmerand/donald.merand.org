@@ -1,6 +1,6 @@
 {
   "name": "banjo-chords",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "Mini Banjo Chord Transposer - Algorithmic chord voicing for 5-string banjo",
   "main": "src/widget.js",
   "scripts": {

@@ -15,7 +15,8 @@
       "Bash(ls /Users/donald/Downloads/*banjo* /Users/donald/Downloads/*chord*)",
       "Bash(node:*)",
       "Bash(git:*)",
-      "Bash(echo \"---EXIT:$?---\")"
+      "Bash(echo \"---EXIT:$?---\")",
+      "Bash(npx jest:*)"
     ],
     "deny": []
   }

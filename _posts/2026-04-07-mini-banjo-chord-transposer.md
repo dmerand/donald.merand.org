@@ -72,17 +72,16 @@ category: projects
 <div id="collection-actions" class="flex gap-4 items-center" style="display: none;">
 <button id="clear-chords" class="text-sm cursor-pointer hover:opacity-70 transition-opacity green-text-button">Clear All</button>
 <button id="export-svg" class="text-sm cursor-pointer hover:opacity-70 transition-opacity green-text-button">Save as SVG</button>
+<button id="export-png" class="text-sm cursor-pointer hover:opacity-70 transition-opacity green-text-button">Save as PNG</button>
 </div>
 </div>
 
 </div>
 
-<div id="chord-area" class="flex gap-4 items-start mt-4 mb-4">
-<div id="preview-area" class="flex-shrink-0">
+<div id="chord-area" class="flex flex-wrap gap-4 items-start mt-4 mb-4">
+<div id="preview-area">
 </div>
-<div id="chord-collection-wrapper" class="flex-1 min-w-0">
-<div id="chord-collection" class="flex flex-wrap gap-3 items-start">
-</div>
+<div id="chord-collection" class="contents">
 </div>
 </div>
 
@@ -92,11 +91,12 @@ category: projects
 
 </div>
 
+<!-- banjo-chord-script -->
 <script>
 /*
  * Mini Banjo Chord Transposer
  * Version: 0.3.0
- * Built: 2026-04-08T01:25:41.622Z
+ * Built: 2026-04-08T14:02:29.804Z
  * Generated automatically - do not edit directly
  */
 // === core/musical-theory.js ===
@@ -429,6 +429,7 @@ class ChordDiagramRenderer {
     svg.setAttribute('width', w);
     svg.setAttribute('height', h);
     svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    svg.setAttribute('role', 'img');
     svg.setAttribute('aria-label', `${chordName} chord diagram`);
 
     const frettedFrets = voicing.frets.filter(f => f > 0);
@@ -612,6 +613,7 @@ class BanjoToolController {
       this.renderCollection();
     });
     document.getElementById('export-svg').addEventListener('click', () => this.exportSVG());
+    document.getElementById('export-png').addEventListener('click', () => this.exportPNG());
 
     this.syncToggleButtons();
     this.renderPreview();
@@ -620,16 +622,24 @@ class BanjoToolController {
 
   syncToggleButtons() {
     document.querySelectorAll('[data-tuning]').forEach(btn => {
-      btn.classList.toggle('toggle-active', btn.dataset.tuning === this.currentTuning);
+      const active = btn.dataset.tuning === this.currentTuning;
+      btn.classList.toggle('toggle-active', active);
+      btn.setAttribute('aria-pressed', active);
     });
     document.querySelectorAll('[data-root]').forEach(btn => {
-      btn.classList.toggle('toggle-active', btn.dataset.root === this.currentRoot);
+      const active = btn.dataset.root === this.currentRoot;
+      btn.classList.toggle('toggle-active', active);
+      btn.setAttribute('aria-pressed', active);
     });
     document.querySelectorAll('[data-quality]').forEach(btn => {
-      btn.classList.toggle('toggle-active', btn.dataset.quality === this.currentQuality);
+      const active = btn.dataset.quality === this.currentQuality;
+      btn.classList.toggle('toggle-active', active);
+      btn.setAttribute('aria-pressed', active);
     });
     document.querySelectorAll('[data-position]').forEach(btn => {
-      btn.classList.toggle('toggle-active', Number(btn.dataset.position) === this.currentPosition);
+      const active = Number(btn.dataset.position) === this.currentPosition;
+      btn.classList.toggle('toggle-active', active);
+      btn.setAttribute('aria-pressed', active);
     });
   }
 
@@ -637,7 +647,9 @@ class BanjoToolController {
     this.currentTuning = tuningKey;
     this.storage.save('tuning', tuningKey);
     document.querySelectorAll('[data-tuning]').forEach(btn => {
-      btn.classList.toggle('toggle-active', btn.dataset.tuning === tuningKey);
+      const active = btn.dataset.tuning === tuningKey;
+      btn.classList.toggle('toggle-active', active);
+      btn.setAttribute('aria-pressed', active);
     });
     this.renderPreview();
     this.renderCollection();
@@ -647,7 +659,9 @@ class BanjoToolController {
     this.currentRoot = root;
     this.storage.save('root', root);
     document.querySelectorAll('[data-root]').forEach(btn => {
-      btn.classList.toggle('toggle-active', btn.dataset.root === root);
+      const active = btn.dataset.root === root;
+      btn.classList.toggle('toggle-active', active);
+      btn.setAttribute('aria-pressed', active);
     });
     this.renderPreview();
   }
@@ -656,7 +670,9 @@ class BanjoToolController {
     this.currentQuality = quality;
     this.storage.save('quality', quality);
     document.querySelectorAll('[data-quality]').forEach(btn => {
-      btn.classList.toggle('toggle-active', btn.dataset.quality === quality);
+      const active = btn.dataset.quality === quality;
+      btn.classList.toggle('toggle-active', active);
+      btn.setAttribute('aria-pressed', active);
     });
     this.renderPreview();
   }
@@ -665,7 +681,9 @@ class BanjoToolController {
     this.currentPosition = position;
     this.storage.save('position', position);
     document.querySelectorAll('[data-position]').forEach(btn => {
-      btn.classList.toggle('toggle-active', Number(btn.dataset.position) === position);
+      const active = Number(btn.dataset.position) === position;
+      btn.classList.toggle('toggle-active', active);
+      btn.setAttribute('aria-pressed', active);
     });
     this.renderPreview();
   }
@@ -732,10 +750,6 @@ class BanjoToolController {
 
     if (this.chords.length === 0) return;
 
-    const sep = document.createElement('div');
-    sep.className = 'collection-separator';
-    container.appendChild(sep);
-
     for (let i = 0; i < this.chords.length; i++) {
       const { root, quality, position } = this.chords[i];
       const svg = this.renderChordDiagram(root, quality, position || 0);
@@ -755,9 +769,7 @@ class BanjoToolController {
     }
   }
 
-  exportSVG() {
-    if (this.chords.length === 0) return;
-
+  buildExportSVG() {
     const tuning = this.tunings.get(this.currentTuning);
     const dw = this.renderer.diagramWidth;
     const dh = this.renderer.diagramHeight;
@@ -781,16 +793,52 @@ class BanjoToolController {
     svgContent += `<text x="${totalWidth / 2}" y="${totalHeight - 5}" text-anchor="middle" font-size="10" fill="#999">${tuning.shortName}: ${tuning.openNotes.join(' ')}</text>\n`;
     svgContent += `</svg>`;
 
+    const chordNames = allChords.map(c => this.chordLib.getChord(c.root, c.quality).displayName).join('-');
+    const filename = `banjo-${tuning.shortName.replace(/\s+/g, '-').toLowerCase()}-${chordNames.replace(/\s+/g, '').replace(/[#]/g, 'sharp')}`;
+
+    return { svgContent, totalWidth, totalHeight, filename };
+  }
+
+  exportSVG() {
+    if (this.chords.length === 0) return;
+    const { svgContent, filename } = this.buildExportSVG();
     const blob = new Blob([svgContent], { type: 'image/svg+xml' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    const chordNames = allChords.map(c => this.chordLib.getChord(c.root, c.quality).displayName).join('-');
-    a.download = `banjo-${tuning.shortName.replace(/\s+/g, '-').toLowerCase()}-${chordNames.replace(/\s+/g, '').replace(/[#]/g, 'sharp')}.svg`;
+    a.download = filename + '.svg';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  }
+
+  exportPNG() {
+    if (this.chords.length === 0) return;
+    const { svgContent, totalWidth, totalHeight, filename } = this.buildExportSVG();
+    const scale = 2;
+    const canvas = document.createElement('canvas');
+    canvas.width = totalWidth * scale;
+    canvas.height = totalHeight * scale;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(scale, scale);
+    const img = new Image();
+    const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, totalWidth, totalHeight);
+      URL.revokeObjectURL(url);
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL('image/png');
+      a.download = filename + '.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+    };
+    img.src = url;
   }
 }
 
@@ -872,11 +920,11 @@ document.addEventListener('DOMContentLoaded', () => {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
+  width: 166px;
 }
 
-.chord-preview {
-  border-right: none;
-  padding-right: 0;
+.green-text-button {
+  color: #137752;
 }
 
 .tuning-label {
@@ -886,13 +934,8 @@ document.addEventListener('DOMContentLoaded', () => {
   margin-top: 2px;
 }
 
-.collection-separator {
-  width: 2px;
-  background: #d1d5db;
-  align-self: stretch;
-  margin: 0 8px;
-  flex-shrink: 0;
-  border-radius: 1px;
+#chord-collection {
+  display: contents;
 }
 
 .remove-btn {
@@ -912,6 +955,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
 .chord-card svg {
   display: block;
+  height: auto;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  #banjo-tool {
+    padding: 12px;
+  }
+
+  .toggle-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+
+  .toggle-btn.toggle-sm {
+    padding: 5px 8px;
+    font-size: 0.75rem;
+  }
+
+  .action-btn {
+    padding: 8px 14px;
+    font-size: 0.8rem;
+  }
+
+  .chord-card {
+    width: 100%;
+  }
+
+  .chord-card svg {
+    width: 100% !important;
+  }
+
+  #preview-area {
+    width: 100%;
+  }
+
+  .remove-btn {
+    font-size: 0.9rem;
+    padding: 8px 16px;
+  }
 }
 
 /* Print styles */
@@ -921,13 +1004,7 @@ document.addEventListener('DOMContentLoaded', () => {
     margin: 0.5in;
   }
 
-  .noprint, #controls, footer {
-    display: none !important;
-  }
-
-  body > div > div:first-child,
-  body > div > .text-2xl,
-  h1 {
+  .noprint, #controls, footer, nav, header {
     display: none !important;
   }
 

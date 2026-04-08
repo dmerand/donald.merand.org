@@ -7,7 +7,6 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "dev": "node tools/dev-server.js",
     "build": "node tools/build.js",
     "deploy": "node tools/deploy.js"
   },
@@ -30,7 +29,6 @@
       "src": "../src",
       "dist": "../dist",
       "backups": "../backups",
-      "template": "../src/template.html",
       "core": "../src/core",
       "tests": "../tests"
     }

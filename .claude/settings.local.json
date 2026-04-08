@@ -5,7 +5,17 @@
       "Bash(npm test)",
       "Bash(npm run lint)",
       "Bash(npm run:*)",
-      "Bash(rg:*)"
+      "Bash(rg:*)",
+      "Bash(bundle exec:*)",
+      "Bash(ls -la /Users/donald/src/donald.merand.org/_site/projects/mini-banjo-chord-transposer*)",
+      "mcp__browsermcp__browser_screenshot",
+      "mcp__browsermcp__browser_navigate",
+      "mcp__browsermcp__browser_click",
+      "mcp__browsermcp__browser_press_key",
+      "Bash(ls /Users/donald/Downloads/*banjo* /Users/donald/Downloads/*chord*)",
+      "Bash(node:*)",
+      "Bash(git:*)",
+      "Bash(echo \"---EXIT:$?---\")"
     ],
     "deny": []
   }

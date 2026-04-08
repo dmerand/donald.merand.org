@@ -1,0 +1,47 @@
+{
+  "name": "banjo-chords",
+  "version": "0.3.0",
+  "description": "Mini Banjo Chord Transposer - Algorithmic chord voicing for 5-string banjo",
+  "main": "src/widget.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "dev": "node tools/dev-server.js",
+    "build": "node tools/build.js",
+    "deploy": "node tools/deploy.js"
+  },
+  "keywords": [
+    "banjo",
+    "music",
+    "chords",
+    "transposition",
+    "visualization"
+  ],
+  "author": "Donald Merand",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "jest": "^30.0.0"
+  },
+  "config": {
+    "paths": {
+      "blogPost": "../../../_posts/2026-04-07-mini-banjo-chord-transposer.md",
+      "src": "../src",
+      "dist": "../dist",
+      "backups": "../backups",
+      "template": "../src/template.html",
+      "core": "../src/core",
+      "tests": "../tests"
+    }
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "src/core/**/*.js"
+    ],
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ]
+  }
+}

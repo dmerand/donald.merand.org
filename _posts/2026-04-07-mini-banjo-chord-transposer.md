@@ -96,7 +96,7 @@ category: projects
 /*
  * Mini Banjo Chord Transposer
  * Version: 1.0.0
- * Built: 2026-04-08T14:10:49.503Z
+ * Built: 2026-04-09T00:38:29.554Z
  * Generated automatically - do not edit directly
  */
 // === core/musical-theory.js ===
@@ -132,6 +132,34 @@ class MusicalTheory {
   chordSemitones(rootName, intervals) {
     const rootSemitone = this.noteToSemitone(rootName);
     return intervals.map(i => ((rootSemitone + i) % 12 + 12) % 12);
+  }
+
+  /**
+   * Build a semitone → note name map with correct enharmonic spelling.
+   * Tertian chords stack in thirds: root(0), 3rd(2), 5th(4), 7th(6) letters up.
+   */
+  chordSpelling(rootName, intervals) {
+    const letters = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+    const letterSemitones = [0, 2, 4, 5, 7, 9, 11];
+
+    const rootLetter = rootName.charAt(0);
+    const rootLetterIdx = letters.indexOf(rootLetter);
+    const rootSemitone = this.noteToSemitone(rootName);
+
+    const spelling = {};
+    for (let i = 0; i < intervals.length; i++) {
+      const semitone = (rootSemitone + intervals[i]) % 12;
+      const targetLetterIdx = (rootLetterIdx + i * 2) % 7;
+      const targetLetter = letters[targetLetterIdx];
+      const natural = letterSemitones[targetLetterIdx];
+      const diff = ((semitone - natural) + 12) % 12;
+
+      if (diff === 0) spelling[semitone] = targetLetter;
+      else if (diff === 1) spelling[semitone] = targetLetter + '#';
+      else if (diff === 11) spelling[semitone] = targetLetter + 'b';
+      else spelling[semitone] = this.semitoneToNote(semitone);
+    }
+    return spelling;
   }
 }
 
@@ -224,7 +252,7 @@ class BanjoVoicer {
     this.maxSpan = 4;
   }
 
-  findBestVoicing(chordSemitones, rootSemitone, tuningKey, position = 0) {
+  findBestVoicing(chordSemitones, rootSemitone, tuningKey, position = 0, spelling = null) {
     const tuning = this.tunings.get(tuningKey);
 
     const drone5open = tuning.openSemitones[0];
@@ -278,10 +306,13 @@ class BanjoVoicer {
       };
     }
 
+    const noteName = (semitone) =>
+      (spelling && spelling[semitone]) || this.theory.semitoneToNote(semitone);
+
     const frets = [string5, ...bestVoicing.map(c => c.fret)];
     const notes = [
-      string5 >= 0 ? this.theory.semitoneToNote(drone5open) : null,
-      ...bestVoicing.map(c => this.theory.semitoneToNote(c.semitone)),
+      string5 >= 0 ? noteName(drone5open) : null,
+      ...bestVoicing.map(c => noteName(c.semitone)),
     ];
     const muted = frets.map(f => f === -1);
 
@@ -703,7 +734,8 @@ class BanjoToolController {
     const chord = this.chordLib.getChord(root, quality);
     const semitones = this.theory.chordSemitones(root, chord.intervals);
     const rootSemitone = this.theory.noteToSemitone(root);
-    const voicing = this.voicer.findBestVoicing(semitones, rootSemitone, this.currentTuning, position);
+    const spelling = this.theory.chordSpelling(root, chord.intervals);
+    const voicing = this.voicer.findBestVoicing(semitones, rootSemitone, this.currentTuning, position, spelling);
     return this.renderer.render(voicing, chord.displayName, tuning.openNotes);
   }
 

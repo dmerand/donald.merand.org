@@ -6,10 +6,10 @@ category: projects
 
 <div class="text-sm">
   <p>
-    An interactive chord visualizer for 5-string banjo. Select a root note and chord quality to see the fingering diagram. Toggle between mini banjo (C tuning) and standard banjo (G tuning) to see how chords transpose between the two instruments.
+    An interactive chord visualizer for 5-string banjo and mandolin. Select a root note and chord quality to see the fingering diagram. Toggle between mini banjo (C tuning), standard banjo (G tuning), and mandolin (GDAE) to see how chords voice on each instrument.
   </p>
   <p>
-    I have a <a href="https://goldtonemusicgroup.com/goldtone/instruments/bg-mini">Gold Tone BG-Mini</a> and needed a way to convert standard banjo chord charts. The mini banjo is tuned a perfect fourth higher than standard, so the same chord shape produces a different chord on each instrument.
+    I have a <a href="https://goldtonemusicgroup.com/goldtone/instruments/bg-mini">Gold Tone BG-Mini</a> and needed a way to convert standard banjo chord charts. The mini banjo is tuned a perfect fourth higher than standard, so the same chord shape produces a different chord on each instrument. Mandolin support lets you see the same chords on a 4-string GDAE instrument.
   </p>
 </div>
 
@@ -22,6 +22,7 @@ category: projects
 <div class="flex gap-2 flex-wrap">
 <button data-tuning="mini" class="toggle-btn toggle-active">Mini Banjo (C)</button>
 <button data-tuning="standard" class="toggle-btn">Standard Banjo (G)</button>
+<button data-tuning="mandolin" class="toggle-btn">Mandolin (GDAE)</button>
 </div>
 </div>
 
@@ -96,7 +97,7 @@ category: projects
 /*
  * Mini Banjo Chord Transposer
  * Version: 1.0.0
- * Built: 2026-04-09T00:38:29.554Z
+ * Built: 2026-05-26T01:11:15.796Z
  * Generated automatically - do not edit directly
  */
 // === core/musical-theory.js ===
@@ -210,12 +211,24 @@ class BanjoTunings {
         shortName: 'G Tuning',
         openNotes: ['G', 'D', 'G', 'B', 'D'],
         openSemitones: [7, 2, 7, 11, 2],
+        numStrings: 5,
+        hasDrone: true,
       },
       'mini': {
         name: 'Mini Banjo (C)',
         shortName: 'C Tuning',
         openNotes: ['C', 'G', 'C', 'E', 'G'],
         openSemitones: [0, 7, 0, 4, 7],
+        numStrings: 5,
+        hasDrone: true,
+      },
+      'mandolin': {
+        name: 'Mandolin (GDAE)',
+        shortName: 'GDAE',
+        openNotes: ['G', 'D', 'A', 'E'],
+        openSemitones: [7, 2, 9, 4],
+        numStrings: 4,
+        hasDrone: false,
       },
     };
   }
@@ -254,23 +267,29 @@ class BanjoVoicer {
 
   findBestVoicing(chordSemitones, rootSemitone, tuningKey, position = 0, spelling = null) {
     const tuning = this.tunings.get(tuningKey);
+    const hasDrone = tuning.hasDrone !== false;
+    const numFretted = hasDrone ? tuning.numStrings - 1 : tuning.numStrings;
+    const frettedOffset = hasDrone ? 1 : 0;
 
-    const drone5open = tuning.openSemitones[0];
-    const string5 = (position === 0 && chordSemitones.includes(drone5open)) ? 0 : -1;
+    let droneFret = -1;
+    if (hasDrone) {
+      const droneOpen = tuning.openSemitones[0];
+      droneFret = (position === 0 && chordSemitones.includes(droneOpen)) ? 0 : -1;
+    }
 
-    // Include open string as candidate even if not a chord tone (conventional compromise)
     const candidates = [];
-    for (let s = 1; s <= 4; s++) {
+    for (let s = 0; s < numFretted; s++) {
+      const tuningIdx = s + frettedOffset;
       const stringCandidates = [];
-      const openSemitone = tuning.openSemitones[s];
+      const openSemitone = tuning.openSemitones[tuningIdx];
       if (position === 0) {
         if (!chordSemitones.includes(openSemitone)) {
           stringCandidates.push({ fret: 0, semitone: openSemitone, nonChordTone: true });
         }
       }
       for (let f = 0; f <= this.maxFret; f++) {
-        if (position > 0 && f === 0) continue; // skip open strings for higher positions
-        const semitone = (tuning.openSemitones[s] + f) % 12;
+        if (position > 0 && f === 0) continue;
+        const semitone = (tuning.openSemitones[tuningIdx] + f) % 12;
         if (chordSemitones.includes(semitone)) {
           stringCandidates.push({ fret: f, semitone, nonChordTone: false });
         }
@@ -282,8 +301,8 @@ class BanjoVoicer {
     let bestScore = -Infinity;
 
     const search = (stringIdx, current) => {
-      if (stringIdx === 4) {
-        const score = this.scoreVoicing(current, chordSemitones, rootSemitone, tuning, string5, position);
+      if (stringIdx === numFretted) {
+        const score = this.scoreVoicing(current, chordSemitones, rootSemitone, tuning, hasDrone ? droneFret : null, position, frettedOffset);
         if (score > bestScore) {
           bestScore = score;
           bestVoicing = [...current];
@@ -296,35 +315,43 @@ class BanjoVoicer {
       }
     };
 
-    search(0, new Array(4));
-
-    if (!bestVoicing) {
-      return {
-        frets: [string5, 0, 0, 0, 0],
-        notes: tuning.openNotes.slice(),
-        muted: [string5 === -1, false, false, false, false],
-      };
-    }
+    search(0, new Array(numFretted));
 
     const noteName = (semitone) =>
       (spelling && spelling[semitone]) || this.theory.semitoneToNote(semitone);
 
-    const frets = [string5, ...bestVoicing.map(c => c.fret)];
-    const notes = [
-      string5 >= 0 ? noteName(drone5open) : null,
-      ...bestVoicing.map(c => noteName(c.semitone)),
-    ];
-    const muted = frets.map(f => f === -1);
+    if (!bestVoicing) {
+      const frets = hasDrone
+        ? [droneFret, ...new Array(numFretted).fill(0)]
+        : new Array(numFretted).fill(0);
+      return {
+        frets,
+        notes: tuning.openNotes.slice(),
+        muted: frets.map(f => f === -1),
+      };
+    }
 
-    return { frets, notes, muted };
+    let frets, notes;
+    if (hasDrone) {
+      frets = [droneFret, ...bestVoicing.map(c => c.fret)];
+      notes = [
+        droneFret >= 0 ? noteName(tuning.openSemitones[0]) : null,
+        ...bestVoicing.map(c => noteName(c.semitone)),
+      ];
+    } else {
+      frets = bestVoicing.map(c => c.fret);
+      notes = bestVoicing.map(c => noteName(c.semitone));
+    }
+
+    return { frets, notes, muted: frets.map(f => f === -1) };
   }
 
-  scoreVoicing(strings4to1, chordSemitones, rootSemitone, tuning, string5Fret, position = 0) {
-    const frets = strings4to1.map(c => c.fret);
-    const semitones = strings4to1.map(c => c.semitone);
-    const nonChordTones = strings4to1.map(c => c.nonChordTone || false);
+  scoreVoicing(frettedStrings, chordSemitones, rootSemitone, tuning, droneFret, position = 0, frettedOffset = 1) {
+    const frets = frettedStrings.map(c => c.fret);
+    const semitones = frettedStrings.map(c => c.semitone);
+    const nonChordTones = frettedStrings.map(c => c.nonChordTone || false);
+    const numFretted = frettedStrings.length;
 
-    // Fret span (exclude open strings)
     const frettedFrets = frets.filter(f => f > 0);
     const span = frettedFrets.length > 0
       ? Math.max(...frettedFrets) - Math.min(...frettedFrets)
@@ -334,53 +361,44 @@ class BanjoVoicer {
 
     let score = 0;
 
-    // Chord tone coverage (only count actual chord tones)
     const chordToneSemitones = semitones.filter((s, i) => !nonChordTones[i]);
     const allSemitones = [...chordToneSemitones];
-    if (string5Fret >= 0) allSemitones.push(tuning.openSemitones[0]);
+    if (droneFret !== null && droneFret >= 0) allSemitones.push(tuning.openSemitones[0]);
     const uniqueTones = new Set(allSemitones.filter(s => chordSemitones.includes(s)));
     score += uniqueTones.size * 15;
     if (uniqueTones.size === chordSemitones.length) score += 20;
 
-    // Root in bass (string 4, index 0) - modest bonus
     if (!nonChordTones[0] && semitones[0] === rootSemitone) score += 6;
 
-    // Open string handling (only relevant for first position)
     if (position === 0) {
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < numFretted; i++) {
         if (frets[i] === 0 && !nonChordTones[i]) {
           score += 10;
         } else if (frets[i] === 0 && nonChordTones[i]) {
           score -= 5;
-        } else if (frets[i] > 0 && chordSemitones.includes(tuning.openSemitones[i + 1])) {
+        } else if (frets[i] > 0 && chordSemitones.includes(tuning.openSemitones[i + frettedOffset])) {
           score -= 8;
         }
       }
     }
 
-    // Penalize non-chord tones
     const nctCount = nonChordTones.filter(Boolean).length;
     score -= nctCount * 6;
 
     if (position === 0) {
-      // First position: prefer lower frets
       const totalFrets = frets.reduce((a, b) => a + b, 0);
       score -= totalFrets * 2;
 
-      // Penalize high frets
       const maxFret = Math.max(...frets);
       if (maxFret > 5) score -= (maxFret - 5) * 5;
     } else {
-      // Higher positions: prefer frets near the target position
       for (const f of frettedFrets) {
         score -= Math.abs(f - position) * 3;
       }
     }
 
-    // Penalize span
     score -= span * 3;
 
-    // Penalize large gaps between adjacent fretted strings (awkward hand positions)
     const frettedPositions = frets.map((f, i) => ({ fret: f, idx: i })).filter(p => p.fret > 0);
     for (let i = 1; i < frettedPositions.length; i++) {
       const gap = Math.abs(frettedPositions[i].fret - frettedPositions[i - 1].fret);
@@ -441,9 +459,14 @@ class ChordDiagramRenderer {
     };
   }
 
-  get diagramWidth() {
+  getDiagramWidth(numStrings) {
     const c = this.config;
-    return c.leftMargin + (c.numStrings - 1) * c.stringSpacing + c.rightMargin;
+    const ns = numStrings || c.numStrings;
+    return c.leftMargin + (ns - 1) * c.stringSpacing + c.rightMargin;
+  }
+
+  get diagramWidth() {
+    return this.getDiagramWidth(this.config.numStrings);
   }
 
   get diagramHeight() {
@@ -453,7 +476,8 @@ class ChordDiagramRenderer {
 
   render(voicing, chordName, tuningNotes) {
     const c = this.config;
-    const w = this.diagramWidth;
+    const numStrings = voicing.frets.length;
+    const w = this.getDiagramWidth(numStrings);
     const h = this.diagramHeight;
 
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -484,7 +508,7 @@ class ChordDiagramRenderer {
     // Fretboard geometry
     const fretboardTop = c.topMargin;
     const fretboardLeft = c.leftMargin;
-    const fretboardWidth = (c.numStrings - 1) * c.stringSpacing;
+    const fretboardWidth = (numStrings - 1) * c.stringSpacing;
 
     // Fret lines
     for (let i = 0; i <= c.numFrets; i++) {
@@ -496,11 +520,11 @@ class ChordDiagramRenderer {
     }
 
     // String lines
-    for (let i = 0; i < c.numStrings; i++) {
+    for (let i = 0; i < numStrings; i++) {
       const x = fretboardLeft + i * c.stringSpacing;
       svg.appendChild(this.svgLine(x, fretboardTop, x, fretboardTop + c.numFrets * c.fretSpacing, {
         stroke: '#333',
-        strokeWidth: i === 0 ? 1.5 : 1,
+        strokeWidth: 1,
       }));
     }
 
@@ -518,7 +542,7 @@ class ChordDiagramRenderer {
     const indicatorY = fretboardTop - c.indicatorRadius - 6;
 
     // Open / muted indicators and finger dots
-    for (let s = 0; s < c.numStrings; s++) {
+    for (let s = 0; s < numStrings; s++) {
       const x = fretboardLeft + s * c.stringSpacing;
       const fret = voicing.frets[s];
 
@@ -551,7 +575,7 @@ class ChordDiagramRenderer {
     }
 
     // String labels at bottom
-    for (let s = 0; s < c.numStrings; s++) {
+    for (let s = 0; s < numStrings; s++) {
       const x = fretboardLeft + s * c.stringSpacing;
       svg.appendChild(this.svgText(
         x, fretboardTop + c.numFrets * c.fretSpacing + 18,
@@ -803,7 +827,7 @@ class BanjoToolController {
 
   buildExportSVG() {
     const tuning = this.tunings.get(this.currentTuning);
-    const dw = this.renderer.diagramWidth;
+    const dw = this.renderer.getDiagramWidth(tuning.numStrings);
     const dh = this.renderer.diagramHeight;
     const gap = 10;
     const allChords = [...this.chords];

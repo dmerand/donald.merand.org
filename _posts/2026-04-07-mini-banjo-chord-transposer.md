@@ -1,15 +1,15 @@
 ---
 layout: post
-title: Mini Banjo Chord Transposer
+title: Stringed Instrument Chord Finder
 category: projects
 ---
 
 <div class="text-sm">
   <p>
-    An interactive chord visualizer for 5-string banjo and mandolin. Select a root note and chord quality to see the fingering diagram. Toggle between mini banjo (C tuning), standard banjo (G tuning), and mandolin (GDAE) to see how chords voice on each instrument.
+    An algorithmic chord voicing tool for banjo, mandolin, and guitar. Pick a tuning, root, and quality, then choose an inversion and position to explore voicings up and down the neck.
   </p>
   <p>
-    I have a <a href="https://goldtonemusicgroup.com/goldtone/instruments/bg-mini">Gold Tone BG-Mini</a> and needed a way to convert standard banjo chord charts. The mini banjo is tuned a perfect fourth higher than standard, so the same chord shape produces a different chord on each instrument. Mandolin support lets you see the same chords on a 4-string GDAE instrument.
+    <strong>Update:</strong> This started as a mini banjo transposition tool, and has since grown into a general-purpose chord finder with support for inversions, multiple instruments, and customizable voicing styles. See <a href="#background">below</a> for the full story.
   </p>
 </div>
 
@@ -58,26 +58,25 @@ category: projects
 </div>
 </div>
 
-<div class="mb-4">
+<div class="mb-4 flex flex-wrap" style="gap: 2rem;">
+<div>
+<label class="block text-sm font-medium mb-2">Inversion:</label>
+<div class="flex gap-2 flex-wrap" id="inversion-buttons">
+</div>
+</div>
+<div>
 <label class="block text-sm font-medium mb-2">Position:</label>
 <div class="flex gap-2 flex-wrap" id="position-buttons">
-<button data-position="0" class="toggle-btn toggle-sm toggle-active">Open</button>
-<button data-position="3" class="toggle-btn toggle-sm">3rd</button>
-<button data-position="5" class="toggle-btn toggle-sm">5th</button>
-<button data-position="7" class="toggle-btn toggle-sm">7th</button>
-<button data-position="9" class="toggle-btn toggle-sm">9th</button>
-<button data-position="12" class="toggle-btn toggle-sm">12th</button>
+</div>
 </div>
 </div>
 
 <div class="mb-4">
 <label class="block text-sm font-medium mb-2" for="style-select">Chord Style:</label>
 <select id="style-select" class="style-select">
-<option value="easy">Easy</option>
-<option value="clean">Clean</option>
-<option value="rich">Rich</option>
+<option value="open">Open</option>
 <option value="closed">Closed</option>
-<option value="chop">Chop</option>
+<option value="mandolin-chop">Mandolin Chop</option>
 <option value="custom" disabled hidden>Custom</option>
 </select>
 </div>
@@ -117,7 +116,7 @@ category: projects
 /*
  * Mini Banjo Chord Transposer
  * Version: 1.0.0
- * Built: 2026-05-26T23:25:30.176Z
+ * Built: 2026-05-27T23:40:00.894Z
  * Generated automatically - do not edit directly
  */
 // === core/musical-theory.js ===
@@ -278,53 +277,30 @@ class BanjoTunings {
 }
 
 // === core/banjo-voicer.js ===
-/**
- * Algorithmic chord voicing finder for 5-string banjo
- *
- * Supports first-position (open) voicings and higher positions up the neck.
- * Position 0 = open/first position, position N = favor frets near fret N.
- */
-
 const VOICING_STYLES = {
-  easy: {
-    coverage: 15, completeness: 20, rootBass: 6,
-    openString: 10, openNonChordTone: -5, fretOverOpen: -8,
-    wrongNote: -6, effort: -2, highFretEffort: -5,
-    positionTight: -4, stretch: -3, fingerGap: -2,
-    doubledNote: 0, inversion: 0, maxStretch: 4,
-    allowWrongNotes: true,
-  },
-  clean: {
-    coverage: 15, completeness: 25, rootBass: 10,
-    openString: 6, openNonChordTone: 0, fretOverOpen: 0,
-    wrongNote: 0, effort: -1, highFretEffort: -3,
-    positionTight: -3, stretch: -3, fingerGap: -2,
-    doubledNote: -3, inversion: 0, maxStretch: 4,
-    allowWrongNotes: false,
-  },
-  rich: {
-    coverage: 30, completeness: 80, rootBass: 0,
-    openString: 3, openNonChordTone: -10, fretOverOpen: 0,
-    wrongNote: -10, effort: -1, highFretEffort: -2,
-    positionTight: -1, stretch: -2, fingerGap: -1,
-    doubledNote: -8, inversion: 12, maxStretch: 5,
-    allowWrongNotes: true,
+  open: {
+    coverage: 15, completeness: 48, rootBass: 6,
+    openString: 21.6, openNonChordTone: -5, fretOverOpen: -8,
+    wrongNote: -6, effort: -3.6, highFretEffort: -5,
+    positionTight: -2.5, orientation: -1.4, stretch: -6, fingerGap: -1.1,
+    doubledNote: 0, inversion: 0, maxStretch: 5,
+    allowWrongNotes: true, allowMuting: true,
   },
   closed: {
     coverage: 11, completeness: 100, rootBass: 3,
-    openString: -10, openNonChordTone: -2, fretOverOpen: 10,
-    wrongNote: -1, effort: -0.5, highFretEffort: -0.5,
-    positionTight: -2, stretch: -3, fingerGap: -2,
-    doubledNote: -15, inversion: 0, maxStretch: 7,
-    allowWrongNotes: false,
+    openString: -6.6, openNonChordTone: -2, fretOverOpen: 10,
+    wrongNote: -1, effort: -2.5, highFretEffort: -0.5,
+    positionTight: 0, orientation: 0, stretch: -3.1, fingerGap: -1,
+    doubledNote: 0, inversion: 0, maxStretch: 5,
+    allowWrongNotes: false, allowMuting: true,
   },
-  chop: {
-    coverage: 20, completeness: 60, rootBass: 0,
-    openString: -30, openNonChordTone: -30, fretOverOpen: 15,
+  'mandolin-chop': {
+    coverage: 20, completeness: 100, rootBass: 0,
+    openString: -28, openNonChordTone: -30, fretOverOpen: 15,
     wrongNote: -20, effort: 0, highFretEffort: 0,
-    positionTight: -2, stretch: 2, fingerGap: 1,
-    doubledNote: -12, inversion: 3, maxStretch: 6,
-    allowWrongNotes: false,
+    positionTight: 0, orientation: -0.3, stretch: 0, fingerGap: -0.5,
+    doubledNote: 0, inversion: 3, maxStretch: 5,
+    allowWrongNotes: false, allowMuting: false,
   },
 };
 
@@ -333,15 +309,35 @@ class BanjoVoicer {
     this.theory = theory;
     this.tunings = tunings;
     this.maxFret = 12;
-    this.maxSpan = 4;
+    this.maxSpan = 5;
   }
 
-  findBestVoicing(chordSemitones, rootSemitone, tuningKey, position = 0, spelling = null, style = 'easy') {
+  findAvailablePositions(bassSemitone, tuningKey) {
     const tuning = this.tunings.get(tuningKey);
-    const weights = VOICING_STYLES[style] || VOICING_STYLES.easy;
     const hasDrone = tuning.hasDrone !== false;
     const numFretted = hasDrone ? tuning.numStrings - 1 : tuning.numStrings;
     const frettedOffset = hasDrone ? 1 : 0;
+    const bottomHalf = Math.floor(numFretted / 2);
+
+    const positions = new Set();
+    for (let s = 0; s < bottomHalf; s++) {
+      const openSemitone = tuning.openSemitones[s + frettedOffset];
+      for (let f = 0; f <= this.maxFret; f++) {
+        if ((openSemitone + f) % 12 === bassSemitone) {
+          positions.add(f);
+        }
+      }
+    }
+    return Array.from(positions).sort((a, b) => a - b);
+  }
+
+  findBestVoicing(chordSemitones, rootSemitone, tuningKey, bassSemitone, bassFret = 0, spelling = null, style = 'open') {
+    const tuning = this.tunings.get(tuningKey);
+    const weights = VOICING_STYLES[style] || VOICING_STYLES.open;
+    const hasDrone = tuning.hasDrone !== false;
+    const numFretted = hasDrone ? tuning.numStrings - 1 : tuning.numStrings;
+    const frettedOffset = hasDrone ? 1 : 0;
+    const position = bassFret;
 
     let droneFret = -1;
     if (hasDrone) {
@@ -349,23 +345,54 @@ class BanjoVoicer {
       droneFret = (position === 0 && chordSemitones.includes(droneOpen)) ? 0 : -1;
     }
 
+    const bottomHalf = Math.floor(numFretted / 2);
+    let bassStringIdx = -1;
+    for (let s = 0; s < bottomHalf; s++) {
+      const tuningIdx = s + frettedOffset;
+      if ((tuning.openSemitones[tuningIdx] + bassFret) % 12 === bassSemitone) {
+        bassStringIdx = s;
+        break;
+      }
+    }
+
+    const canMute = weights.allowMuting !== false;
+    const hardBass = bassStringIdx >= 0;
+
     const candidates = [];
     for (let s = 0; s < numFretted; s++) {
       const tuningIdx = s + frettedOffset;
+
+      if (hardBass && s === bassStringIdx) {
+        candidates.push([{ fret: bassFret, semitone: bassSemitone, nonChordTone: false }]);
+        continue;
+      }
+
       const stringCandidates = [];
+
+      if (hardBass && s < bassStringIdx && canMute) {
+        stringCandidates.push({ fret: -1, semitone: -1, nonChordTone: false, muted: true });
+      }
+
       const openSemitone = tuning.openSemitones[tuningIdx];
-      if (position === 0 && weights.allowWrongNotes !== false) {
+      const allowOpen = weights.openString >= 0;
+      if (allowOpen && weights.allowWrongNotes !== false) {
         if (!chordSemitones.includes(openSemitone)) {
           stringCandidates.push({ fret: 0, semitone: openSemitone, nonChordTone: true });
         }
       }
+
       for (let f = 0; f <= this.maxFret; f++) {
-        if (position > 0 && f === 0) continue;
-        const semitone = (tuning.openSemitones[tuningIdx] + f) % 12;
+        if (f === 0 && !allowOpen) continue;
+        const semitone = (openSemitone + f) % 12;
         if (chordSemitones.includes(semitone)) {
           stringCandidates.push({ fret: f, semitone, nonChordTone: false });
         }
       }
+
+      if (stringCandidates.length === 0) {
+        stringCandidates.push({ fret: 0, semitone: openSemitone, nonChordTone: true });
+      }
+
       candidates.push(stringCandidates);
     }
 
@@ -374,7 +401,7 @@ class BanjoVoicer {
 
     const search = (stringIdx, current) => {
       if (stringIdx === numFretted) {
-        const score = this.scoreVoicing(current, chordSemitones, rootSemitone, tuning, hasDrone ? droneFret : null, position, frettedOffset, weights);
+        const score = this.scoreVoicing(current, chordSemitones, bassSemitone, tuning, droneFret, position, frettedOffset, weights, hardBass, canMute);
         if (score > bestScore) {
           bestScore = score;
           bestVoicing = [...current];
@@ -405,26 +432,49 @@ class BanjoVoicer {
 
     let frets, notes;
     if (hasDrone) {
-      frets = [droneFret, ...bestVoicing.map(c => c.fret)];
+      frets = [droneFret, ...bestVoicing.map(c => c.muted ? -1 : c.fret)];
       notes = [
         droneFret >= 0 ? noteName(tuning.openSemitones[0]) : null,
-        ...bestVoicing.map(c => noteName(c.semitone)),
+        ...bestVoicing.map(c => c.muted ? null : noteName(c.semitone)),
       ];
     } else {
-      frets = bestVoicing.map(c => c.fret);
-      notes = bestVoicing.map(c => noteName(c.semitone));
+      frets = bestVoicing.map(c => c.muted ? -1 : c.fret);
+      notes = bestVoicing.map(c => c.muted ? null : noteName(c.semitone));
     }
 
     return { frets, notes, muted: frets.map(f => f === -1) };
   }
 
-  scoreVoicing(frettedStrings, chordSemitones, rootSemitone, tuning, droneFret, position = 0, frettedOffset = 1, w = VOICING_STYLES.easy) {
-    const frets = frettedStrings.map(c => c.fret);
-    const semitones = frettedStrings.map(c => c.semitone);
-    const nonChordTones = frettedStrings.map(c => c.nonChordTone || false);
+  scoreVoicing(frettedStrings, chordSemitones, bassSemitone, tuning, droneFret, position, frettedOffset, w, hardBass, canMute) {
     const numFretted = frettedStrings.length;
 
-    const frettedFrets = frets.filter(f => f > 0);
+    let firstActiveIdx = -1;
+    for (let i = 0; i < numFretted; i++) {
+      if (!frettedStrings[i].muted) {
+        firstActiveIdx = i;
+        break;
+      }
+    }
+    if (firstActiveIdx === -1) return -1000;
+
+    if (hardBass && canMute && frettedStrings[firstActiveIdx].semitone !== bassSemitone) return -1000;
+
+    const activeFrets = [];
+    const activeSemitones = [];
+    const activeNonChordTones = [];
+    let mutedCount = 0;
+
+    for (let i = 0; i < numFretted; i++) {
+      if (frettedStrings[i].muted) {
+        mutedCount++;
+      } else {
+        activeFrets.push(frettedStrings[i].fret);
+        activeSemitones.push(frettedStrings[i].semitone);
+        activeNonChordTones.push(frettedStrings[i].nonChordTone || false);
+      }
+    }
+
+    const frettedFrets = activeFrets.filter(f => f > 0);
     const span = frettedFrets.length > 0
       ? Math.max(...frettedFrets) - Math.min(...frettedFrets)
       : 0;
@@ -433,45 +483,44 @@ class BanjoVoicer {
 
     let score = 0;
 
-    const chordToneSemitones = semitones.filter((s, i) => !nonChordTones[i]);
+    score -= mutedCount * 8;
+
+    const chordToneSemitones = activeSemitones.filter((s, i) => !activeNonChordTones[i]);
     const allSemitones = [...chordToneSemitones];
     if (droneFret !== null && droneFret >= 0) allSemitones.push(tuning.openSemitones[0]);
     const uniqueTones = new Set(allSemitones.filter(s => chordSemitones.includes(s)));
     score += uniqueTones.size * w.coverage;
     if (uniqueTones.size === chordSemitones.length) score += w.completeness;
 
-    if (!nonChordTones[0] && semitones[0] === rootSemitone) score += w.rootBass;
-    if (w.inversion && !nonChordTones[0] && semitones[0] !== rootSemitone && chordSemitones.includes(semitones[0])) {
-      score += w.inversion;
-    }
-
-    if (position === 0) {
-      for (let i = 0; i < numFretted; i++) {
-        if (frets[i] === 0 && !nonChordTones[i]) {
-          score += w.openString;
-        } else if (frets[i] === 0 && nonChordTones[i]) {
-          score += w.openNonChordTone;
-        } else if (frets[i] > 0 && chordSemitones.includes(tuning.openSemitones[i + frettedOffset])) {
-          score += w.fretOverOpen;
-        }
+    for (let i = 0; i < numFretted; i++) {
+      if (frettedStrings[i].muted) continue;
+      const fret = frettedStrings[i].fret;
+      const nonChordTone = frettedStrings[i].nonChordTone || false;
+      if (fret === 0 && !nonChordTone) {
+        score += w.openString;
+      } else if (fret === 0 && nonChordTone) {
+        score += w.openNonChordTone;
+      } else if (fret > 0 && chordSemitones.includes(tuning.openSemitones[i + frettedOffset])) {
+        score -= w.openString * 0.5;
       }
     }
 
-    score += nonChordTones.filter(Boolean).length * w.wrongNote;
+    score += activeNonChordTones.filter(Boolean).length * w.wrongNote;
 
     if (position === 0) {
-      score += frets.reduce((a, b) => a + b, 0) * w.effort;
-      const maxFret = Math.max(...frets);
+      score += activeFrets.reduce((a, b) => a + b, 0) * w.effort;
+      const maxFret = activeFrets.length > 0 ? Math.max(...activeFrets) : 0;
       if (maxFret > 5) score += (maxFret - 5) * w.highFretEffort;
     } else {
       for (const f of frettedFrets) {
         score += Math.abs(f - position) * w.positionTight;
+        if (w.orientation) score += (f - position) * w.orientation;
       }
     }
 
     score += span * w.stretch;
 
-    const frettedPositions = frets.map((f, i) => ({ fret: f, idx: i })).filter(p => p.fret > 0);
+    const frettedPositions = activeFrets.map((f, i) => ({ fret: f, idx: i })).filter(p => p.fret > 0);
     for (let i = 1; i < frettedPositions.length; i++) {
       const gap = Math.abs(frettedPositions[i].fret - frettedPositions[i - 1].fret);
       if (gap > 2) score += gap * w.fingerGap;
@@ -479,8 +528,8 @@ class BanjoVoicer {
 
     if (w.doubledNote) {
       const pitchCounts = {};
-      for (let i = 0; i < numFretted; i++) {
-        if (!nonChordTones[i]) pitchCounts[semitones[i]] = (pitchCounts[semitones[i]] || 0) + 1;
+      for (let i = 0; i < activeSemitones.length; i++) {
+        if (!activeNonChordTones[i]) pitchCounts[activeSemitones[i]] = (pitchCounts[activeSemitones[i]] || 0) + 1;
       }
       if (droneFret !== null && droneFret >= 0) {
         const dp = tuning.openSemitones[0];
@@ -723,34 +772,23 @@ class ChordDiagramRenderer {
 }
 
 // === widget.js ===
-/**
- * Mini Banjo Chord Transposer - Widget / UI Controller
- * Wires core modules to DOM, handles events and rendering
- */
-
 const SLIDER_CONFIG = [
   { key: 'completeness', label: 'Completeness', actualMin: 0, actualMax: 100, low: 'partial', high: 'all tones', type: 'weight',
     tip: 'How strongly to prefer voicings with every chord tone sounding' },
-  { key: 'openString', label: 'Open Strings', actualMin: -30, actualMax: 15, low: 'fretted', high: 'open', type: 'weight',
-    tip: 'Whether to favor open strings or avoid them' },
-  { key: 'rootBass', label: 'Root in Bass', actualMin: 0, actualMax: 20, low: 'any', high: 'root', type: 'weight',
-    tip: 'Bonus for placing the root note on the lowest string' },
-  { key: 'inversion', label: 'Inversions', actualMin: -5, actualMax: 15, low: 'avoid', high: 'prefer', type: 'weight',
-    tip: 'Whether to seek voicings with 3rd or 5th in the bass' },
-  { key: 'stretch', label: 'Stretch', actualMin: -6, actualMax: 6, low: 'compact', high: 'wide', type: 'weight',
-    tip: 'Prefer tight fret clusters or spread-out shapes' },
-  { key: 'maxStretch', label: 'Max Stretch', actualMin: 3, actualMax: 7, low: 'tight', high: 'wide', type: 'limit',
-    tip: 'Hard limit on fret span — voicings wider than this are rejected' },
   { key: 'doubledNote', label: 'Doubled Notes', actualMin: -15, actualMax: 0, low: 'unique', high: 'allow', type: 'weight',
     tip: 'Penalty for repeating the same pitch class on multiple strings' },
-  { key: 'effort', label: 'Effort', actualMin: -5, actualMax: 0, low: 'easy', high: 'any', type: 'weight',
-    tip: 'How much to penalize higher frets and more fingers in open position' },
-  { key: 'positionTight', label: 'Position Freedom', actualMin: -5, actualMax: 0, low: 'strict', high: 'roam', type: 'weight',
-    tip: 'How tightly voicings cluster around the target position up the neck' },
-  { key: 'fretOverOpen', label: 'Fret Preference', actualMin: -8, actualMax: 15, low: 'use open', high: 'fret it', type: 'weight',
-    tip: 'Whether to fret a string even when its open note is already a chord tone' },
+  { key: 'stretch', label: 'Stretch', actualMin: -6, actualMax: 6, low: 'compact', high: 'wide', type: 'weight',
+    tip: 'Prefer tight fret clusters or spread-out shapes' },
   { key: 'fingerGap', label: 'Finger Gap', actualMin: -4, actualMax: 2, low: 'even', high: 'allow gaps', type: 'weight',
     tip: 'Penalty for large fret jumps between adjacent strings' },
+  { key: 'positionTight', label: 'Position Freedom', actualMin: -5, actualMax: 0, low: 'strict', high: 'roam', type: 'weight',
+    tip: 'How tightly voicings cluster around the target position up the neck' },
+  { key: 'orientation', label: 'Orientation', actualMin: -3, actualMax: 3, low: 'nut', high: 'body', type: 'weight',
+    tip: 'Bias voicings toward the nut (lower frets) or the body (higher frets) relative to the position' },
+  { key: 'openString', label: 'Open Strings', actualMin: -30, actualMax: 30, low: 'avoid', high: 'prefer', type: 'weight',
+    tip: 'Whether to favor open strings on non-bass strings or avoid them' },
+  { key: 'effort', label: 'Effort', actualMin: -5, actualMax: 0, low: 'easy', high: 'any', type: 'weight',
+    tip: 'How much to penalize higher frets and more fingers in open position' },
 ];
 
 function toSlider(cfg, actual) {
@@ -773,8 +811,9 @@ class BanjoToolController {
     this.currentTuning = this.storage.load('tuning', 'mini');
     this.currentRoot = this.storage.load('root', 'G');
     this.currentQuality = this.storage.load('quality', 'major');
+    this.currentInversion = this.storage.load('inversion', 0);
     this.currentPosition = this.storage.load('position', 0);
-    this.currentStyle = this.storage.load('style', 'easy');
+    this.currentStyle = this.storage.load('style', 'open');
     this.customWeights = this.storage.load('customWeights', null);
     this.userPresets = this.storage.load('userPresets', {});
     this.chords = this.storage.load('chords', []);
@@ -789,9 +828,6 @@ class BanjoToolController {
     });
     document.querySelectorAll('[data-quality]').forEach(btn => {
       btn.addEventListener('click', () => this.setQuality(btn.dataset.quality));
-    });
-    document.querySelectorAll('[data-position]').forEach(btn => {
-      btn.addEventListener('click', () => this.setPosition(Number(btn.dataset.position)));
     });
 
     const select = document.getElementById('style-select');
@@ -816,8 +852,102 @@ class BanjoToolController {
     this.buildSliders();
     this.rebuildPresetDropdown();
     this.syncToggleButtons();
+    this.buildInversionButtons();
+    this.buildPositionButtons();
     this.renderPreview();
     this.renderCollection();
+  }
+
+  getBassSemitone(root, quality, inversion) {
+    root = root || this.currentRoot;
+    quality = quality || this.currentQuality;
+    inversion = inversion !== undefined ? inversion : this.currentInversion;
+    const chord = this.chordLib.getChord(root, quality);
+    const semitones = this.theory.chordSemitones(root, chord.intervals);
+    return semitones[inversion] !== undefined ? semitones[inversion] : semitones[0];
+  }
+
+  getChordDisplayName(root, quality, inversion) {
+    const chord = this.chordLib.getChord(root, quality);
+    if (inversion === 0) return chord.displayName;
+    const spelling = this.theory.chordSpelling(root, chord.intervals);
+    const bassSemitone = this.theory.chordSemitones(root, chord.intervals)[inversion];
+    const bassNote = spelling[bassSemitone] || this.theory.semitoneToNote(bassSemitone);
+    return chord.displayName + '/' + bassNote;
+  }
+
+  buildInversionButtons() {
+    const container = document.getElementById('inversion-buttons');
+    container.innerHTML = '';
+
+    const chord = this.chordLib.getChord(this.currentRoot, this.currentQuality);
+    const spelling = this.theory.chordSpelling(this.currentRoot, chord.intervals);
+    const semitones = this.theory.chordSemitones(this.currentRoot, chord.intervals);
+
+    if (this.currentInversion >= chord.intervals.length) {
+      this.currentInversion = 0;
+      this.storage.save('inversion', 0);
+    }
+
+    for (let i = 0; i < chord.intervals.length; i++) {
+      const btn = document.createElement('button');
+      btn.className = 'toggle-btn toggle-sm';
+      if (i === 0) {
+        btn.textContent = 'Root';
+      } else {
+        const noteName = spelling[semitones[i]] || this.theory.semitoneToNote(semitones[i]);
+        btn.textContent = '/' + noteName;
+      }
+      btn.dataset.inversion = i;
+      if (i === this.currentInversion) {
+        btn.classList.add('toggle-active');
+        btn.setAttribute('aria-pressed', 'true');
+      } else {
+        btn.setAttribute('aria-pressed', 'false');
+      }
+      btn.addEventListener('click', () => this.setInversion(i));
+      container.appendChild(btn);
+    }
+  }
+
+  buildPositionButtons() {
+    const container = document.getElementById('position-buttons');
+    container.innerHTML = '';
+
+    const bassSemitone = this.getBassSemitone();
+    const positions = this.voicer.findAvailablePositions(bassSemitone, this.currentTuning);
+
+    if (!positions.includes(this.currentPosition)) {
+      this.currentPosition = positions.length > 0 ? positions[0] : 0;
+      this.storage.save('position', this.currentPosition);
+    }
+
+    for (const pos of positions) {
+      const btn = document.createElement('button');
+      btn.className = 'toggle-btn toggle-sm';
+      btn.textContent = pos === 0 ? 'Open' : String(pos);
+      btn.dataset.position = pos;
+      if (pos === this.currentPosition) {
+        btn.classList.add('toggle-active');
+        btn.setAttribute('aria-pressed', 'true');
+      } else {
+        btn.setAttribute('aria-pressed', 'false');
+      }
+      btn.addEventListener('click', () => this.setPosition(pos));
+      container.appendChild(btn);
+    }
+  }
+
+  setInversion(inv) {
+    this.currentInversion = inv;
+    this.storage.save('inversion', inv);
+    document.querySelectorAll('[data-inversion]').forEach(btn => {
+      const active = Number(btn.dataset.inversion) === inv;
+      btn.classList.toggle('toggle-active', active);
+      btn.setAttribute('aria-pressed', active);
+    });
+    this.buildPositionButtons();
+    this.renderPreview();
   }
 
   buildSliders() {
@@ -861,9 +991,15 @@ class BanjoToolController {
     checkGroup.className = 'slider-group';
     checkGroup.innerHTML = '<div class="slider-checkbox">' +
       '<input type="checkbox" id="slider-allowWrongNotes" ' + (weights.allowWrongNotes ? 'checked' : '') + '>' +
-      '<label for="slider-allowWrongNotes">Allow Wrong Notes</label></div>';
-    checkGroup.querySelector('input').addEventListener('change', (e) => {
+      '<label for="slider-allowWrongNotes">Allow Wrong Notes</label>' +
+      '</div><div class="slider-checkbox">' +
+      '<input type="checkbox" id="slider-allowMuting" ' + (weights.allowMuting !== false ? 'checked' : '') + '>' +
+      '<label for="slider-allowMuting">Allow Muted Strings</label></div>';
+    checkGroup.querySelector('#slider-allowWrongNotes').addEventListener('change', (e) => {
       this.onSliderChange('allowWrongNotes', e.target.checked);
+    });
+    checkGroup.querySelector('#slider-allowMuting').addEventListener('change', (e) => {
+      this.onSliderChange('allowMuting', e.target.checked);
     });
     panel.appendChild(checkGroup);
 
@@ -930,8 +1066,8 @@ class BanjoToolController {
     this.storage.save('userPresets', this.userPresets);
     this.customWeights = null;
     this.storage.save('customWeights', null);
-    this.currentStyle = 'easy';
-    this.storage.save('style', 'easy');
+    this.currentStyle = 'open';
+    this.storage.save('style', 'open');
     const customOpt = document.getElementById('style-select').querySelector('option[value="custom"]');
     customOpt.disabled = true;
     customOpt.hidden = true;
@@ -957,6 +1093,8 @@ class BanjoToolController {
     }
     const checkbox = document.getElementById('slider-allowWrongNotes');
     if (checkbox) checkbox.checked = !!weights.allowWrongNotes;
+    const muteCheckbox = document.getElementById('slider-allowMuting');
+    if (muteCheckbox) muteCheckbox.checked = weights.allowMuting !== false;
   }
 
   onSliderChange(key, value) {
@@ -992,11 +1130,6 @@ class BanjoToolController {
       btn.classList.toggle('toggle-active', active);
       btn.setAttribute('aria-pressed', active);
     });
-    document.querySelectorAll('[data-position]').forEach(btn => {
-      const active = Number(btn.dataset.position) === this.currentPosition;
-      btn.classList.toggle('toggle-active', active);
-      btn.setAttribute('aria-pressed', active);
-    });
 
     const select = document.getElementById('style-select');
     if (this.currentStyle === 'custom') {
@@ -1015,6 +1148,7 @@ class BanjoToolController {
       btn.classList.toggle('toggle-active', active);
       btn.setAttribute('aria-pressed', active);
     });
+    this.buildPositionButtons();
     this.renderPreview();
     this.renderCollection();
   }
@@ -1027,6 +1161,8 @@ class BanjoToolController {
       btn.classList.toggle('toggle-active', active);
       btn.setAttribute('aria-pressed', active);
     });
+    this.buildInversionButtons();
+    this.buildPositionButtons();
     this.renderPreview();
   }
 
@@ -1038,13 +1174,15 @@ class BanjoToolController {
       btn.classList.toggle('toggle-active', active);
       btn.setAttribute('aria-pressed', active);
     });
+    this.buildInversionButtons();
+    this.buildPositionButtons();
     this.renderPreview();
   }
 
   setPosition(position) {
     this.currentPosition = position;
     this.storage.save('position', position);
-    document.querySelectorAll('[data-position]').forEach(btn => {
+    document.querySelectorAll('#position-buttons [data-position]').forEach(btn => {
       const active = Number(btn.dataset.position) === position;
       btn.classList.toggle('toggle-active', active);
       btn.setAttribute('aria-pressed', active);
@@ -1070,7 +1208,14 @@ class BanjoToolController {
   addChord() {
     const style = this.currentStyle;
     const weights = style === 'custom' ? { ...this.customWeights } : null;
-    this.chords.push({ root: this.currentRoot, quality: this.currentQuality, position: this.currentPosition, style, weights });
+    this.chords.push({
+      root: this.currentRoot,
+      quality: this.currentQuality,
+      inversion: this.currentInversion,
+      position: this.currentPosition,
+      style,
+      weights,
+    });
     this.persist();
     this.renderCollection();
   }
@@ -1079,25 +1224,28 @@ class BanjoToolController {
     this.storage.save('chords', this.chords);
   }
 
-  renderChordDiagram(root, quality, position = 0, style = null) {
+  renderChordDiagram(root, quality, inversion = 0, position = 0, style = null) {
     const tuning = this.tunings.get(this.currentTuning);
     const chord = this.chordLib.getChord(root, quality);
     const semitones = this.theory.chordSemitones(root, chord.intervals);
     const rootSemitone = this.theory.noteToSemitone(root);
     const spelling = this.theory.chordSpelling(root, chord.intervals);
-    const voicing = this.voicer.findBestVoicing(semitones, rootSemitone, this.currentTuning, position, spelling, style || this.currentStyle);
-    return this.renderer.render(voicing, chord.displayName, tuning.openNotes);
+    const bassSemitone = semitones[inversion] !== undefined ? semitones[inversion] : semitones[0];
+    const displayName = this.getChordDisplayName(root, quality, inversion);
+    const voicing = this.voicer.findBestVoicing(semitones, rootSemitone, this.currentTuning, bassSemitone, position, spelling, style || this.currentStyle);
+    return this.renderer.render(voicing, displayName, tuning.openNotes);
   }
 
   updatePositionButtons() {
     const chord = this.chordLib.getChord(this.currentRoot, this.currentQuality);
     const semitones = this.theory.chordSemitones(this.currentRoot, chord.intervals);
     const rootSemitone = this.theory.noteToSemitone(this.currentRoot);
+    const bassSemitone = this.getBassSemitone();
 
     const seen = [];
-    document.querySelectorAll('[data-position]').forEach(btn => {
+    document.querySelectorAll('#position-buttons [data-position]').forEach(btn => {
       const pos = Number(btn.dataset.position);
-      const voicing = this.voicer.findBestVoicing(semitones, rootSemitone, this.currentTuning, pos, null, this.currentStyle);
+      const voicing = this.voicer.findBestVoicing(semitones, rootSemitone, this.currentTuning, bassSemitone, pos, null, this.currentStyle);
       const key = voicing.frets.join(',');
       const duplicate = seen.some(s => s.key === key);
       seen.push({ key, pos });
@@ -1110,7 +1258,7 @@ class BanjoToolController {
     this.updatePositionButtons();
     const container = document.getElementById('preview-area');
     container.innerHTML = '';
-    const svg = this.renderChordDiagram(this.currentRoot, this.currentQuality, this.currentPosition);
+    const svg = this.renderChordDiagram(this.currentRoot, this.currentQuality, this.currentInversion, this.currentPosition);
     const wrapper = document.createElement('div');
     wrapper.className = 'chord-card chord-preview';
     wrapper.appendChild(svg);
@@ -1127,10 +1275,10 @@ class BanjoToolController {
     if (this.chords.length === 0) return;
 
     for (let i = 0; i < this.chords.length; i++) {
-      const { root, quality, position, style, weights } = this.chords[i];
+      const { root, quality, inversion, position, style, weights } = this.chords[i];
       if (style === 'custom' && weights) BanjoVoicer.STYLES._saved = weights;
       const useStyle = (style === 'custom' && weights) ? '_saved' : (style || this.currentStyle);
-      const svg = this.renderChordDiagram(root, quality, position || 0, useStyle);
+      const svg = this.renderChordDiagram(root, quality, inversion || 0, position || 0, useStyle);
       const wrapper = document.createElement('div');
       wrapper.className = 'chord-card';
       wrapper.appendChild(svg);
@@ -1152,13 +1300,14 @@ class BanjoToolController {
     const dw = this.renderer.getDiagramWidth(tuning.numStrings);
     const allChords = [...this.chords];
     let maxNumFrets = this.renderer.config.numFrets;
-    for (const { root, quality, position, style, weights } of allChords) {
+    for (const { root, quality, inversion, position, style, weights } of allChords) {
       if (style === 'custom' && weights) BanjoVoicer.STYLES._saved = weights;
       const useStyle = (style === 'custom' && weights) ? '_saved' : (style || this.currentStyle);
       const chord = this.chordLib.getChord(root, quality);
       const sem = this.theory.chordSemitones(root, chord.intervals);
       const rs = this.theory.noteToSemitone(root);
-      const v = this.voicer.findBestVoicing(sem, rs, this.currentTuning, position || 0, null, useStyle);
+      const bassSem = sem[inversion || 0] || sem[0];
+      const v = this.voicer.findBestVoicing(sem, rs, this.currentTuning, bassSem, position || 0, null, useStyle);
       const ff = v.frets.filter(f => f > 0);
       if (ff.length > 0) maxNumFrets = Math.max(maxNumFrets, Math.max(...ff) - Math.min(...ff) + 1);
     }
@@ -1171,10 +1320,10 @@ class BanjoToolController {
     svgContent += `<rect width="${totalWidth}" height="${totalHeight}" fill="white"/>\n`;
 
     for (let i = 0; i < allChords.length; i++) {
-      const { root, quality, position, style, weights } = allChords[i];
+      const { root, quality, inversion, position, style, weights } = allChords[i];
       if (style === 'custom' && weights) BanjoVoicer.STYLES._saved = weights;
       const useStyle = (style === 'custom' && weights) ? '_saved' : (style || this.currentStyle);
-      const svg = this.renderChordDiagram(root, quality, position || 0, useStyle);
+      const svg = this.renderChordDiagram(root, quality, inversion || 0, position || 0, useStyle);
       const xOffset = 10 + i * (dw + gap);
       svgContent += `<g transform="translate(${xOffset}, 10)">\n`;
       svgContent += svg.innerHTML;
@@ -1184,8 +1333,8 @@ class BanjoToolController {
     svgContent += `<text x="${totalWidth / 2}" y="${totalHeight - 5}" text-anchor="middle" font-size="10" fill="#999">${tuning.shortName}: ${tuning.openNotes.join(' ')}</text>\n`;
     svgContent += `</svg>`;
 
-    const chordNames = allChords.map(c => this.chordLib.getChord(c.root, c.quality).displayName).join('-');
-    const filename = `banjo-${tuning.shortName.replace(/\s+/g, '-').toLowerCase()}-${chordNames.replace(/\s+/g, '').replace(/[#]/g, 'sharp')}`;
+    const chordNames = allChords.map(c => this.getChordDisplayName(c.root, c.quality, c.inversion || 0)).join('-');
+    const filename = `banjo-${tuning.shortName.replace(/\s+/g, '-').toLowerCase()}-${chordNames.replace(/\s+/g, '').replace(/[#]/g, 'sharp').replace(/\//g, '-')}`;
 
     return { svgContent, totalWidth, totalHeight, filename };
   }
@@ -1233,7 +1382,6 @@ class BanjoToolController {
   }
 }
 
-// Initialize the widget when the page loads
 document.addEventListener('DOMContentLoaded', () => {
   window.banjoTool = new BanjoToolController();
   window.banjoTool.init();
@@ -1305,7 +1453,7 @@ document.addEventListener('DOMContentLoaded', () => {
   display: flex;
   justify-content: space-between;
   font-size: 0.55rem;
-  color: #bbb;
+  color: #888;
   margin-top: -4px;
   margin-bottom: 2px;
 }
@@ -1535,10 +1683,14 @@ document.addEventListener('DOMContentLoaded', () => {
 }
 </style>
 
+<h2 id="background">Background</h2>
+
+This tool started life as a simple transposition chart for my [Gold Tone BG-Mini](https://goldtonemusicgroup.com/goldtone/instruments/bg-mini) — a short-scale banjo tuned a perfect fourth higher than standard, so every chord shape produces a different chord than what you'd expect. The standard 5-string banjo is tuned to open G (**g D G B D**) while the mini gives you open C (**c G C E G**), which means a "G shape" on the mini sounds as C, a "D shape" sounds as G, and so on.
+
+Once the voicing algorithm was working for banjo, adding mandolin (GDAE) and guitar (EADGBE) was straightforward — the same search works on any tuning, you just change the string layout. Inversions and position-based voicing came later.
+
 ## How It Works
 
-The standard 5-string banjo is tuned to open G: **g D G B D**. The [Gold Tone BG-Mini](https://goldtonemusicgroup.com/goldtone/instruments/bg-mini) is a short-scale banjo tuned a perfect fourth higher, giving open C tuning: **c G C E G**.
+Given a set of chord tones and a tuning, it searches for the most playable fingering. It scores each candidate voicing on completeness, fret span, open string usage, and finger effort, then picks the winner. The **Inversion** selector constrains which chord tone appears in the bass, and **Position** determines where on the neck to anchor that bass note.
 
-This means **every chord shape you know from standard banjo produces a chord five semitones (a perfect fourth) higher on the mini**. A "G shape" on the mini sounds as C. A "D shape" sounds as G. This tool shows you the correct fingerings for any chord on either instrument.
-
-The voicings are generated algorithmically — given the chord tones and the tuning, the tool searches for the most playable fingering by optimizing for open strings, small fret span, complete chord coverage, and root in the bass. Use the **Position** selector to explore voicings at different points up the neck.
+The **Chord Style** presets (Open, Closed, Mandolin Chop) are just named bundles of scoring weights. Open the **Advanced Voicing Controls** to tweak them directly, or save your own presets.

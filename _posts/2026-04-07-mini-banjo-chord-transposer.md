@@ -1391,10 +1391,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 This tool started life as a simple transposition chart for my [Gold Tone BG-Mini](https://goldtonemusicgroup.com/goldtone/instruments/bg-mini) — a short-scale banjo tuned a perfect fourth higher than standard, so every chord shape produces a different chord than what you'd expect. The standard 5-string banjo is tuned to open G (**g D G B D**) while the mini gives you open C (**c G C E G**), which means a "G shape" on the mini sounds as C, a "D shape" sounds as G, and so on.
 
-Once the voicing algorithm was working for banjo, adding mandolin (GDAE) and guitar (EADGBE) was straightforward — the same search works on any tuning, you just change the string layout. Inversions and position-based voicing came later.
+Once the voicing search was working for banjo, adding mandolin (GDAE) and guitar (EADGBE) was straightforward — the same search works on any tuning, you just change the string layout. Inversions came later, along with a rework that surfaces every voicing instead of guessing a single "best" one.
 
 ## How It Works
 
-Given a set of chord tones and a tuning, it searches for the most playable fingering. It scores each candidate voicing on completeness, fret span, open string usage, and finger effort, then picks the winner. The **Inversion** selector constrains which chord tone appears in the bass, and **Position** determines where on the neck to anchor that bass note.
+Given a set of chord tones and a tuning, it walks every fingering up the neck and keeps the ones that are **complete** — all chord tones sounding and nothing else — and **playable**: within a hand's fret span, and no more than four fingers, allowing for an index barre. The **Inversion** selector constrains which chord tone sits in the bass.
 
-The **Chord Style** presets (Open, Closed, Mandolin Chop) are just named bundles of scoring weights. Open the **Advanced Voicing Controls** to tweak them directly, or save your own presets.
+Earlier versions scored all those candidates and showed only the single highest-scoring fingering. This one drops the scoring entirely and shows them all. Shapes that differ only by muting a doubled string collapse into one, so you aren't wading through redundant variations. The results run from the nut upward — the **jump** chips skip you to a position on the neck, and **show all** lays every shape out at once for comparison.

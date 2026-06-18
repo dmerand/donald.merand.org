@@ -6,10 +6,10 @@ category: projects
 
 <div class="text-sm">
   <p>
-    An algorithmic chord voicing tool for banjo, mandolin, and guitar. Pick a tuning, root, and quality, then choose an inversion and position to explore voicings up and down the neck.
+    A chord finder for banjo, mandolin, and guitar. Pick a tuning, root, quality, and inversion, and it shows every distinct, playable voicing up the neck. Click any shape to add it to a collection you can export as a chord sheet.
   </p>
   <p>
-    <strong>Update:</strong> This started as a mini banjo transposition tool, and has since grown into a general-purpose chord finder with support for inversions, multiple instruments, and customizable voicing styles. See <a href="#background">below</a> for the full story.
+    <strong>Update:</strong> This started as a mini banjo transposition tool, and has since grown into a general-purpose chord finder with support for inversions and multiple instruments. See <a href="#background">below</a> for the full story.
   </p>
 </div>
 
@@ -58,50 +58,33 @@ category: projects
 </div>
 </div>
 
-<div class="mb-4 flex flex-wrap" style="gap: 2rem;">
-<div>
+<div class="mb-4">
 <label class="block text-sm font-medium mb-2">Inversion:</label>
 <div class="flex gap-2 flex-wrap" id="inversion-buttons">
 </div>
 </div>
-<div>
-<label class="block text-sm font-medium mb-2">Position:</label>
-<div class="flex gap-2 flex-wrap" id="position-buttons">
+
 </div>
+
+<div id="voicings-section" class="mt-4 mb-4">
+<div class="voicings-header">
+<label class="block text-sm font-medium">Playable voicings up the neck:</label>
+<div id="jump-area"></div>
+</div>
+<div id="preview-area">
 </div>
 </div>
 
-<div class="mb-4">
-<label class="block text-sm font-medium mb-2" for="style-select">Chord Style:</label>
-<select id="style-select" class="style-select">
-<option value="open">Open</option>
-<option value="closed">Closed</option>
-<option value="mandolin-chop">Mandolin Chop</option>
-<option value="custom" disabled hidden>Custom</option>
-</select>
-</div>
-
-<details id="style-advanced" class="mb-4">
-<summary class="text-sm font-medium cursor-pointer select-none" style="color: #666;">Advanced Voicing Controls</summary>
-<div class="slider-panel" id="slider-panel">
-</div>
-</details>
-
-<div class="flex gap-4 items-center flex-wrap">
-<button id="add-chord" class="action-btn">Add Chord</button>
+<div id="collection-section" class="mt-6 pt-4 border-t border-gray-200">
+<div class="flex gap-4 items-center flex-wrap mb-3">
+<label class="block text-sm font-medium">Your collection:</label>
 <div id="collection-actions" class="flex gap-4 items-center" style="display: none;">
 <button id="clear-chords" class="text-sm cursor-pointer hover:opacity-70 transition-opacity green-text-button">Clear All</button>
 <button id="export-svg" class="text-sm cursor-pointer hover:opacity-70 transition-opacity green-text-button">Save as SVG</button>
 <button id="export-png" class="text-sm cursor-pointer hover:opacity-70 transition-opacity green-text-button">Save as PNG</button>
 </div>
 </div>
-
-</div>
-
-<div id="chord-area" class="flex flex-wrap gap-4 items-start mt-4 mb-4">
-<div id="preview-area">
-</div>
-<div id="chord-collection" class="contents">
+<div id="chord-collection" class="flex flex-wrap gap-4 items-start">
 </div>
 </div>
 
@@ -116,7 +99,7 @@ category: projects
 /*
  * Mini Banjo Chord Transposer
  * Version: 1.0.0
- * Built: 2026-05-27T23:40:00.894Z
+ * Built: 2026-06-18T01:12:30.606Z
  * Generated automatically - do not edit directly
  */
 // === core/musical-theory.js ===
@@ -277,274 +260,159 @@ class BanjoTunings {
 }
 
 // === core/banjo-voicer.js ===
-const VOICING_STYLES = {
-  open: {
-    coverage: 15, completeness: 48, rootBass: 6,
-    openString: 21.6, openNonChordTone: -5, fretOverOpen: -8,
-    wrongNote: -6, effort: -3.6, highFretEffort: -5,
-    positionTight: -2.5, orientation: -1.4, stretch: -6, fingerGap: -1.1,
-    doubledNote: 0, inversion: 0, maxStretch: 5,
-    allowWrongNotes: true, allowMuting: true,
-  },
-  closed: {
-    coverage: 11, completeness: 100, rootBass: 3,
-    openString: -6.6, openNonChordTone: -2, fretOverOpen: 10,
-    wrongNote: -1, effort: -2.5, highFretEffort: -0.5,
-    positionTight: 0, orientation: 0, stretch: -3.1, fingerGap: -1,
-    doubledNote: 0, inversion: 0, maxStretch: 5,
-    allowWrongNotes: false, allowMuting: true,
-  },
-  'mandolin-chop': {
-    coverage: 20, completeness: 100, rootBass: 0,
-    openString: -28, openNonChordTone: -30, fretOverOpen: 15,
-    wrongNote: -20, effort: 0, highFretEffort: 0,
-    positionTight: 0, orientation: -0.3, stretch: 0, fingerGap: -0.5,
-    doubledNote: 0, inversion: 3, maxStretch: 5,
-    allowWrongNotes: false, allowMuting: false,
-  },
-};
-
+/**
+ * Banjo/stringed-instrument voicer.
+ *
+ * Enumerates every distinct, playable voicing of a chord up the neck for a
+ * given tuning, root, quality and inversion. There is no scoring or "best"
+ * pick — each shape that is complete (all chord tones, no others) and
+ * physically playable is returned, organized up the neck.
+ */
 class BanjoVoicer {
   constructor(theory, tunings) {
     this.theory = theory;
     this.tunings = tunings;
     this.maxFret = 12;
-    this.maxSpan = 5;
+    this.maxStretch = 4;
   }
 
-  findAvailablePositions(bassSemitone, tuningKey) {
+  /**
+   * Is a set of frets physically playable?
+   * Hard constraints that replace the old scoring penalties:
+   *  - fretted span within reach (<= maxStretch)
+   *  - at most four fingers, allowing one index barre across the lowest fret
+   * Open (0) and muted (-1) strings cost no finger.
+   */
+  isPlayable(frets) {
+    const fretted = frets.filter(f => f > 0);
+    if (fretted.length === 0) return true;
+
+    const minFret = Math.min(...fretted);
+    const maxFret = Math.max(...fretted);
+    if (maxFret - minFret > this.maxStretch) return false;
+
+    const atLowest = fretted.filter(f => f === minFret).length;
+    const barreSaving = atLowest >= 2 ? atLowest - 1 : 0;
+    const fingers = fretted.length - barreSaving;
+    return fingers <= 4;
+  }
+
+  /**
+   * Every distinct playable voicing up the neck.
+   *
+   * @returns array of { frets, notes, muted } sorted from the nut upward.
+   */
+  enumerateVoicings(chordSemitones, rootSemitone, tuningKey, bassSemitone, spelling = null) {
     const tuning = this.tunings.get(tuningKey);
     const hasDrone = tuning.hasDrone !== false;
     const numFretted = hasDrone ? tuning.numStrings - 1 : tuning.numStrings;
     const frettedOffset = hasDrone ? 1 : 0;
-    const bottomHalf = Math.floor(numFretted / 2);
 
-    const positions = new Set();
-    for (let s = 0; s < bottomHalf; s++) {
-      const openSemitone = tuning.openSemitones[s + frettedOffset];
-      for (let f = 0; f <= this.maxFret; f++) {
-        if ((openSemitone + f) % 12 === bassSemitone) {
-          positions.add(f);
-        }
-      }
-    }
-    return Array.from(positions).sort((a, b) => a - b);
-  }
-
-  findBestVoicing(chordSemitones, rootSemitone, tuningKey, bassSemitone, bassFret = 0, spelling = null, style = 'open') {
-    const tuning = this.tunings.get(tuningKey);
-    const weights = VOICING_STYLES[style] || VOICING_STYLES.open;
-    const hasDrone = tuning.hasDrone !== false;
-    const numFretted = hasDrone ? tuning.numStrings - 1 : tuning.numStrings;
-    const frettedOffset = hasDrone ? 1 : 0;
-    const position = bassFret;
-
+    // The drone (5th string) is fixed open; it only rings if it is a chord tone.
     let droneFret = -1;
     if (hasDrone) {
       const droneOpen = tuning.openSemitones[0];
-      droneFret = (position === 0 && chordSemitones.includes(droneOpen)) ? 0 : -1;
+      droneFret = chordSemitones.includes(droneOpen) ? 0 : -1;
     }
 
-    const bottomHalf = Math.floor(numFretted / 2);
-    let bassStringIdx = -1;
-    for (let s = 0; s < bottomHalf; s++) {
-      const tuningIdx = s + frettedOffset;
-      if ((tuning.openSemitones[tuningIdx] + bassFret) % 12 === bassSemitone) {
-        bassStringIdx = s;
-        break;
-      }
-    }
-
-    const canMute = weights.allowMuting !== false;
-    const hardBass = bassStringIdx >= 0;
-
+    // Per fretted string: every chord-tone fret across the neck, plus "muted".
     const candidates = [];
     for (let s = 0; s < numFretted; s++) {
-      const tuningIdx = s + frettedOffset;
-
-      if (hardBass && s === bassStringIdx) {
-        candidates.push([{ fret: bassFret, semitone: bassSemitone, nonChordTone: false }]);
-        continue;
-      }
-
-      const stringCandidates = [];
-
-      if (hardBass && s < bassStringIdx && canMute) {
-        stringCandidates.push({ fret: -1, semitone: -1, nonChordTone: false, muted: true });
-      }
-
-      const openSemitone = tuning.openSemitones[tuningIdx];
-      const allowOpen = weights.openString >= 0;
-      if (allowOpen && weights.allowWrongNotes !== false) {
-        if (!chordSemitones.includes(openSemitone)) {
-          stringCandidates.push({ fret: 0, semitone: openSemitone, nonChordTone: true });
-        }
-      }
-
+      const openSemitone = tuning.openSemitones[s + frettedOffset];
+      const stringCandidates = [{ fret: -1, semitone: -1, muted: true }];
       for (let f = 0; f <= this.maxFret; f++) {
-        if (f === 0 && !allowOpen) continue;
         const semitone = (openSemitone + f) % 12;
         if (chordSemitones.includes(semitone)) {
-          stringCandidates.push({ fret: f, semitone, nonChordTone: false });
+          stringCandidates.push({ fret: f, semitone, muted: false });
         }
       }
-
-      if (stringCandidates.length === 0) {
-        stringCandidates.push({ fret: 0, semitone: openSemitone, nonChordTone: true });
-      }
-
       candidates.push(stringCandidates);
     }
 
-    let bestVoicing = null;
-    let bestScore = -Infinity;
+    const chordToneSet = new Set(chordSemitones);
+    const results = [];
+    const seen = new Set();
 
-    const search = (stringIdx, current) => {
+    const accept = (fretted) => {
+      // Bass note (lowest-pitched non-muted fretted string) must match the inversion.
+      const firstActive = fretted.find(c => !c.muted);
+      if (!firstActive || firstActive.semitone !== bassSemitone) return;
+
+      // Collect sounding pitch classes, including the drone when it rings.
+      const sounding = new Set();
+      for (const c of fretted) {
+        if (!c.muted) sounding.add(c.semitone);
+      }
+      if (droneFret === 0) sounding.add(tuning.openSemitones[0]);
+
+      // Complete: every chord tone present (no non-chord tones can occur — only
+      // chord-tone frets are generated as candidates).
+      if (sounding.size !== chordToneSet.size) return;
+
+      const frets = hasDrone
+        ? [droneFret, ...fretted.map(c => c.fret)]
+        : fretted.map(c => c.fret);
+
+      if (!this.isPlayable(frets)) return;
+
+      const key = frets.join(',');
+      if (seen.has(key)) return;
+      seen.add(key);
+
+      const noteName = (semitone) =>
+        (spelling && spelling[semitone]) || this.theory.semitoneToNote(semitone);
+      const notes = frets.map((f, i) => {
+        if (f < 0) return null;
+        return noteName((tuning.openSemitones[i] + f) % 12);
+      });
+
+      results.push({ frets, notes, muted: frets.map(f => f === -1) });
+    };
+
+    const current = new Array(numFretted);
+    const search = (stringIdx) => {
       if (stringIdx === numFretted) {
-        const score = this.scoreVoicing(current, chordSemitones, bassSemitone, tuning, droneFret, position, frettedOffset, weights, hardBass, canMute);
-        if (score > bestScore) {
-          bestScore = score;
-          bestVoicing = [...current];
-        }
+        accept(current);
         return;
       }
       for (const candidate of candidates[stringIdx]) {
         current[stringIdx] = candidate;
-        search(stringIdx + 1, current);
+        search(stringIdx + 1);
       }
     };
+    search(0);
 
-    search(0, new Array(numFretted));
+    const frettedOf = (v) => v.frets.filter(f => f > 0);
+    const soundCount = (v) => v.frets.filter(f => f >= 0).length;
+    const lowFret = (v) => { const f = frettedOf(v); return f.length ? Math.min(...f) : 0; };
+    const fretSpan = (v) => { const f = frettedOf(v); return f.length ? Math.max(...f) - Math.min(...f) : 0; };
 
-    const noteName = (semitone) =>
-      (spelling && spelling[semitone]) || this.theory.semitoneToNote(semitone);
-
-    if (!bestVoicing) {
-      const frets = hasDrone
-        ? [droneFret, ...new Array(numFretted).fill(0)]
-        : new Array(numFretted).fill(0);
-      return {
-        frets,
-        notes: tuning.openNotes.slice(),
-        muted: frets.map(f => f === -1),
-      };
-    }
-
-    let frets, notes;
-    if (hasDrone) {
-      frets = [droneFret, ...bestVoicing.map(c => c.muted ? -1 : c.fret)];
-      notes = [
-        droneFret >= 0 ? noteName(tuning.openSemitones[0]) : null,
-        ...bestVoicing.map(c => c.muted ? null : noteName(c.semitone)),
-      ];
-    } else {
-      frets = bestVoicing.map(c => c.muted ? -1 : c.fret);
-      notes = bestVoicing.map(c => c.muted ? null : noteName(c.semitone));
-    }
-
-    return { frets, notes, muted: frets.map(f => f === -1) };
-  }
-
-  scoreVoicing(frettedStrings, chordSemitones, bassSemitone, tuning, droneFret, position, frettedOffset, w, hardBass, canMute) {
-    const numFretted = frettedStrings.length;
-
-    let firstActiveIdx = -1;
-    for (let i = 0; i < numFretted; i++) {
-      if (!frettedStrings[i].muted) {
-        firstActiveIdx = i;
-        break;
+    // Collapse muting variants: a player can always mute a string, so a voicing
+    // that is just a more-muted version of another (same frets where it sounds,
+    // fewer strings ringing) adds no information — provided filling in the muted
+    // strings keeps the same grip (the fretted span barely grows; that guard
+    // avoids collapsing an iconic open shape into a fuller, neck-shifted one).
+    const isMutedSubsetOf = (a, b) => {
+      for (let i = 0; i < a.frets.length; i++) {
+        if (a.frets[i] === -1) continue;        // `a` may mute where `b` rings
+        if (a.frets[i] !== b.frets[i]) return false;
       }
-    }
-    if (firstActiveIdx === -1) return -1000;
-
-    if (hardBass && canMute && frettedStrings[firstActiveIdx].semitone !== bassSemitone) return -1000;
-
-    const activeFrets = [];
-    const activeSemitones = [];
-    const activeNonChordTones = [];
-    let mutedCount = 0;
-
-    for (let i = 0; i < numFretted; i++) {
-      if (frettedStrings[i].muted) {
-        mutedCount++;
-      } else {
-        activeFrets.push(frettedStrings[i].fret);
-        activeSemitones.push(frettedStrings[i].semitone);
-        activeNonChordTones.push(frettedStrings[i].nonChordTone || false);
-      }
+      return soundCount(a) < soundCount(b) && fretSpan(b) <= fretSpan(a) + 1;
+    };
+    // Fullest-first, so a compact shape is only dropped for a superset we keep —
+    // never for one that is itself collapsed away later in the pass.
+    results.sort((a, b) => soundCount(b) - soundCount(a));
+    const kept = [];
+    for (const a of results) {
+      if (!kept.some(b => isMutedSubsetOf(a, b))) kept.push(a);
     }
 
-    const frettedFrets = activeFrets.filter(f => f > 0);
-    const span = frettedFrets.length > 0
-      ? Math.max(...frettedFrets) - Math.min(...frettedFrets)
-      : 0;
+    // Up the neck: lowest fretted note first, then tighter shapes first.
+    kept.sort((a, b) => lowFret(a) - lowFret(b) || fretSpan(a) - fretSpan(b) || a.frets.join().localeCompare(b.frets.join()));
 
-    if (span > (w.maxStretch || this.maxSpan)) return -1000;
-
-    let score = 0;
-
-    score -= mutedCount * 8;
-
-    const chordToneSemitones = activeSemitones.filter((s, i) => !activeNonChordTones[i]);
-    const allSemitones = [...chordToneSemitones];
-    if (droneFret !== null && droneFret >= 0) allSemitones.push(tuning.openSemitones[0]);
-    const uniqueTones = new Set(allSemitones.filter(s => chordSemitones.includes(s)));
-    score += uniqueTones.size * w.coverage;
-    if (uniqueTones.size === chordSemitones.length) score += w.completeness;
-
-    for (let i = 0; i < numFretted; i++) {
-      if (frettedStrings[i].muted) continue;
-      const fret = frettedStrings[i].fret;
-      const nonChordTone = frettedStrings[i].nonChordTone || false;
-      if (fret === 0 && !nonChordTone) {
-        score += w.openString;
-      } else if (fret === 0 && nonChordTone) {
-        score += w.openNonChordTone;
-      } else if (fret > 0 && chordSemitones.includes(tuning.openSemitones[i + frettedOffset])) {
-        score -= w.openString * 0.5;
-      }
-    }
-
-    score += activeNonChordTones.filter(Boolean).length * w.wrongNote;
-
-    if (position === 0) {
-      score += activeFrets.reduce((a, b) => a + b, 0) * w.effort;
-      const maxFret = activeFrets.length > 0 ? Math.max(...activeFrets) : 0;
-      if (maxFret > 5) score += (maxFret - 5) * w.highFretEffort;
-    } else {
-      for (const f of frettedFrets) {
-        score += Math.abs(f - position) * w.positionTight;
-        if (w.orientation) score += (f - position) * w.orientation;
-      }
-    }
-
-    score += span * w.stretch;
-
-    const frettedPositions = activeFrets.map((f, i) => ({ fret: f, idx: i })).filter(p => p.fret > 0);
-    for (let i = 1; i < frettedPositions.length; i++) {
-      const gap = Math.abs(frettedPositions[i].fret - frettedPositions[i - 1].fret);
-      if (gap > 2) score += gap * w.fingerGap;
-    }
-
-    if (w.doubledNote) {
-      const pitchCounts = {};
-      for (let i = 0; i < activeSemitones.length; i++) {
-        if (!activeNonChordTones[i]) pitchCounts[activeSemitones[i]] = (pitchCounts[activeSemitones[i]] || 0) + 1;
-      }
-      if (droneFret !== null && droneFret >= 0) {
-        const dp = tuning.openSemitones[0];
-        pitchCounts[dp] = (pitchCounts[dp] || 0) + 1;
-      }
-      for (const count of Object.values(pitchCounts)) {
-        if (count > 1) score += (count - 1) * w.doubledNote;
-      }
-    }
-
-    return score;
+    return kept;
   }
 }
-
-BanjoVoicer.STYLES = VOICING_STYLES;
 
 // === core/storage-manager.js ===
 /**
@@ -772,33 +640,13 @@ class ChordDiagramRenderer {
 }
 
 // === widget.js ===
-const SLIDER_CONFIG = [
-  { key: 'completeness', label: 'Completeness', actualMin: 0, actualMax: 100, low: 'partial', high: 'all tones', type: 'weight',
-    tip: 'How strongly to prefer voicings with every chord tone sounding' },
-  { key: 'doubledNote', label: 'Doubled Notes', actualMin: -15, actualMax: 0, low: 'unique', high: 'allow', type: 'weight',
-    tip: 'Penalty for repeating the same pitch class on multiple strings' },
-  { key: 'stretch', label: 'Stretch', actualMin: -6, actualMax: 6, low: 'compact', high: 'wide', type: 'weight',
-    tip: 'Prefer tight fret clusters or spread-out shapes' },
-  { key: 'fingerGap', label: 'Finger Gap', actualMin: -4, actualMax: 2, low: 'even', high: 'allow gaps', type: 'weight',
-    tip: 'Penalty for large fret jumps between adjacent strings' },
-  { key: 'positionTight', label: 'Position Freedom', actualMin: -5, actualMax: 0, low: 'strict', high: 'roam', type: 'weight',
-    tip: 'How tightly voicings cluster around the target position up the neck' },
-  { key: 'orientation', label: 'Orientation', actualMin: -3, actualMax: 3, low: 'nut', high: 'body', type: 'weight',
-    tip: 'Bias voicings toward the nut (lower frets) or the body (higher frets) relative to the position' },
-  { key: 'openString', label: 'Open Strings', actualMin: -30, actualMax: 30, low: 'avoid', high: 'prefer', type: 'weight',
-    tip: 'Whether to favor open strings on non-bass strings or avoid them' },
-  { key: 'effort', label: 'Effort', actualMin: -5, actualMax: 0, low: 'easy', high: 'any', type: 'weight',
-    tip: 'How much to penalize higher frets and more fingers in open position' },
-];
-
-function toSlider(cfg, actual) {
-  return Math.round((actual - cfg.actualMin) / (cfg.actualMax - cfg.actualMin) * 100);
-}
-
-function toActual(cfg, slider) {
-  return cfg.actualMin + (slider / 100) * (cfg.actualMax - cfg.actualMin);
-}
-
+/**
+ * Chord-finder UI controller.
+ *
+ * Pick a tuning, root, quality and inversion; the tool shows every distinct
+ * playable voicing up the neck. Click a voicing to add it to the collection,
+ * which can be exported as an SVG or PNG chord sheet.
+ */
 class BanjoToolController {
   constructor() {
     this.theory = new MusicalTheory();
@@ -812,11 +660,11 @@ class BanjoToolController {
     this.currentRoot = this.storage.load('root', 'G');
     this.currentQuality = this.storage.load('quality', 'major');
     this.currentInversion = this.storage.load('inversion', 0);
-    this.currentPosition = this.storage.load('position', 0);
-    this.currentStyle = this.storage.load('style', 'open');
-    this.customWeights = this.storage.load('customWeights', null);
-    this.userPresets = this.storage.load('userPresets', {});
-    this.chords = this.storage.load('chords', []);
+    this.showAll = this.storage.load('showAll', false);
+    this.voicingIndex = 0;
+    // Drop any collection entries saved by the old scoring-based version; they
+    // lack the concrete `frets` the renderer now needs.
+    this.chords = this.storage.load('chords', []).filter(c => c && Array.isArray(c.frets));
   }
 
   init() {
@@ -830,10 +678,6 @@ class BanjoToolController {
       btn.addEventListener('click', () => this.setQuality(btn.dataset.quality));
     });
 
-    const select = document.getElementById('style-select');
-    select.addEventListener('change', () => this.setStyle(select.value));
-
-    document.getElementById('add-chord').addEventListener('click', () => this.addChord());
     document.getElementById('clear-chords').addEventListener('click', () => {
       this.chords = [];
       this.persist();
@@ -842,19 +686,9 @@ class BanjoToolController {
     document.getElementById('export-svg').addEventListener('click', () => this.exportSVG());
     document.getElementById('export-png').addEventListener('click', () => this.exportPNG());
 
-    if (this.currentStyle === 'custom' && this.customWeights) {
-      BanjoVoicer.STYLES.custom = this.customWeights;
-    }
-    for (const [name, weights] of Object.entries(this.userPresets)) {
-      BanjoVoicer.STYLES['user:' + name] = weights;
-    }
-
-    this.buildSliders();
-    this.rebuildPresetDropdown();
     this.syncToggleButtons();
     this.buildInversionButtons();
-    this.buildPositionButtons();
-    this.renderPreview();
+    this.renderVoicings();
     this.renderCollection();
   }
 
@@ -869,7 +703,7 @@ class BanjoToolController {
 
   getChordDisplayName(root, quality, inversion) {
     const chord = this.chordLib.getChord(root, quality);
-    if (inversion === 0) return chord.displayName;
+    if (!inversion) return chord.displayName;
     const spelling = this.theory.chordSpelling(root, chord.intervals);
     const bassSemitone = this.theory.chordSemitones(root, chord.intervals)[inversion];
     const bassNote = spelling[bassSemitone] || this.theory.semitoneToNote(bassSemitone);
@@ -899,219 +733,24 @@ class BanjoToolController {
         btn.textContent = '/' + noteName;
       }
       btn.dataset.inversion = i;
-      if (i === this.currentInversion) {
-        btn.classList.add('toggle-active');
-        btn.setAttribute('aria-pressed', 'true');
-      } else {
-        btn.setAttribute('aria-pressed', 'false');
-      }
+      const active = i === this.currentInversion;
+      btn.classList.toggle('toggle-active', active);
+      btn.setAttribute('aria-pressed', active);
       btn.addEventListener('click', () => this.setInversion(i));
-      container.appendChild(btn);
-    }
-  }
-
-  buildPositionButtons() {
-    const container = document.getElementById('position-buttons');
-    container.innerHTML = '';
-
-    const bassSemitone = this.getBassSemitone();
-    const positions = this.voicer.findAvailablePositions(bassSemitone, this.currentTuning);
-
-    if (!positions.includes(this.currentPosition)) {
-      this.currentPosition = positions.length > 0 ? positions[0] : 0;
-      this.storage.save('position', this.currentPosition);
-    }
-
-    for (const pos of positions) {
-      const btn = document.createElement('button');
-      btn.className = 'toggle-btn toggle-sm';
-      btn.textContent = pos === 0 ? 'Open' : String(pos);
-      btn.dataset.position = pos;
-      if (pos === this.currentPosition) {
-        btn.classList.add('toggle-active');
-        btn.setAttribute('aria-pressed', 'true');
-      } else {
-        btn.setAttribute('aria-pressed', 'false');
-      }
-      btn.addEventListener('click', () => this.setPosition(pos));
       container.appendChild(btn);
     }
   }
 
   setInversion(inv) {
     this.currentInversion = inv;
+    this.voicingIndex = 0;
     this.storage.save('inversion', inv);
     document.querySelectorAll('[data-inversion]').forEach(btn => {
       const active = Number(btn.dataset.inversion) === inv;
       btn.classList.toggle('toggle-active', active);
       btn.setAttribute('aria-pressed', active);
     });
-    this.buildPositionButtons();
-    this.renderPreview();
-  }
-
-  buildSliders() {
-    const panel = document.getElementById('slider-panel');
-    const weights = this.getActiveWeights();
-
-    for (const cfg of SLIDER_CONFIG) {
-      const group = document.createElement('div');
-      group.className = 'slider-group';
-
-      const tagLetter = cfg.type === 'limit' ? 'l' : 'w';
-
-      const label = document.createElement('label');
-      label.setAttribute('for', 'slider-' + cfg.key);
-      label.title = cfg.tip;
-      label.innerHTML = cfg.label + ' <span class="slider-type-hint">' + tagLetter + '</span>';
-
-      const input = document.createElement('input');
-      input.type = 'range';
-      input.id = 'slider-' + cfg.key;
-      input.min = 0;
-      input.max = 100;
-      input.step = 1;
-      input.value = toSlider(cfg, weights[cfg.key]);
-      input.addEventListener('input', () => {
-        const actual = toActual(cfg, Number(input.value));
-        this.onSliderChange(cfg.key, Math.round(actual * 10) / 10);
-      });
-
-      const extremes = document.createElement('div');
-      extremes.className = 'slider-extremes';
-      extremes.innerHTML = '<span>' + cfg.low + '</span><span>' + cfg.high + '</span>';
-
-      group.appendChild(label);
-      group.appendChild(input);
-      group.appendChild(extremes);
-      panel.appendChild(group);
-    }
-
-    const checkGroup = document.createElement('div');
-    checkGroup.className = 'slider-group';
-    checkGroup.innerHTML = '<div class="slider-checkbox">' +
-      '<input type="checkbox" id="slider-allowWrongNotes" ' + (weights.allowWrongNotes ? 'checked' : '') + '>' +
-      '<label for="slider-allowWrongNotes">Allow Wrong Notes</label>' +
-      '</div><div class="slider-checkbox">' +
-      '<input type="checkbox" id="slider-allowMuting" ' + (weights.allowMuting !== false ? 'checked' : '') + '>' +
-      '<label for="slider-allowMuting">Allow Muted Strings</label></div>';
-    checkGroup.querySelector('#slider-allowWrongNotes').addEventListener('change', (e) => {
-      this.onSliderChange('allowWrongNotes', e.target.checked);
-    });
-    checkGroup.querySelector('#slider-allowMuting').addEventListener('change', (e) => {
-      this.onSliderChange('allowMuting', e.target.checked);
-    });
-    panel.appendChild(checkGroup);
-
-    const saveRow = document.createElement('div');
-    saveRow.className = 'slider-save-row';
-    saveRow.innerHTML = '<input type="text" id="preset-name" placeholder="Preset name" class="preset-name-input">' +
-      '<button id="save-preset" class="preset-btn">Save</button>' +
-      '<button id="delete-preset" class="preset-btn preset-btn-danger" style="display:none">Delete</button>';
-    panel.appendChild(saveRow);
-
-    document.getElementById('save-preset').addEventListener('click', () => this.savePreset());
-    document.getElementById('delete-preset').addEventListener('click', () => this.deletePreset());
-  }
-
-  rebuildPresetDropdown() {
-    const select = document.getElementById('style-select');
-    select.querySelectorAll('optgroup.user-presets').forEach(g => g.remove());
-
-    const names = Object.keys(this.userPresets);
-    if (names.length > 0) {
-      const group = document.createElement('optgroup');
-      group.label = 'Saved';
-      group.className = 'user-presets';
-      for (const name of names) {
-        const opt = document.createElement('option');
-        opt.value = 'user:' + name;
-        opt.textContent = name;
-        group.appendChild(opt);
-      }
-      const customOpt = select.querySelector('option[value="custom"]');
-      select.insertBefore(group, customOpt);
-    }
-    select.value = this.currentStyle;
-    this.updateDeleteButton();
-  }
-
-  updateDeleteButton() {
-    const btn = document.getElementById('delete-preset');
-    const input = document.getElementById('preset-name');
-    if (btn) btn.style.display = this.currentStyle.startsWith('user:') ? '' : 'none';
-    if (input) input.value = this.currentStyle.startsWith('user:') ? this.currentStyle.slice(5) : '';
-  }
-
-  savePreset() {
-    const input = document.getElementById('preset-name');
-    const name = (input.value || '').trim();
-    if (!name) return;
-    const weights = { ...this.getActiveWeights() };
-    this.userPresets[name] = weights;
-    this.storage.save('userPresets', this.userPresets);
-    BanjoVoicer.STYLES['user:' + name] = weights;
-    this.currentStyle = 'user:' + name;
-    this.storage.save('style', this.currentStyle);
-    input.value = '';
-    this.rebuildPresetDropdown();
-    this.updateDeleteButton();
-  }
-
-  deletePreset() {
-    if (!this.currentStyle.startsWith('user:')) return;
-    const name = this.currentStyle.slice(5);
-    delete this.userPresets[name];
-    delete BanjoVoicer.STYLES[this.currentStyle];
-    this.storage.save('userPresets', this.userPresets);
-    this.customWeights = null;
-    this.storage.save('customWeights', null);
-    this.currentStyle = 'open';
-    this.storage.save('style', 'open');
-    const customOpt = document.getElementById('style-select').querySelector('option[value="custom"]');
-    customOpt.disabled = true;
-    customOpt.hidden = true;
-    this.rebuildPresetDropdown();
-    this.syncSliders();
-    this.renderPreview();
-  }
-
-  getActiveWeights() {
-    if (this.currentStyle === 'custom' && this.customWeights) return this.customWeights;
-    if (this.currentStyle.startsWith('user:')) {
-      const name = this.currentStyle.slice(5);
-      if (this.userPresets[name]) return this.userPresets[name];
-    }
-    return BanjoVoicer.STYLES[this.currentStyle] || BanjoVoicer.STYLES.easy;
-  }
-
-  syncSliders() {
-    const weights = this.getActiveWeights();
-    for (const cfg of SLIDER_CONFIG) {
-      const input = document.getElementById('slider-' + cfg.key);
-      if (input) input.value = toSlider(cfg, weights[cfg.key]);
-    }
-    const checkbox = document.getElementById('slider-allowWrongNotes');
-    if (checkbox) checkbox.checked = !!weights.allowWrongNotes;
-    const muteCheckbox = document.getElementById('slider-allowMuting');
-    if (muteCheckbox) muteCheckbox.checked = weights.allowMuting !== false;
-  }
-
-  onSliderChange(key, value) {
-    const base = this.getActiveWeights();
-    this.customWeights = { ...base, [key]: value };
-    BanjoVoicer.STYLES.custom = this.customWeights;
-    this.currentStyle = 'custom';
-    this.storage.save('style', 'custom');
-    this.storage.save('customWeights', this.customWeights);
-
-    const select = document.getElementById('style-select');
-    const customOpt = select.querySelector('option[value="custom"]');
-    customOpt.disabled = false;
-    customOpt.hidden = false;
-    select.value = 'custom';
-
-    this.renderPreview();
+    this.renderVoicings();
   }
 
   syncToggleButtons() {
@@ -1130,91 +769,212 @@ class BanjoToolController {
       btn.classList.toggle('toggle-active', active);
       btn.setAttribute('aria-pressed', active);
     });
-
-    const select = document.getElementById('style-select');
-    if (this.currentStyle === 'custom') {
-      const customOpt = select.querySelector('option[value="custom"]');
-      customOpt.disabled = false;
-      customOpt.hidden = false;
-    }
-    select.value = this.currentStyle;
   }
 
   setTuning(tuningKey) {
     this.currentTuning = tuningKey;
+    this.voicingIndex = 0;
     this.storage.save('tuning', tuningKey);
-    document.querySelectorAll('[data-tuning]').forEach(btn => {
-      const active = btn.dataset.tuning === tuningKey;
-      btn.classList.toggle('toggle-active', active);
-      btn.setAttribute('aria-pressed', active);
-    });
-    this.buildPositionButtons();
-    this.renderPreview();
-    this.renderCollection();
+    this.syncToggleButtons();
+    this.renderVoicings();
   }
 
   setRoot(root) {
     this.currentRoot = root;
+    this.voicingIndex = 0;
     this.storage.save('root', root);
-    document.querySelectorAll('[data-root]').forEach(btn => {
-      const active = btn.dataset.root === root;
-      btn.classList.toggle('toggle-active', active);
-      btn.setAttribute('aria-pressed', active);
-    });
+    this.syncToggleButtons();
     this.buildInversionButtons();
-    this.buildPositionButtons();
-    this.renderPreview();
+    this.renderVoicings();
   }
 
   setQuality(quality) {
     this.currentQuality = quality;
+    this.voicingIndex = 0;
     this.storage.save('quality', quality);
-    document.querySelectorAll('[data-quality]').forEach(btn => {
-      const active = btn.dataset.quality === quality;
-      btn.classList.toggle('toggle-active', active);
-      btn.setAttribute('aria-pressed', active);
-    });
+    this.syncToggleButtons();
     this.buildInversionButtons();
-    this.buildPositionButtons();
-    this.renderPreview();
+    this.renderVoicings();
   }
 
-  setPosition(position) {
-    this.currentPosition = position;
-    this.storage.save('position', position);
-    document.querySelectorAll('#position-buttons [data-position]').forEach(btn => {
-      const active = Number(btn.dataset.position) === position;
-      btn.classList.toggle('toggle-active', active);
-      btn.setAttribute('aria-pressed', active);
+  currentVoicings() {
+    // Cache by selection so stepping/toggling doesn't re-enumerate the whole neck.
+    const key = `${this.currentTuning}|${this.currentRoot}|${this.currentQuality}|${this.currentInversion}`;
+    if (this._voicingsKey === key) return this._voicings;
+
+    const chord = this.chordLib.getChord(this.currentRoot, this.currentQuality);
+    const semitones = this.theory.chordSemitones(this.currentRoot, chord.intervals);
+    const rootSemitone = this.theory.noteToSemitone(this.currentRoot);
+    const spelling = this.theory.chordSpelling(this.currentRoot, chord.intervals);
+    const bassSemitone = this.getBassSemitone();
+
+    this._voicingsKey = key;
+    this._voicings = this.voicer.enumerateVoicings(semitones, rootSemitone, this.currentTuning, bassSemitone, spelling);
+    return this._voicings;
+  }
+
+  voicingPosition(voicing) {
+    const fretted = voicing.frets.filter(f => f > 0);
+    return fretted.length === 0 ? 0 : Math.min(...fretted);
+  }
+
+  positionLabel(voicing) {
+    const pos = this.voicingPosition(voicing);
+    return pos === 0 ? 'open position' : 'fret ' + pos;
+  }
+
+  // A chip per distinct neck position, jumping to the first shape there.
+  makeJumpChips(voicings) {
+    const positions = [];
+    voicings.forEach((v, idx) => {
+      const fret = this.voicingPosition(v);
+      if (!positions.some(p => p.fret === fret)) positions.push({ fret, idx });
     });
-    this.renderPreview();
-  }
+    if (positions.length < 2) return null;
 
-  setStyle(style) {
-    this.currentStyle = style;
-    this.storage.save('style', style);
-    if (style !== 'custom' && !style.startsWith('user:')) {
-      this.customWeights = null;
-      this.storage.save('customWeights', null);
-      const customOpt = document.getElementById('style-select').querySelector('option[value="custom"]');
-      customOpt.disabled = true;
-      customOpt.hidden = true;
+    const row = document.createElement('div');
+    row.className = 'stepper-jump';
+
+    const lead = document.createElement('span');
+    lead.className = 'stepper-jump-label';
+    lead.textContent = 'jump:';
+    row.appendChild(lead);
+
+    const activeFret = this.voicingPosition(voicings[this.voicingIndex]);
+    for (const p of positions) {
+      const chip = document.createElement('button');
+      chip.className = 'jump-chip';
+      chip.textContent = p.fret === 0 ? 'Open' : String(p.fret);
+      chip.classList.toggle('jump-active', p.fret === activeFret);
+      chip.addEventListener('click', () => {
+        this.voicingIndex = p.idx;
+        this.renderVoicings();
+      });
+      row.appendChild(chip);
     }
-    this.syncSliders();
-    this.updateDeleteButton();
-    this.renderPreview();
+    return row;
   }
 
-  addChord() {
-    const style = this.currentStyle;
-    const weights = style === 'custom' ? { ...this.customWeights } : null;
+  makeAddButton(voicing, displayName) {
+    const addBtn = document.createElement('button');
+    addBtn.className = 'add-voicing-btn';
+    addBtn.textContent = '+ add';
+    addBtn.setAttribute('aria-label', `Add ${displayName} voicing to collection`);
+    addBtn.addEventListener('click', () => this.addVoicing(voicing, displayName));
+    return addBtn;
+  }
+
+  makeShowAllToggle(count) {
+    const toggle = document.createElement('button');
+    toggle.className = 'show-all-toggle';
+    toggle.textContent = this.showAll ? 'show fewer ▴' : `show all ${count} ▾`;
+    toggle.addEventListener('click', () => {
+      this.showAll = !this.showAll;
+      this.storage.save('showAll', this.showAll);
+      this.renderVoicings();
+    });
+    return toggle;
+  }
+
+  renderVoicings() {
+    const container = document.getElementById('preview-area');
+    const jumpArea = document.getElementById('jump-area');
+    container.innerHTML = '';
+    jumpArea.innerHTML = '';
+
+    const tuning = this.tunings.get(this.currentTuning);
+    const displayName = this.getChordDisplayName(this.currentRoot, this.currentQuality, this.currentInversion);
+    const voicings = this.currentVoicings();
+
+    if (voicings.length === 0) {
+      const empty = document.createElement('p');
+      empty.className = 'voicings-empty';
+      empty.textContent = `No playable ${displayName} voicings in this tuning.`;
+      container.appendChild(empty);
+      return;
+    }
+
+    if (this.showAll) {
+      const grid = document.createElement('div');
+      grid.className = 'voicings-grid';
+      for (const voicing of voicings) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'chord-card chord-voicing';
+        wrapper.appendChild(this.renderer.render(voicing, displayName, tuning.openNotes));
+        wrapper.appendChild(this.makeAddButton(voicing, displayName));
+        grid.appendChild(wrapper);
+      }
+      container.appendChild(grid);
+      container.appendChild(this.makeShowAllToggle(voicings.length));
+      return;
+    }
+
+    // Stepper: one voicing at a time with prev/next navigation.
+    this.voicingIndex = Math.max(0, Math.min(this.voicingIndex, voicings.length - 1));
+    const voicing = voicings[this.voicingIndex];
+
+    const jump = this.makeJumpChips(voicings);
+    if (jump) jumpArea.appendChild(jump);
+
+    const stepper = document.createElement('div');
+    stepper.className = 'voicings-stepper';
+
+    const nav = document.createElement('div');
+    nav.className = 'stepper-nav';
+
+    const prev = document.createElement('button');
+    prev.className = 'stepper-arrow';
+    prev.textContent = '◀';
+    prev.setAttribute('aria-label', 'Previous voicing');
+    prev.disabled = this.voicingIndex === 0;
+    prev.addEventListener('click', () => this.stepVoicing(-1));
+
+    const label = document.createElement('span');
+    label.className = 'stepper-label';
+    label.innerHTML = `shape ${this.voicingIndex + 1} of ${voicings.length}` +
+      `<span class="stepper-pos">${this.positionLabel(voicing)}</span>`;
+
+    const next = document.createElement('button');
+    next.className = 'stepper-arrow';
+    next.textContent = '▶';
+    next.setAttribute('aria-label', 'Next voicing');
+    next.disabled = this.voicingIndex === voicings.length - 1;
+    next.addEventListener('click', () => this.stepVoicing(1));
+
+    nav.appendChild(prev);
+    nav.appendChild(label);
+    nav.appendChild(next);
+
+    const card = document.createElement('div');
+    card.className = 'chord-card chord-voicing';
+    card.appendChild(this.renderer.render(voicing, displayName, tuning.openNotes));
+
+    const actions = document.createElement('div');
+    actions.className = 'stepper-actions';
+    actions.appendChild(this.makeAddButton(voicing, displayName));
+    actions.appendChild(this.makeShowAllToggle(voicings.length));
+
+    stepper.appendChild(nav);
+    stepper.appendChild(card);
+    stepper.appendChild(actions);
+    container.appendChild(stepper);
+  }
+
+  stepVoicing(delta) {
+    this.voicingIndex += delta;
+    this.renderVoicings();
+  }
+
+  addVoicing(voicing, displayName) {
     this.chords.push({
       root: this.currentRoot,
       quality: this.currentQuality,
       inversion: this.currentInversion,
-      position: this.currentPosition,
-      style,
-      weights,
+      tuningKey: this.currentTuning,
+      openNotes: this.tunings.get(this.currentTuning).openNotes.slice(),
+      displayName,
+      frets: voicing.frets.slice(),
+      notes: voicing.notes.slice(),
     });
     this.persist();
     this.renderCollection();
@@ -1224,45 +984,8 @@ class BanjoToolController {
     this.storage.save('chords', this.chords);
   }
 
-  renderChordDiagram(root, quality, inversion = 0, position = 0, style = null) {
-    const tuning = this.tunings.get(this.currentTuning);
-    const chord = this.chordLib.getChord(root, quality);
-    const semitones = this.theory.chordSemitones(root, chord.intervals);
-    const rootSemitone = this.theory.noteToSemitone(root);
-    const spelling = this.theory.chordSpelling(root, chord.intervals);
-    const bassSemitone = semitones[inversion] !== undefined ? semitones[inversion] : semitones[0];
-    const displayName = this.getChordDisplayName(root, quality, inversion);
-    const voicing = this.voicer.findBestVoicing(semitones, rootSemitone, this.currentTuning, bassSemitone, position, spelling, style || this.currentStyle);
-    return this.renderer.render(voicing, displayName, tuning.openNotes);
-  }
-
-  updatePositionButtons() {
-    const chord = this.chordLib.getChord(this.currentRoot, this.currentQuality);
-    const semitones = this.theory.chordSemitones(this.currentRoot, chord.intervals);
-    const rootSemitone = this.theory.noteToSemitone(this.currentRoot);
-    const bassSemitone = this.getBassSemitone();
-
-    const seen = [];
-    document.querySelectorAll('#position-buttons [data-position]').forEach(btn => {
-      const pos = Number(btn.dataset.position);
-      const voicing = this.voicer.findBestVoicing(semitones, rootSemitone, this.currentTuning, bassSemitone, pos, null, this.currentStyle);
-      const key = voicing.frets.join(',');
-      const duplicate = seen.some(s => s.key === key);
-      seen.push({ key, pos });
-      btn.disabled = duplicate;
-      btn.classList.toggle('toggle-disabled', duplicate);
-    });
-  }
-
-  renderPreview() {
-    this.updatePositionButtons();
-    const container = document.getElementById('preview-area');
-    container.innerHTML = '';
-    const svg = this.renderChordDiagram(this.currentRoot, this.currentQuality, this.currentInversion, this.currentPosition);
-    const wrapper = document.createElement('div');
-    wrapper.className = 'chord-card chord-preview';
-    wrapper.appendChild(svg);
-    container.appendChild(wrapper);
+  voicingFromStored(c) {
+    return { frets: c.frets, notes: c.notes, muted: c.frets.map(f => f === -1) };
   }
 
   renderCollection() {
@@ -1275,13 +998,12 @@ class BanjoToolController {
     if (this.chords.length === 0) return;
 
     for (let i = 0; i < this.chords.length; i++) {
-      const { root, quality, inversion, position, style, weights } = this.chords[i];
-      if (style === 'custom' && weights) BanjoVoicer.STYLES._saved = weights;
-      const useStyle = (style === 'custom' && weights) ? '_saved' : (style || this.currentStyle);
-      const svg = this.renderChordDiagram(root, quality, inversion || 0, position || 0, useStyle);
+      const c = this.chords[i];
+      const svg = this.renderer.render(this.voicingFromStored(c), c.displayName, c.openNotes);
       const wrapper = document.createElement('div');
       wrapper.className = 'chord-card';
       wrapper.appendChild(svg);
+
       const removeBtn = document.createElement('button');
       removeBtn.textContent = 'remove';
       removeBtn.className = 'remove-btn';
@@ -1296,45 +1018,37 @@ class BanjoToolController {
   }
 
   buildExportSVG() {
-    const tuning = this.tunings.get(this.currentTuning);
-    const dw = this.renderer.getDiagramWidth(tuning.numStrings);
-    const allChords = [...this.chords];
-    let maxNumFrets = this.renderer.config.numFrets;
-    for (const { root, quality, inversion, position, style, weights } of allChords) {
-      if (style === 'custom' && weights) BanjoVoicer.STYLES._saved = weights;
-      const useStyle = (style === 'custom' && weights) ? '_saved' : (style || this.currentStyle);
-      const chord = this.chordLib.getChord(root, quality);
-      const sem = this.theory.chordSemitones(root, chord.intervals);
-      const rs = this.theory.noteToSemitone(root);
-      const bassSem = sem[inversion || 0] || sem[0];
-      const v = this.voicer.findBestVoicing(sem, rs, this.currentTuning, bassSem, position || 0, null, useStyle);
-      const ff = v.frets.filter(f => f > 0);
-      if (ff.length > 0) maxNumFrets = Math.max(maxNumFrets, Math.max(...ff) - Math.min(...ff) + 1);
-    }
-    const dh = this.renderer.getDiagramHeight(maxNumFrets);
     const gap = 10;
-    const totalWidth = allChords.length * (dw + gap) - gap + 20;
-    const totalHeight = dh + 40;
+    let xOffset = 10;
+    let maxHeight = 0;
+    let body = '';
 
+    for (const c of this.chords) {
+      const numStrings = c.frets.length;
+      const fretted = c.frets.filter(f => f > 0);
+      const span = fretted.length > 0 ? Math.max(...fretted) - Math.min(...fretted) : 0;
+      const numFrets = Math.max(this.renderer.config.numFrets, span + 1);
+      const dw = this.renderer.getDiagramWidth(numStrings);
+      const dh = this.renderer.getDiagramHeight(numFrets);
+      maxHeight = Math.max(maxHeight, dh);
+
+      const svg = this.renderer.render(this.voicingFromStored(c), c.displayName, c.openNotes);
+      body += `<g transform="translate(${xOffset}, 10)">\n${svg.innerHTML}\n</g>\n`;
+      xOffset += dw + gap;
+    }
+
+    const totalWidth = xOffset - gap + 10;
+    const totalHeight = maxHeight + 40;
+
+    const footerTuning = this.tunings.get(this.chords[0].tuningKey) || this.tunings.get(this.currentTuning);
     let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="${totalHeight}" viewBox="0 0 ${totalWidth} ${totalHeight}">\n`;
     svgContent += `<rect width="${totalWidth}" height="${totalHeight}" fill="white"/>\n`;
-
-    for (let i = 0; i < allChords.length; i++) {
-      const { root, quality, inversion, position, style, weights } = allChords[i];
-      if (style === 'custom' && weights) BanjoVoicer.STYLES._saved = weights;
-      const useStyle = (style === 'custom' && weights) ? '_saved' : (style || this.currentStyle);
-      const svg = this.renderChordDiagram(root, quality, inversion || 0, position || 0, useStyle);
-      const xOffset = 10 + i * (dw + gap);
-      svgContent += `<g transform="translate(${xOffset}, 10)">\n`;
-      svgContent += svg.innerHTML;
-      svgContent += `\n</g>\n`;
-    }
-
-    svgContent += `<text x="${totalWidth / 2}" y="${totalHeight - 5}" text-anchor="middle" font-size="10" fill="#999">${tuning.shortName}: ${tuning.openNotes.join(' ')}</text>\n`;
+    svgContent += body;
+    svgContent += `<text x="${totalWidth / 2}" y="${totalHeight - 5}" text-anchor="middle" font-size="10" fill="#999">${footerTuning.shortName}: ${footerTuning.openNotes.join(' ')}</text>\n`;
     svgContent += `</svg>`;
 
-    const chordNames = allChords.map(c => this.getChordDisplayName(c.root, c.quality, c.inversion || 0)).join('-');
-    const filename = `banjo-${tuning.shortName.replace(/\s+/g, '-').toLowerCase()}-${chordNames.replace(/\s+/g, '').replace(/[#]/g, 'sharp').replace(/\//g, '-')}`;
+    const chordNames = this.chords.map(c => c.displayName).join('-');
+    const filename = `chords-${footerTuning.shortName.replace(/\s+/g, '-').toLowerCase()}-${chordNames.replace(/\s+/g, '').replace(/[#]/g, 'sharp').replace(/\//g, '-')}`;
 
     return { svgContent, totalWidth, totalHeight, filename };
   }
@@ -1391,118 +1105,143 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <style>
-/* Style dropdown */
-.style-select {
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  font-weight: 500;
+/* Voicings gallery */
+.voicings-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.chord-voicing {
+  position: relative;
+}
+
+.add-voicing-btn {
+  font-size: 0.7rem;
+  cursor: pointer;
+  color: #137752;
+  background: none;
+  border: none;
+  margin-top: 2px;
+  font-family: inherit;
+  transition: opacity 0.15s ease;
+}
+
+.add-voicing-btn:hover {
+  opacity: 0.6;
+}
+
+.voicings-empty {
+  font-size: 0.85rem;
+  color: #888;
+  padding: 1rem 0;
+}
+
+/* Voicing stepper */
+.voicings-stepper {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.voicings-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-bottom: 12px;
+}
+
+.stepper-jump {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.stepper-jump-label {
+  font-size: 0.72rem;
+  color: #888;
+}
+
+.jump-chip {
+  border: 1.5px solid #d1d5db;
+  background: #fff;
+  color: #333;
+  border-radius: 5px;
+  padding: 2px 9px;
+  font-size: 0.72rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.15s ease;
+}
+
+.jump-chip:hover { border-color: #333; }
+
+.jump-chip.jump-active {
+  background: #333;
+  color: #fff;
+  border-color: #333;
+}
+
+.stepper-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+}
+
+.stepper-arrow {
   border: 2px solid #d1d5db;
   background: #fff;
   color: #333;
-  font-family: ui-sans-serif, system-ui, sans-serif;
-  cursor: pointer;
-}
-
-/* Accordion */
-#style-advanced {
-  border: 1px solid #e5e7eb;
   border-radius: 6px;
-  padding: 0;
-}
-#style-advanced summary {
-  padding: 8px 12px;
-  list-style: none;
-}
-#style-advanced summary::-webkit-details-marker { display: none; }
-#style-advanced summary::before {
-  content: '▸ ';
-}
-#style-advanced[open] summary::before {
-  content: '▾ ';
+  width: 34px;
+  height: 34px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.15s ease, opacity 0.15s ease;
 }
 
-/* Slider panel */
-.slider-panel {
-  padding: 6px 10px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2px 16px;
-}
-.slider-group {
+.stepper-arrow:hover:not(:disabled) { border-color: #333; }
+.stepper-arrow:disabled { opacity: 0.3; cursor: default; }
+
+.stepper-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #333;
+  min-width: 130px;
+  text-align: center;
   display: flex;
   flex-direction: column;
-}
-.slider-group label {
-  font-size: 0.65rem;
-  font-weight: 500;
-  color: #555;
-  cursor: help;
-  margin-bottom: -2px;
-}
-.slider-group input[type=range] {
-  width: 100%;
-  accent-color: #333;
-  height: 16px;
-}
-.slider-type-hint {
-  font-size: 0.55rem;
-  color: #bbb;
-}
-.slider-extremes {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.55rem;
-  color: #888;
-  margin-top: -4px;
-  margin-bottom: 2px;
+  line-height: 1.35;
 }
 
-.slider-group .slider-checkbox {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.65rem;
-  color: #555;
-  margin-top: 2px;
-}
-.slider-save-row {
-  grid-column: 1 / -1;
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  margin-top: 4px;
-  padding-top: 6px;
-  border-top: 1px solid #e5e7eb;
-}
-.preset-name-input {
-  flex: 1;
-  padding: 3px 8px;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
+.stepper-pos {
   font-size: 0.7rem;
-  font-family: inherit;
+  font-weight: 400;
+  color: #999;
 }
-.preset-btn {
-  padding: 3px 10px;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  font-size: 0.65rem;
-  font-family: inherit;
-  cursor: pointer;
-  background: #fff;
-  color: #555;
-}
-.preset-btn:hover { background: #f3f4f6; }
-.preset-btn-danger { color: #b91c1c; }
-.preset-btn-danger:hover { background: #fef2f2; }
 
-@media (max-width: 640px) {
-  .slider-panel {
-    grid-template-columns: 1fr;
-    gap: 4px;
-  }
+.stepper-actions {
+  display: flex;
+  gap: 18px;
+  align-items: center;
 }
+
+.show-all-toggle {
+  font-size: 0.75rem;
+  color: #137752;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.15s ease;
+}
+
+.show-all-toggle:hover { opacity: 0.6; }
 
 #banjo-tool {
   max-width: 100%;
@@ -1512,8 +1251,7 @@ document.addEventListener('DOMContentLoaded', () => {
 /* Ensure flex-wrap works regardless of Tailwind build */
 #banjo-tool .flex-wrap,
 #root-buttons,
-#quality-buttons,
-#position-buttons {
+#quality-buttons {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -1534,7 +1272,7 @@ document.addEventListener('DOMContentLoaded', () => {
   font-family: ui-sans-serif, system-ui, sans-serif;
 }
 
-.toggle-btn:hover:not(.toggle-disabled) {
+.toggle-btn:hover {
   border-color: #333;
 }
 
@@ -1544,39 +1282,14 @@ document.addEventListener('DOMContentLoaded', () => {
   border-color: #333;
 }
 
-.toggle-btn.toggle-disabled {
-  opacity: 0.3;
-  cursor: default;
-}
-
 .toggle-btn.toggle-sm {
   padding: 6px 12px;
   font-size: 0.8rem;
 }
 
-/* Action button */
-.action-btn {
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.15s ease;
-  background: #333;
-  color: #fff;
-  border: 2px solid #333;
-  user-select: none;
-  font-family: ui-sans-serif, system-ui, sans-serif;
-}
-
-.action-btn:hover {
-  opacity: 0.8;
-}
-
 /* Chord display area */
-#chord-area {
+#voicings-section {
   min-height: 220px;
-  align-items: flex-start;
 }
 
 .chord-card {
@@ -1590,15 +1303,11 @@ document.addEventListener('DOMContentLoaded', () => {
   color: #137752;
 }
 
-.tuning-label {
-  font-size: 0.7rem;
-  color: #999;
-  text-align: center;
-  margin-top: 2px;
-}
-
 #chord-collection {
-  display: contents;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
 }
 
 .remove-btn {
@@ -1635,11 +1344,6 @@ document.addEventListener('DOMContentLoaded', () => {
   .toggle-btn.toggle-sm {
     padding: 5px 8px;
     font-size: 0.75rem;
-  }
-
-  .action-btn {
-    padding: 8px 14px;
-    font-size: 0.8rem;
   }
 
   .chord-card {

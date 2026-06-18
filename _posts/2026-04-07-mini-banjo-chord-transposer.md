@@ -99,7 +99,7 @@ category: projects
 /*
  * Mini Banjo Chord Transposer
  * Version: 1.0.0
- * Built: 2026-06-18T01:22:51.534Z
+ * Built: 2026-06-18T01:27:34.926Z
  * Generated automatically - do not edit directly
  */
 // === core/musical-theory.js ===
@@ -208,8 +208,9 @@ class BanjoTunings {
   constructor(theory) {
     this.theory = theory;
     // maxStretch is the widest fretted span (highest − lowest fret) a hand can
-    // reach. It scales inversely with the instrument's scale length: the shorter
-    // the scale, the closer the frets, the more of them a hand covers.
+    // comfortably grip. Shorter-scale instruments earn a little more than guitar
+    // (closer frets), but only a little — past ~5 frets the limit is finger
+    // independence, not reach, so the spread stays modest across instruments.
     this.tunings = {
       'standard': {
         name: 'Standard Banjo (G)',
@@ -227,7 +228,7 @@ class BanjoTunings {
         openSemitones: [0, 7, 0, 4, 7],
         numStrings: 5,
         hasDrone: true,
-        maxStretch: 6, // ~19" short scale
+        maxStretch: 5, // ~19" short scale
       },
       'mandolin': {
         name: 'Mandolin (GDAE)',
@@ -236,7 +237,7 @@ class BanjoTunings {
         openSemitones: [7, 2, 9, 4],
         numStrings: 4,
         hasDrone: false,
-        maxStretch: 7, // ~14" scale
+        maxStretch: 5, // ~14" scale
       },
       'guitar': {
         name: 'Guitar (EADGBE)',

@@ -16,7 +16,20 @@
       "Bash(node:*)",
       "Bash(git:*)",
       "Bash(echo \"---EXIT:$?---\")",
-      "Bash(npx jest:*)"
+      "Bash(npx jest:*)",
+      "Bash(asdf --version)",
+      "Bash(asdf current *)",
+      "Bash(asdf reshim *)",
+      "Bash(rake --version)",
+      "Read(//opt/homebrew/opt/asdf/libexec/**)",
+      "Read(//opt/homebrew/Cellar/asdf/0.19.0/share/fish/**)",
+      "mcp__browsermcp__browser_snapshot",
+      "mcp__browsermcp__browser_get_console_logs",
+      "Bash(curl -s http://localhost:4000/projects/2026/04/07/mini-banjo-chord-transposer.html)",
+      "mcp__browsermcp__browser_wait",
+      "Bash(sed '1d;$d')",
+      "Bash(echo \"Exit: $?\")",
+      "mcp__browsermcp__browser_select_option"
     ],
     "deny": []
   }

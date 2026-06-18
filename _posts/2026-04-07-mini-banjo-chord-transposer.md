@@ -99,7 +99,7 @@ category: projects
 /*
  * Mini Banjo Chord Transposer
  * Version: 1.0.0
- * Built: 2026-06-18T01:12:30.606Z
+ * Built: 2026-06-18T01:22:51.534Z
  * Generated automatically - do not edit directly
  */
 // === core/musical-theory.js ===
@@ -207,6 +207,9 @@ class ChordLibrary {
 class BanjoTunings {
   constructor(theory) {
     this.theory = theory;
+    // maxStretch is the widest fretted span (highest − lowest fret) a hand can
+    // reach. It scales inversely with the instrument's scale length: the shorter
+    // the scale, the closer the frets, the more of them a hand covers.
     this.tunings = {
       'standard': {
         name: 'Standard Banjo (G)',
@@ -215,6 +218,7 @@ class BanjoTunings {
         openSemitones: [7, 2, 7, 11, 2],
         numStrings: 5,
         hasDrone: true,
+        maxStretch: 4, // ~26" scale
       },
       'mini': {
         name: 'Mini Banjo (C)',
@@ -223,6 +227,7 @@ class BanjoTunings {
         openSemitones: [0, 7, 0, 4, 7],
         numStrings: 5,
         hasDrone: true,
+        maxStretch: 6, // ~19" short scale
       },
       'mandolin': {
         name: 'Mandolin (GDAE)',
@@ -231,6 +236,7 @@ class BanjoTunings {
         openSemitones: [7, 2, 9, 4],
         numStrings: 4,
         hasDrone: false,
+        maxStretch: 7, // ~14" scale
       },
       'guitar': {
         name: 'Guitar (EADGBE)',
@@ -239,6 +245,7 @@ class BanjoTunings {
         openSemitones: [4, 9, 2, 7, 11, 4],
         numStrings: 6,
         hasDrone: false,
+        maxStretch: 4, // ~25.5" scale
       },
     };
   }
@@ -279,17 +286,18 @@ class BanjoVoicer {
   /**
    * Is a set of frets physically playable?
    * Hard constraints that replace the old scoring penalties:
-   *  - fretted span within reach (<= maxStretch)
+   *  - fretted span within reach (<= maxStretch); the reachable span depends on
+   *    the instrument's scale length, so callers pass the tuning's value
    *  - at most four fingers, allowing one index barre across the lowest fret
    * Open (0) and muted (-1) strings cost no finger.
    */
-  isPlayable(frets) {
+  isPlayable(frets, maxStretch = this.maxStretch) {
     const fretted = frets.filter(f => f > 0);
     if (fretted.length === 0) return true;
 
     const minFret = Math.min(...fretted);
     const maxFret = Math.max(...fretted);
-    if (maxFret - minFret > this.maxStretch) return false;
+    if (maxFret - minFret > maxStretch) return false;
 
     const atLowest = fretted.filter(f => f === minFret).length;
     const barreSaving = atLowest >= 2 ? atLowest - 1 : 0;
@@ -307,6 +315,7 @@ class BanjoVoicer {
     const hasDrone = tuning.hasDrone !== false;
     const numFretted = hasDrone ? tuning.numStrings - 1 : tuning.numStrings;
     const frettedOffset = hasDrone ? 1 : 0;
+    const maxStretch = tuning.maxStretch || this.maxStretch;
 
     // The drone (5th string) is fixed open; it only rings if it is a chord tone.
     let droneFret = -1;
@@ -353,7 +362,7 @@ class BanjoVoicer {
         ? [droneFret, ...fretted.map(c => c.fret)]
         : fretted.map(c => c.fret);
 
-      if (!this.isPlayable(frets)) return;
+      if (!this.isPlayable(frets, maxStretch)) return;
 
       const key = frets.join(',');
       if (seen.has(key)) return;
